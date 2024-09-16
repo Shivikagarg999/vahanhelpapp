@@ -2,13 +2,25 @@
     "version": 2,
     "functions": {
       "app.js": {
-        "maxDuration": 60,
-        "includeFiles": [
-          "views/**/*",  
-          "public/**/*"
-        ]
+        "maxDuration": 60
       }
     },
+    "builds": [
+      {
+        "src": "app.js",
+        "use": "@vercel/node",
+        "config": {
+          "includeFiles": "views/**/*"
+        }
+      },
+      {
+        "src": "app.js",
+        "use": "@vercel/node",
+        "config": {
+          "includeFiles": "public/**/*"
+        }
+      }
+    ],
     "routes": [
       {
         "src": "/(.*)",
