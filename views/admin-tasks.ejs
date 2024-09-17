@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Tasks</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 20px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .edit-button, .delete-button {
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid #ddd;
+                margin-bottom: 10px;
+                display: block;
+            }
+            td {
+                border: none;
+                display: block;
+                text-align: right;
+                position: relative;
+                padding-left: 50%;
+                white-space: nowrap;
+            }
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>All Tasks</h1>
+        <a href="/admin/logout">Logout</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Company Name</th>
+                    <th>Task Name</th>
+                    <th>Description</th>
+                    <th>Car Number</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% tasks.forEach(task => { %>
+                    <tr>
+                        <td data-label="Company Name"><%= task.company.companyName %></td>
+                        <td data-label="Task Name"><%= task.name %></td>
+                        <td data-label="Description"><%= task.description %></td>
+                        <td data-label="Car Number"><%= task.carNum %></td>
+                        <td data-label="Status"><%= task.state ? 'Completed' : 'Pending' %></td>
+                        <td data-label="Actions">
+                            <a href="/tasks/edit/<%= task._id %>" class="edit-button">Edit</a>
+                            <form action="/tasks/delete/<%= task._id %>" method="post" style="display:inline;">
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

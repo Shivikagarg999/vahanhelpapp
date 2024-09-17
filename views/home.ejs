@@ -20,8 +20,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 1em 2em;
-            background: #ffffff; /* White background for header */
-            color: #333; /* Dark text */
+            background: black; /* White background for header */
+            color: white; /* Dark text */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .header img {
@@ -33,7 +33,7 @@
         }
         .header a {
             text-decoration: none;
-            color: #007bff; /* Professional blue for links */
+            color: #ffffff;
             font-weight: 500;
             padding: 0.5em 1em;
             border-radius: 5px;
@@ -54,9 +54,9 @@
             text-align: center;
             background: url('/path-to-your-background-image.jpg') no-repeat center center;
             background-size: cover;
-            color: black;
+            color: black; /* Ensure text is readable against background */
             padding: 3em;
-          }
+        }
         .hero h1 {
             font-size: 3em;
             margin: 0;
@@ -105,6 +105,7 @@
 <body>
     <div class="header">
         <img src="https://vahanhelp.in/images/2DPNG.png" alt="Vahan Help Logo"> <!-- Replace with your logo URL -->
+        <h1>Partner's Login</h1>
         <nav>
             <a href="/login">Login</a>
             <a href="/register">Sign Up</a>
@@ -113,8 +114,8 @@
     <div class="hero">
         <h1>Welcome to Vahan Help</h1>
         <p>Your trusted task manager app</p>
-        <a href="/login" class="btn">Login</a>
-        <a href="/register" class="btn">Sign Up</a>
+        <!-- <a href="/login" class="btn">Login</a>
+        <a href="/register" class="btn">Sign Up</a> -->
     </div>
 </body>
 </html>

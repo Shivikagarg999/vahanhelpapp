@@ -9,6 +9,7 @@ const multer = require('multer');
 const path = require('path');
 const csv = require('csv-parser');
 const fs = require('fs');
+const Admin = require('./models/admin');
 
 // Configure multer for file uploads
 const upload = multer({
@@ -240,6 +241,48 @@ function isLoggedIn(req, res, next) {
     }
     next();
 }
+app.get("/admin/login", (req, res) => {
+    res.render("admin_login");
+});
+
+// POST route for admin login
+app.post('/admin/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD){
+            res.cookie('admin_token', 'admin', { httpOnly: true });
+            res.redirect('/admin-tasks');
+        } else {
+            res.render('admin_login', { error: 'Invalid username or password.' });
+        }
+    } catch (err) {
+        console.error('Error during admin login:', err.message);
+        res.status(500).render('admin_login', { error: 'Error during login.' });
+    }
+});
+
+// GET route for admin tasks page
+app.get("/admin-tasks", isAdminLoggedIn, async (req, res) => {
+    try {
+        const tasks = await Task.find().populate('company');
+        res.render("admin-tasks", { tasks });
+    } catch (err) {
+        res.status(500).send("Error fetching tasks.");
+    }
+});
+
+
+
+function isAdminLoggedIn(req, res, next) {
+    if (!req.cookies.admin_token) {
+        return res.redirect("/admin/login");
+    }
+    next();
+}
+app.get('/admin/logout', (req, res) => {
+    res.clearCookie('admin_token'); // Clear the admin token cookie
+    res.redirect('/admin/login'); // Redirect to admin login page
+});
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

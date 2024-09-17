@@ -1,6 +1,8 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/crud2', {
+
+mongoose.connect(process.env.Mongo_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
@@ -10,7 +12,8 @@ mongoose.connect('mongodb://localhost:27017/crud2', {
 const compSchema = mongoose.Schema({
     companyName: String,
     password: String,
-    tasks: [{type: mongoose.Schema.Types.ObjectId, ref: "task"}]
+    tasks: [{type: mongoose.Schema.Types.ObjectId, ref: "task"}],
+    isAdmin: { type: Boolean, default: false }
 });
 
 // Define and export the model
