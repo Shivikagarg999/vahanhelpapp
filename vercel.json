@@ -15,10 +15,7 @@
       }
     }
   ],
-  "functions": {
-    "api/app.js": {
-      "maxDuration": 60
-    }
+  
   },
   "routes": [
     {
