@@ -12,6 +12,11 @@
       }
     }
   ],
+  "functions": {
+    "app.js": {
+      "maxDuration": 60
+    }
+  },
   "routes": [
     {
       "src": "/(.*)",
