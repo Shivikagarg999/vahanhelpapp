@@ -6,19 +6,21 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
-          "views/**/*",
-          "public/**/*",
-          "models/**/*",
-          "api.js",
-          ".env"
+          "views/**/*",  
+          "public/**/*"
         ]
       }
     }
   ],
+  "functions": {
+    "app.js": {
+      "maxDuration": 60
+    }
+  },
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app.js"
+      "dest": "/app.js"
     }
   ]
 }
