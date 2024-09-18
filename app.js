@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const Company = require('./models/company');
@@ -9,7 +8,7 @@ const multer = require('multer');
 const path = require('path');
 const csv = require('csv-parser');
 const fs = require('fs');
-const Admin = require('./models/admin');
+const Admin = require('./models/admin'); // If you're using Admin model
 
 // Configure multer for file uploads
 const upload = multer({
@@ -28,6 +27,12 @@ app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(session({
+    secret: 'your_secret_key', // Replace with a secure key
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.get("/", (req, res) => {
     res.render("home");
 });
@@ -52,8 +57,8 @@ app.post("/register", async (req, res) => {
             return res.render("register", { error: "Company name already taken. Please choose a different one." });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newCompany = new Company({ companyName: company, password: hashedPassword });
+        // Skip password hashing
+        const newCompany = new Company({ companyName: company, password });
         await newCompany.save();
 
         // Set a token cookie upon registration
@@ -69,7 +74,7 @@ app.post("/login", async (req, res) => {
     const { company, password } = req.body;
     try {
         const foundCompany = await Company.findOne({ companyName: company });
-        if (foundCompany && await bcrypt.compare(password, foundCompany.password)) {
+        if (foundCompany && foundCompany.password === password) {
             res.cookie("token", foundCompany._id.toString(), { httpOnly: true }); // Set cookie on successful login
             res.redirect("/tasks");
         } else {
@@ -121,7 +126,6 @@ app.post("/tasks", async (req, res) => {
     }
 });
 
-// POST route for editing a task
 app.post("/tasks/edit/:id", async (req, res) => {
     const taskId = req.params.id;
     const { name, description, carNum, state } = req.body;
@@ -151,7 +155,6 @@ app.post("/tasks/delete/:id", async (req, res) => {
     }
 });
 
-// GET route for rendering the edit form
 app.get("/tasks/edit/:id", async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
@@ -168,6 +171,7 @@ app.get("/tasks/edit/:id", async (req, res) => {
         res.status(500).send("Error fetching task.");
     }
 });
+
 app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send("No file uploaded.");
@@ -222,7 +226,6 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     }
 });
 
-
 app.get("/logout", (req, res) => {
     res.clearCookie('token'); // Clear the cookie on logout
     res.redirect("/");
@@ -235,15 +238,15 @@ function isLoggedIn(req, res, next) {
     }
     next();
 }
+
 app.get("/admin/login", (req, res) => {
     res.render("admin_login");
 });
 
-// POST route for admin login
 app.post('/admin/login', async (req, res) => {
     const { username, password } = req.body;
     try {
-        if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD){
+        if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
             res.cookie('admin_token', 'admin', { httpOnly: true });
             res.redirect('/admin-tasks');
         } else {
@@ -255,7 +258,6 @@ app.post('/admin/login', async (req, res) => {
     }
 });
 
-// GET route for admin tasks page
 app.get("/admin-tasks", isAdminLoggedIn, async (req, res) => {
     try {
         const tasks = await Task.find().populate('company');
@@ -265,14 +267,13 @@ app.get("/admin-tasks", isAdminLoggedIn, async (req, res) => {
     }
 });
 
-
-
 function isAdminLoggedIn(req, res, next) {
     if (!req.cookies.admin_token) {
         return res.redirect("/admin/login");
     }
     next();
 }
+
 app.get('/admin/logout', (req, res) => {
     res.clearCookie('admin_token'); // Clear the admin token cookie
     res.redirect('/admin/login'); // Redirect to admin login page
