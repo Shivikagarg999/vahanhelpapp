@@ -28,12 +28,6 @@ app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(session({
-    secret: 'your_secret_key', // Replace with a secure key
-    resave: false,
-    saveUninitialized: true
-}));
-
 app.get("/", (req, res) => {
     res.render("home");
 });

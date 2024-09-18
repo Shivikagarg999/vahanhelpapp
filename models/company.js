@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 
 
 mongoose.connect(process.env.Mongo_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    connectTimeoutMS: 10000, 
+    socketTimeoutMS: 45000
 })
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
