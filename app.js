@@ -52,11 +52,6 @@ app.post("/register", async (req, res) => {
             return res.render("register", { error: "Company name and password are required." });
         }
 
-        const existingCompany = await Company.findOne({ companyName: company });
-        if (existingCompany) {
-            return res.render("register", { error: "Company name already taken. Please choose a different one." });
-        }
-
         // Skip password hashing
         const newCompany = new Company({ companyName: company, password });
         await newCompany.save();
