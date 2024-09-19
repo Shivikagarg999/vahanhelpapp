@@ -111,7 +111,7 @@
             <tbody>
                 <% tasks.forEach(task => { %>
                     <tr>
-                        <td data-label="Company Name"><%= task.company.companyName %></td>
+                        <td data-label="Company Name"><%= task.company ? task.company.companyName : 'No Company Assigned' %></td>
                         <td data-label="Task Name"><%= task.name %></td>
                         <td data-label="Description"><%= task.description %></td>
                         <td data-label="Car Number"><%= task.carNum %></td>
