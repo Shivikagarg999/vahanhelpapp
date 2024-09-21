@@ -8,30 +8,21 @@ const multer = require('multer');
 const path = require('path');
 const csv = require('csv-parser');
 const fs = require('fs');
-const Admin = require('./models/admin'); // If you're using Admin model
-
-// Configure multer for file uploads
-const upload = multer({
-    storage: multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, 'uploads/');
-        },
-        filename: (req, file, cb) => {
-            cb(null, Date.now() + path.extname(file.originalname));
-        }
-    }),
-    limits: { fileSize: 2 * 1024 * 1024 } // Limit file size to 2MB
-});
+const { Parser } = require('json2csv');
+const Admin = require('./models/admin');
 
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(session({
-    secret: 'your_secret_key', // Replace with a secure key
+    secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true
 }));
+
+// Set up multer for file uploads
+const upload = multer({ dest: 'uploads/' });
 
 app.get("/", (req, res) => {
     res.render("home");
@@ -60,7 +51,7 @@ app.post("/register", async (req, res) => {
         res.cookie('token', newCompany._id.toString(), { httpOnly: true });
         res.redirect("/login");
     } catch (err) {
-        console.error('Error registering company:', err.message); // Logs error details to the server console
+        console.error('Error registering company:', err.message);
         res.status(500).render("register", { error: "Error registering company." });
     }
 });
@@ -70,7 +61,7 @@ app.post("/login", async (req, res) => {
     try {
         const foundCompany = await Company.findOne({ companyName: company });
         if (foundCompany && foundCompany.password === password) {
-            res.cookie("token", foundCompany._id.toString(), { httpOnly: true }); // Set cookie on successful login
+            res.cookie("token", foundCompany._id.toString(), { httpOnly: true });
             res.redirect("/tasks");
         } else {
             res.render("login", { error: "Invalid company name or password." });
@@ -86,7 +77,7 @@ app.get("/tasks", async (req, res) => {
         return res.redirect("/login");
     }
     try {
-        const company = await Company.findById(companyId).populate('tasks'); // Populate the tasks array
+        const company = await Company.findById(companyId).populate('tasks');
         if (!company) {
             return res.redirect("/login");
         }
@@ -121,6 +112,19 @@ app.post("/tasks", async (req, res) => {
     }
 });
 
+app.get('/tasks/search', async (req, res) => {
+    const { carNum } = req.query;
+    let tasks;
+
+    if (carNum) {
+        tasks = await Task.find({ carNum: new RegExp(carNum, 'i') });
+    } else {
+        tasks = await Task.find();
+    }
+
+    res.render('tasks', { tasks });
+});
+
 app.post("/tasks/edit/:id", async (req, res) => {
     const taskId = req.params.id;
     const { name, description, carNum, state } = req.body;
@@ -129,7 +133,7 @@ app.post("/tasks/edit/:id", async (req, res) => {
             name, 
             description, 
             carNum, 
-            state: state === "true" // Convert state string to boolean
+            state: state === "true"
         });
         res.redirect("/tasks");
     } catch (err) {
@@ -167,6 +171,7 @@ app.get("/tasks/edit/:id", async (req, res) => {
     }
 });
 
+// CSV Import Route
 app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send("No file uploaded.");
@@ -180,7 +185,10 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
         fs.createReadStream(filePath)
             .pipe(csv())
             .on('data', (row) => {
-                tasks.push(row);
+                // Check if required fields are present and not empty
+                if (row.name && row.description && row.carNum) {
+                    tasks.push(row);
+                }
             })
             .on('end', async () => {
                 try {
@@ -222,7 +230,7 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-    res.clearCookie('token'); // Clear the cookie on logout
+    res.clearCookie('token');
     res.redirect("/");
 });
 
@@ -270,10 +278,40 @@ function isAdminLoggedIn(req, res, next) {
 }
 
 app.get('/admin/logout', (req, res) => {
-    res.clearCookie('admin_token'); // Clear the admin token cookie
-    res.redirect('/admin/login'); // Redirect to admin login page
+    res.clearCookie('admin_token');
+    res.redirect('/admin/login');
 });
+app.get('/tasks/download', async (req, res) => {
+    const companyId = req.cookies.token;
+    if (!companyId) {
+        return res.redirect("/login");
+    }
+    
+    try {
+        // Fetch tasks for the logged-in company
+        const tasks = await Task.find({ company: companyId }).populate('company');
+        
+        // Prepare data for CSV
+        const tasksData = tasks.map(task => ({
+            Name: task.name,
+            Description: task.description,
+            CarNumber: task.carNum,
+            Status: task.state ? 'Completed' : 'Pending'
+        }));
 
+        // Convert JSON to CSV
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse(tasksData);
+
+        // Set the response headers to download the file
+        res.header('Content-Type', 'text/csv');
+        res.attachment('tasks.csv');
+        res.send(csv);
+    } catch (err) {
+        console.error('Error downloading tasks:', err.message);
+        res.status(500).send("Error downloading tasks.");
+    }
+});
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 });
