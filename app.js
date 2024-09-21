@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
     res.render("home");
 });
 
-app.get("/register", (req, res) => {
+app.get("/registerar", (req, res) => {
     res.render("register");
 });
 
@@ -36,11 +36,17 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
-app.post("/register", async (req, res) => {
+app.post("/registerar", async (req, res) => {
     const { company, password } = req.body;
     try {
         if (!company || !password) {
             return res.render("register", { error: "Company name and password are required." });
+        }
+
+        // Check if the company already exists
+        const existingCompany = await Company.findOne({ companyName: company });
+        if (existingCompany) {
+            return res.render("register", { error: "Company name already exists. Please choose another." });
         }
 
         // Skip password hashing
@@ -55,6 +61,7 @@ app.post("/register", async (req, res) => {
         res.status(500).render("register", { error: "Error registering company." });
     }
 });
+
 
 app.post("/login", async (req, res) => {
     const { company, password } = req.body;
