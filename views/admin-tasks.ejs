@@ -104,6 +104,13 @@
                     <th>Task Name</th>
                     <th>Description</th>
                     <th>Car Number</th>
+                    <th>Seller Name</th>
+                    <th>Seller Number</th>
+                    <th>Buyer Name</th>
+                    <th>Buyer Number</th>
+                    <th>Seller RTO Location</th>
+                    <th>Buyer RTO Location</th>
+                    <th>Aligned Date</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -115,6 +122,13 @@
                         <td data-label="Task Name"><%= task.name %></td>
                         <td data-label="Description"><%= task.description %></td>
                         <td data-label="Car Number"><%= task.carNum %></td>
+                        <td data-label="Seller Name"><%= task.sellerName %></td>
+                        <td data-label="Seller Number"><%= task.sellerNum %></td>
+                        <td data-label="Buyer Name"><%= task.buyerName %></td>
+                        <td data-label="Buyer Number"><%= task.buyerNum %></td>
+                        <td data-label="Seller RTO Location"><%= task.seller_RTO_location %></td>
+                        <td data-label="Buyer RTO Location"><%= task.buyer_RTO_location %></td>
+                        <td data-label="Aligned Date"><%= task.align_date ? task.align_date.toISOString().split('T')[0] : 'N/A' %></td>
                         <td data-label="Status"><%= task.state ? 'Completed' : 'Pending' %></td>
                         <td data-label="Actions">
                             <a href="/tasks/edit/<%= task._id %>" class="edit-button">Edit</a>
@@ -126,6 +140,7 @@
                 <% }) %>
             </tbody>
         </table>
+        <a href="/registerar" class="btn">Register</a>
     </div>
 </body>
 </html>

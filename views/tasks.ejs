@@ -133,6 +133,34 @@
                 <textarea name="description" id="description" required></textarea>
             </div>
             <div class="form-group">
+                <label for="sellerName">Seller Name:</label>
+                <input type="text" name="sellerName" id="sellerName" required>
+            </div>
+            <div class="form-group">
+                <label for="sellerNum">Seller Number:</label>
+                <input type="text" name="sellerNum" id="sellerNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="buyerName">Buyer Name:</label>
+                <input type="text" name="buyerName" id="buyerName" required>
+            </div>
+            <div class="form-group">
+                <label for="buyerNum">Buyer Number:</label>
+                <input type="text" name="buyerNum" id="buyerNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="align_date">Aligned Date:</label>
+                <input type="date" name="align_date" id="alignedDate" required>
+            </div>
+            <div class="form-group">
+                <label for="seller_RTO_location">Seller RTO Location:</label>
+                <input type="text" name="seller_RTO_location" id="sellerRTO" required>
+            </div>
+            <div class="form-group">
+                <label for="buyer_RTO_location">Buyer RTO Location:</label>
+                <input type="text" name="buyer_RTO_location" id="buyerRTO" required>
+            </div>
+            <div class="form-group">
                 <label for="carNum">Car Number:</label>
                 <input type="text" name="carNum" id="carNum" required>
             </div>
@@ -146,7 +174,7 @@
         </form>
         
         <hr>
-        <h2>Search Tasks By Car Name</h2>
+        <h2>Search Tasks By Car Number</h2>
         <form action="/tasks/search" method="get" style="display: flex; align-items: center; margin-bottom: 20px;">
             <div class="form-group" style="flex-grow: 1;">
                 <input type="text" id="searchCarNum" name="carNum" placeholder="Enter car number" required>
@@ -176,6 +204,7 @@
                             <td data-label="Car Number"><%= task.carNum %></td>
                             <td data-label="Status"><%= task.state ? 'Completed' : 'Pending' %></td>
                             <td data-label="Actions">
+                                <a href="/tasks/view/<%= task._id %>" class="btn-view" title="View">View</a>
                                 <a href="/tasks/edit/<%= task._id %>" title="Edit">
                                     <img src="https://img.icons8.com/ios-filled/24/007bff/edit.png" alt="Edit">
                                 </a>

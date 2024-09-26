@@ -95,21 +95,42 @@ app.get("/tasks", async (req, res) => {
 });
 
 app.post("/tasks", async (req, res) => {
-    const { name, description, carNum } = req.body;
+    const {
+        name,
+        description,
+        carNum,
+        sellerName,
+        sellerNum,
+        buyerName,
+        buyerNum,
+        seller_RTO_location,
+        buyer_RTO_location,
+        align_date,
+        state
+    } = req.body;
+
     const companyId = req.cookies.token;
     if (!companyId) {
         return res.redirect("/login");
     }
+
     try {
         const newTask = new Task({
             company: companyId,
             name,
             description,
+            sellerName,
+            sellerNum,
+            buyerName,
+            buyerNum,
+            align_date,
+            seller_RTO_location,
+            buyer_RTO_location,
             carNum,
             state: false
         });
         await newTask.save();
-        
+
         // Update the company's tasks array
         await Company.findByIdAndUpdate(companyId, { $push: { tasks: newTask._id } });
 
@@ -118,6 +139,7 @@ app.post("/tasks", async (req, res) => {
         res.status(500).send("Error creating task.");
     }
 });
+
 
 app.get('/tasks/search', async (req, res) => {
     const { carNum } = req.query;
@@ -179,6 +201,7 @@ app.get("/tasks/edit/:id", async (req, res) => {
 });
 
 // CSV Import Route
+
 app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send("No file uploaded.");
@@ -189,50 +212,79 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     try {
         const tasks = [];
 
-        fs.createReadStream(filePath)
-            .pipe(csv())
-            .on('data', (row) => {
-                // Check if required fields are present and not empty
-                if (row.name && row.description && row.carNum) {
-                    tasks.push(row);
-                }
-            })
-            .on('end', async () => {
-                try {
-                    const companyId = req.cookies.token;
-
-                    for (const task of tasks) {
-                        const { name, description, carNum, state } = task;
-
-                        const newTask = new Task({
-                            company: companyId,
-                            name,
-                            description,
-                            carNum,
-                            state: state === 'true'
-                        });
-
-                        await newTask.save();
-                        await Company.findByIdAndUpdate(companyId, { $push: { tasks: newTask._id } });
-                    }
-
-                    fs.unlink(filePath, (err) => {
-                        if (err) console.error('Error deleting file:', err.message);
-                    });
-
-                    res.redirect('/tasks');
-                } catch (err) {
-                    console.error('Error processing tasks:', err.message);
-                    res.status(500).send("Error processing tasks.");
-                }
-            })
-            .on('error', (err) => {
-                console.error('Error reading CSV file:', err.message);
-                res.status(500).send("Error reading CSV file.");
+        // Using promises to handle async CSV parsing
+        const parseCSV = () => {
+            return new Promise((resolve, reject) => {
+                fs.createReadStream(filePath)
+                    .pipe(csv())
+                    .on('data', (row) => {
+                        // Check if required fields are present and not empty
+                        if (row.name && row.description && row.carNum && row.sellerName && 
+                            row.sellerNum && row.buyerName && row.buyerNum && 
+                            row.seller_RTO_location && row.buyer_RTO_location && 
+                            row.align_date) {
+                            tasks.push({
+                                company: req.cookies.token,
+                                name: row.name,
+                                description: row.description,
+                                carNum: row.carNum,
+                                sellerName: row.sellerName,
+                                sellerNum: row.sellerNum,
+                                buyerName: row.buyerName,
+                                buyerNum: row.buyerNum,
+                                seller_RTO_location: row.seller_RTO_location,
+                                buyer_RTO_location: row.buyer_RTO_location,
+                                align_date: row.align_date ? new Date(row.align_date) : null, // Convert to Date object if applicable
+                                state: row.state === 'true', // Assuming state is a boolean string
+                            });
+                        }
+                    })
+                    .on('end', resolve)
+                    .on('error', reject);
             });
+        };
+
+        await parseCSV();
+
+        // Use Promise.all for better performance
+        await Promise.all(tasks.map(async (task) => {
+            const newTask = new Task(task); // Create new Task with all fields
+
+            await newTask.save();
+            await Company.findByIdAndUpdate(task.company, { $push: { tasks: newTask._id } });
+        }));
+
+        // Delete the file after processing
+        fs.unlink(filePath, (err) => {
+            if (err) console.error('Error deleting file:', err.message);
+        });
+
+        res.redirect('/tasks');
     } catch (err) {
         console.error('Error importing tasks:', err.message);
         res.status(500).send("Error importing tasks.");
+    }
+});
+// Route to view a single task
+app.get('/tasks/view/:id', async (req, res) => {
+    const taskId = req.params.id;
+    const companyId = req.cookies.token;
+
+    if (!companyId) {
+        return res.redirect("/login");
+    }
+
+    try {
+        const task = await Task.findOne({ _id: taskId, company: companyId });
+
+        if (!task) {
+            return res.status(404).send("Task not found.");
+        }
+
+        res.render('viewTask', { task });
+    } catch (err) {
+        console.error('Error fetching task:', err.message);
+        res.status(500).send("Error fetching task.");
     }
 });
 
@@ -300,10 +352,17 @@ app.get('/tasks/download', async (req, res) => {
         
         // Prepare data for CSV
         const tasksData = tasks.map(task => ({
-            Name: task.name,
-            Description: task.description,
-            CarNumber: task.carNum,
-            Status: task.state ? 'Completed' : 'Pending'
+            name: task.name,
+            description: task.description,
+            carNum: task.carNum,
+            sellerName: task.sellerName,
+            sellerNum: task.sellerNum,
+            buyerName: task.buyerName,
+            buyerNum: task.buyerNum,
+            seller_RTO_location: task.seller_RTO_location,
+            buyer_RTO_location: task.buyer_RTO_location,
+            align_date: task.align_date ? task.align_date.toISOString().split('T')[0] : 'N/A', // Format date as needed
+            state: task.state ? 'Completed' : 'Pending'
         }));
 
         // Convert JSON to CSV

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Task</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Details</h1>
+        <p><strong>Name:</strong> <%= task.name %></p>
+        <p><strong>Description:</strong> <%= task.description %></p>
+        <p><strong>Car Number:</strong> <%= task.carNum %></p>
+        <p><strong>Seller Name:</strong> <%= task.sellerName %></p>
+        <p><strong>Seller Number:</strong> <%= task.sellerNum %></p>
+        <p><strong>Buyer Name:</strong> <%= task.buyerName %></p>
+        <p><strong>Buyer Number:</strong> <%= task.buyerNum %></p>
+        <p><strong>Aligned Date:</strong> <%= task.align_date ? task.align_date.toDateString() : 'N/A' %></p>
+        <p><strong>Seller RTO Location:</strong> <%= task.seller_RTO_location %></p>
+        <p><strong>Buyer RTO Location:</strong> <%= task.buyer_RTO_location %></p>
+        <p><strong>Status:</strong> <%= task.state ? 'Completed' : 'Pending' %></p>
+        <a class="back-link" href="/tasks">Back to Tasks</a>
+    </div>
+</body>
+</html>

@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 
 
-mongoose.connect(process.env.Mongo_URI, {
+mongoose.connect(process.env.mongoURI, {
     connectTimeoutMS: 10000, 
     socketTimeoutMS: 45000
 })
