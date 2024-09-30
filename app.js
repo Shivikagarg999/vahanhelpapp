@@ -21,7 +21,6 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });
 
 app.get("/", (req, res) => {
