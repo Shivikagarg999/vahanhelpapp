@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create task</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box; /* Added for consistent box sizing */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px; /* Added margin for better spacing */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            form {
+                padding: 15px;
+            }
+
+            input, textarea, select {
+                font-size: 14px; /* Slightly smaller font on smaller screens */
+            }
+
+            button {
+                width: 100%; /* Full-width button on smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Create New Task</h2>
+    <form action="/tasks" method="POST">
+        <div class="form-group">
+            <label for="taskType">Task Type:</label>
+            <select name="name" id="taskType" required>
+                <option value="Seller PP">Seller PP</option>
+                <option value="Buyer PP">Buyer PP</option>
+                <option value="Car Seen">Car Seen</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="sellerName">Seller Name:</label>
+            <input type="text" name="sellerName" id="sellerName" required>
+        </div>
+        <div class="form-group">
+            <label for="sellerNum">Seller Number:</label>
+            <input type="text" name="sellerNum" id="sellerNumber" required>
+        </div>
+        <div class="form-group">
+            <label for="buyerName">Buyer Name:</label>
+            <input type="text" name="buyerName" id="buyerName" required>
+        </div>
+        <div class="form-group">
+            <label for="buyerNum">Buyer Number:</label>
+            <input type="text" name="buyerNum" id="buyerNumber" required>
+        </div>
+        <div class="form-group">
+            <label for="align_date">Aligned Date:</label>
+            <input type="date" name="align_date" id="alignedDate" required>
+        </div>
+        <div class="form-group">
+            <label for="seller_RTO_location">Seller RTO Location:</label>
+            <select name="seller_RTO_location" id="sellerRTO" required>
+                <option value="" disabled selected>Select RTO Location</option>
+                <option value="UP11, Saharanpur">UP11, Saharanpur</option>
+                <option value="UP12, Muzaffarnagar">UP12, Muzaffarnagar</option>
+                <option value="UP13, Bulandshahr">UP13, Bulandshahr</option>
+                <option value="UP14, Ghaziabad">UP14, Ghaziabad</option>
+                <option value="UP15, Meerut">UP15, Meerut</option>
+                <option value="UP16, Noida">UP16, Noida</option>
+                <option value="UP17, Baghpat">UP17, Baghpat</option>
+                <option value="UP19, Shamli">UP19, Shamli</option>
+                <option value="UP20, Bijnor">UP20, Bijnor</option>
+                <option value="UP21, Moradabad">UP21, Moradabad</option>
+                <option value="UP22, Rampur">UP22, Rampur</option>
+                <option value="UP23, Amroha">UP23, Amroha</option>
+                <option value="UP24, Budaun">UP24, Budaun</option>
+                <option value="UP25, Bareilly">UP25, Bareilly</option>
+                <option value="UP26, Pilibhit">UP26, Pilibhit</option>
+                <option value="UP27, Shahjahanpur">UP27, Shahjahanpur</option>
+                <option value="UP28, Ayodhya">UP28, Ayodhya</option>
+                <option value="UP30, Hardoi">UP30, Hardoi</option>
+                <option value="UP31, Lakhimpur Kheri">UP31, Lakhimpur Kheri</option>
+                <option value="UP32, Lucknow Mahanager">UP32, Lucknow Mahanager</option>
+                <option value="UP32, Lucknow TP Nagar">UP32, Lucknow TP Nagar</option>
+                <option value="UP33, Raebareli">UP33, Raebareli</option>
+                <option value="UP34, Sitapur">UP34, Sitapur</option>
+                <option value="UP35, Unnao">UP35, Unnao</option>
+                <option value="UP36, Amethi">UP36, Amethi</option>
+                <option value="UP37, Hapur">UP37, Hapur</option>
+                <option value="UP38, Sambhal">UP38, Sambhal</option>
+                <option value="UP40, Bahraich">UP40, Bahraich</option>
+                <option value="UP41, Barabanki">UP41, Barabanki</option>
+                <option value="UP42, Faizabad">UP42, Faizabad</option>
+                <option value="UP43, Gonda">UP43, Gonda</option>
+                <option value="UP44, Sultanpur">UP44, Sultanpur</option>
+                <option value="UP46, Shravasti">UP46, Shravasti</option>
+                <option value="UP47, Balrampur">UP47, Balrampur</option>
+                <option value="UP50, Azamgarh">UP50, Azamgarh</option>
+                <option value="UP51, Basti">UP51, Basti</option>
+                <option value="UP52, Deoria">UP52, Deoria</option>
+                <option value="UP53, Gorakhpur">UP53, Gorakhpur</option>
+                <option value="UP54, Mau">UP54, Mau</option>
+                <option value="UP55, Siddharthnagar">UP55, Siddharthnagar</option>
+                <option value="UP56, Maharajganj">UP56, Maharajganj</option>
+                <option value="UP57, Padrauna">UP57, Padrauna</option>
+                <option value="UP58, SANT KABIR NAGAR">UP58, SANT KABIR NAGAR</option>
+                <option value="UP60, Balia">UP60, Balia</option>
+                <option value="UP61, Ghazipur">UP61, Ghazipur</option>
+                <option value="UP62, Jaunpur">UP62, Jaunpur</option>
+                <option value="UP63, Mirzapur">UP63, Mirzapur</option>
+                <option value="UP64, Sonbhadra">UP64, Sonbhadra</option>
+                <option value="UP65, Varanasi">UP65, Varanasi</option>
+                <option value="UP70, Allahabad">UP70, Allahabad</option>
+                <option value="UP71, Fatehpur">UP71, Fatehpur</option>
+                <option value="UP72, Pratapgarh">UP72, Pratapgarh</option>
+                <option value="UP73, Kaushambi">UP73, Kaushambi</option>
+                <option value="UP74, Kannauj">UP74, Kannauj</option>
+                <option value="UP75, Etawah">UP75, Etawah</option>
+                <option value="UP76, Farrukhabad">UP76, Farrukhabad</option>
+                <option value="UP77, Kanpur">UP77, Kanpur</option>
+                <option value="UP78, Kanpur">UP78, Kanpur</option>
+                <option value="UP79, AURAIYA">UP79, AURAIYA</option>
+                <option value="UP80, Agra">UP80, Agra</option>
+                <option value="UP81, Aligarh">UP81, Aligarh</option>
+                <option value="UP82, Etah">UP82, Etah</option>
+                <option value="UP83, Firozabad">UP83, Firozabad</option>
+                <option value="UP84, Mainpuri">UP84, Mainpuri</option>
+                <option value="UP85, Mathura">UP85, Mathura</option>
+                <option value="UP86, Hathras">UP86, Hathras</option>
+                <option value="UP87, Kasganj">UP87, Kasganj</option>
+                <option value="UP90, Banda">UP90, Banda</option>
+                <option value="UP91, Hamirpur">UP91, Hamirpur</option>
+                <option value="UP92, Jalaun">UP92, Jalaun</option>
+                <option value="UP93, Jhansi">UP93, Jhansi</option>
+                <option value="UP94, Lalitpur">UP94, Lalitpur</option>
+                <option value="UP95, Mahoba">UP95, Mahoba</option>
+                <option value="UP96, Chitrakoot">UP96, Chitrakoot</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="buyer_RTO_location">Buyer RTO Location:</label>
+            <select name="buyer_RTO_location" id="buyerRTO" required>
+                <option value="" disabled selected>Select RTO Location</option>
+                <option value="UP11, Saharanpur">UP11, Saharanpur</option>
+                <option value="UP12, Muzaffarnagar">UP12, Muzaffarnagar</option>
+                <option value="UP13, Bulandshahr">UP13, Bulandshahr</option>
+                <option value="UP14, Ghaziabad">UP14, Ghaziabad</option>
+                <option value="UP15, Meerut">UP15, Meerut</option>
+                <option value="UP16, Noida">UP16, Noida</option>
+                <option value="UP17, Baghpat">UP17, Baghpat</option>
+                <option value="UP19, Shamli">UP19, Shamli</option>
+                <option value="UP20, Bijnor">UP20, Bijnor</option>
+                <option value="UP21, Moradabad">UP21, Moradabad</option>
+                <option value="UP22, Rampur">UP22, Rampur</option>
+                <option value="UP23, Amroha">UP23, Amroha</option>
+                <option value="UP24, Budaun">UP24, Budaun</option>
+                <option value="UP25, Bareilly">UP25, Bareilly</option>
+                <option value="UP26, Pilibhit">UP26, Pilibhit</option>
+                <option value="UP27, Shahjahanpur">UP27, Shahjahanpur</option>
+                <option value="UP28, Ayodhya">UP28, Ayodhya</option>
+                <option value="UP30, Hardoi">UP30, Hardoi</option>
+                <option value="UP31, Lakhimpur Kheri">UP31, Lakhimpur Kheri</option>
+                <option value="UP32, Lucknow Mahanager">UP32, Lucknow Mahanager</option>
+                <option value="UP32, Lucknow TP Nagar">UP32, Lucknow TP Nagar</option>
+                <option value="UP33, Raebareli">UP33, Raebareli</option>
+                <option value="UP34, Sitapur">UP34, Sitapur</option>
+                <option value="UP35, Unnao">UP35, Unnao</option>
+                <option value="UP36, Amethi">UP36, Amethi</option>
+                <option value="UP37, Hapur">UP37, Hapur</option>
+                <option value="UP38, Sambhal">UP38, Sambhal</option>
+                <option value="UP40, Bahraich">UP40, Bahraich</option>
+                <option value="UP41, Barabanki">UP41, Barabanki</option>
+                <option value="UP42, Faizabad">UP42, Faizabad</option>
+                <option value="UP43, Gonda">UP43, Gonda</option>
+                <option value="UP44, Sultanpur">UP44, Sultanpur</option>
+                <option value="UP46, Shravasti">UP46, Shravasti</option>
+                <option value="UP47, Balrampur">UP47, Balrampur</option>
+                <option value="UP50, Azamgarh">UP50, Azamgarh</option>
+                <option value="UP51, Basti">UP51, Basti</option>
+                <option value="UP52, Deoria">UP52, Deoria</option>
+                <option value="UP53, Gorakhpur">UP53, Gorakhpur</option>
+                <option value="UP54, Mau">UP54, Mau</option>
+                <option value="UP55, Siddharthnagar">UP55, Siddharthnagar</option>
+                <option value="UP56, Maharajganj">UP56, Maharajganj</option>
+                <option value="UP57, Padrauna">UP57, Padrauna</option>
+                <option value="UP58, SANT KABIR NAGAR">UP58, SANT KABIR NAGAR</option>
+                <option value="UP60, Balia">UP60, Balia</option>
+                <option value="UP61, Ghazipur">UP61, Ghazipur</option>
+                <option value="UP62, Jaunpur">UP62, Jaunpur</option>
+                <option value="UP63, Mirzapur">UP63, Mirzapur</option>
+                <option value="UP64, Sonbhadra">UP64, Sonbhadra</option>
+                <option value="UP65, Varanasi">UP65, Varanasi</option>
+                <option value="UP70, Allahabad">UP70, Allahabad</option>
+                <option value="UP71, Fatehpur">UP71, Fatehpur</option>
+                <option value="UP72, Pratapgarh">UP72, Pratapgarh</option>
+                <option value="UP73, Kaushambi">UP73, Kaushambi</option>
+                <option value="UP74, Kannauj">UP74, Kannauj</option>
+                <option value="UP75, Etawah">UP75, Etawah</option>
+                <option value="UP76, Farrukhabad">UP76, Farrukhabad</option>
+                <option value="UP77, Kanpur">UP77, Kanpur</option>
+                <option value="UP78, Kanpur">UP78, Kanpur</option>
+                <option value="UP79, AURAIYA">UP79, AURAIYA</option>
+                <option value="UP80, Agra">UP80, Agra</option>
+                <option value="UP81, Aligarh">UP81, Aligarh</option>
+                <option value="UP82, Etah">UP82, Etah</option>
+                <option value="UP83, Firozabad">UP83, Firozabad</option>
+                <option value="UP84, Mainpuri">UP84, Mainpuri</option>
+                <option value="UP85, Mathura">UP85, Mathura</option>
+                <option value="UP86, Hathras">UP86, Hathras</option>
+                <option value="UP87, Kasganj">UP87, Kasganj</option>
+                <option value="UP90, Banda">UP90, Banda</option>
+                <option value="UP91, Hamirpur">UP91, Hamirpur</option>
+                <option value="UP92, Jalaun">UP92, Jalaun</option>
+                <option value="UP93, Jhansi">UP93, Jhansi</option>
+                <option value="UP94, Lalitpur">UP94, Lalitpur</option>
+                <option value="UP95, Mahoba">UP95, Mahoba</option>
+                <option value="UP96, Chitrakoot">UP96, Chitrakoot</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="carNum">Car Number:</label>
+            <input type="text" name="carNum" id="carNum" required>
+        </div>
+        <button type="submit">Create Task</button>
+    </form>
+
+    <h2>Import Tasks via CSV</h2>
+    <form action="/tasks/import" method="post" enctype="multipart/form-data">
+        <input type="file" name="csvFile" required>
+        <button type="submit">Upload CSV</button>
+    </form>
+    
+</body>
+</html>

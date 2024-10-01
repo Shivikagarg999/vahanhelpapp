@@ -19,7 +19,7 @@ app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true
-}));
+}));   
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -139,6 +139,13 @@ app.post("/tasks", async (req, res) => {
     }
 });
 
+app.get("/tasks/create", (req, res) => {
+    const companyId = req.cookies.token;
+    if (!companyId) {
+        return res.redirect("/login");
+    }
+    res.render("create_task");
+});
 
 app.get('/tasks/search', async (req, res) => {
     const { carNum } = req.query;
@@ -264,7 +271,7 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
         res.status(500).send("Error importing tasks.");
     }
 });
-// Route to view a single task
+// Route to view a single task 
 app.get('/tasks/view/:id', async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
@@ -379,4 +386,4 @@ app.get('/tasks/download', async (req, res) => {
 });
 app.listen(3000, () => {
     console.log('Server running on port 3000');
-});
+}); 
