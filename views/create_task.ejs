@@ -62,7 +62,8 @@
         }
         .back-link {
     text-decoration: none;
-    color:  rgb(43, 41, 41);
+    color:  white;
+    background-color: rgb(43, 41, 41);
     padding: 10px;
     border: 2px solid rgb(43, 41, 41);
     border-radius: 5px;
@@ -70,8 +71,8 @@
 }
 
 .back-link:hover {
-    background-color:  rgb(43, 41, 41);
-    color: white;
+    background-color:  #fff;
+    color: rgb(43, 41, 41);
 }
         /* Responsive design */
         @media (max-width: 768px) {
@@ -90,6 +91,7 @@
     </style>
 </head>
 <body>
+    <a href="/tasks/" class="back-link">Back to Tasks</a>
     <h2>Create New Task</h2>
     <form action="/tasks" method="POST">
         <div class="form-group">
@@ -303,7 +305,5 @@
         <input type="file" name="csvFile" required>
         <button type="submit">Upload CSV</button>
     </form>
-    
-    <a href="/tasks/create" class="back-link">Back to Tasks</a>
 </body>
 </html>
