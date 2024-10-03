@@ -48,7 +48,6 @@ app.post("/registerar", async (req, res) => {
             return res.render("register", { error: "Company name already exists. Please choose another." });
         }
 
-        // Skip password hashing
         const newCompany = new Company({ companyName: company, password });
         await newCompany.save();
 
