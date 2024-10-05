@@ -100,7 +100,10 @@
         }
         .task-header h1{
             color: black;
-            font-size: 44px;
+        }
+        .acts{
+            display: flex;
+            gap: 4px;
         }
         /* Responsive design */
         @media (max-width: 768px) {
@@ -176,7 +179,7 @@
                             <td data-label="Description"><%= task.description %></td>
                             <td data-label="Car Number"><%= task.carNum %></td>
                             <td data-label="Status"><%= task.state ? 'Completed' : 'Pending' %></td>
-                            <td data-label="Actions">
+                            <td data-label="Actions" class="acts">
                                 <a href="/tasks/view/<%= task._id %>" class="btn-view" title="View">View</a>
                                 <a href="/tasks/edit/<%= task._id %>" title="Edit">
                                     <button type="button" style="padding: 5px 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">

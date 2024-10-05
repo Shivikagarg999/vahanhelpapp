@@ -109,6 +109,10 @@
         .footer a:hover {
             text-decoration: underline;
         }
+        .err{
+            text-align: center;
+            color: red;
+        }
         @media (max-width: 768px) {
             .header {
                 padding: 1em;
@@ -157,7 +161,11 @@
             
             <button type="submit">Login</button>
         </form>
+     
     </div>
+    <% if (typeof error !== 'undefined' && error) { %>
+        <p class="err"><%= error %></p>
+    <% } %>
     <div class="footer">
         <p>&copy; 2024 Vahan Help.</p>
     </div>
