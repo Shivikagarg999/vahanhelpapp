@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
     <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -19,6 +22,8 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            font-family: "Open Sans", sans-serif;
+            font-optical-sizing: auto;
         }
 
         h1 {
@@ -71,6 +76,19 @@
             background-color: #357ab8;
         }
 
+        /* Show Password Checkbox */
+        .show-password-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .show-password-container input[type="checkbox"] {
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
         /* Error Message Styling */
         p {
             color: red;
@@ -98,11 +116,29 @@
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
+            
+            <!-- Show Password Checkbox -->
+            <div class="show-password-container">
+                <input type="checkbox" id="showPassword">
+                <label for="showPassword">Show Password</label>
+            </div>
+
             <button type="submit">Login</button>
         </form>
         <% if (typeof error !== 'undefined' && error) { %>
             <p><%= error %></p>
         <% } %>
     </div>
+
+    <script>
+        const showPasswordCheckbox = document.getElementById('showPassword');
+        const passwordInput = document.getElementById('password');
+
+        showPasswordCheckbox.addEventListener('change', function() {
+            // Toggle the type attribute
+            const type = this.checked ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        });
+    </script>
 </body>
 </html>
