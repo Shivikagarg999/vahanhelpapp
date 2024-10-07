@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create task</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,11 +64,11 @@
         .back-link {
     text-decoration: none;
     color:  white;
-    background-color: rgb(43, 41, 41);
+    background-color: #007bff;
     padding: 10px;
-    border: 2px solid rgb(43, 41, 41);
-    border-radius: 5px;
     transition: background-color 0.3s;
+    border: 1px solid transparent;
+    border-radius: 50%;
 }
 
 .back-link:hover {
@@ -91,7 +92,10 @@
     </style>
 </head>
 <body>
-    <a href="/tasks/" class="back-link">Back to Tasks</a>
+    <a href="/tasks/" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      
     <h2>Create New Task</h2>
     <form action="/tasks" method="POST">
         <div class="form-group">

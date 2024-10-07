@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Tasks</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+   
     <style>
         body {
             font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
+            background-color: #0056b3;
         }
         .container {
             max-width: 900px;
@@ -72,7 +74,8 @@
             border: 1px solid #ddd;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #007bff;
+            color: white;
         }
         a {
             color: #007bff;
@@ -82,15 +85,22 @@
             text-decoration: underline;
         }
         .btn-primary {
-            background-color: #28a745;
+            background-color: white;
             text-align: center;
             padding: 10px;
-            color: #fff;
+            color: #0056b3;
             text-decoration: none;
             border-radius: 6px;
             margin-top: 15px;
             margin-bottom: 12px;
             display: inline-block;
+            font-weight: 600;
+            border: 1px solid #0056b3;
+        }
+        .btn-primary:hover{
+            text-decoration: none;
+            background-color: #0056b3;
+            color: white;
         }
         .task-header {
             display: flex;
@@ -98,14 +108,72 @@
             align-items: center;
             margin-bottom: 20px;
         }
-        .task-header h1{
+        .task-header h1 {
             color: black;
         }
-        .acts{
+        .acts {
             display: flex;
             gap: 4px;
         }
-        /* Responsive design */
+
+        /* Search Bar Styles */
+        .search-form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-form input[type="text"] {
+            flex: 1; /* Make input flexible to fill available space */
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px 0 0 6px;
+            box-sizing: border-box;
+        }
+        .search-button {
+            width: 50px; /* Fixed width for the button */
+            padding: 10px 0; /* Adjust padding for better aesthetics */
+            background: #007bff;
+            border: none;
+            cursor: pointer;
+            border-radius: 0 6px 6px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center the icon */
+        }
+        .search-button img {
+            width: 24px; /* Set a fixed size for the icon */
+            height: 24px;
+        }
+        .logout{
+            background: white;
+            color: rgb(231, 54, 54);
+            text-decoration: none;
+            border: 1px solid rgb(231, 54, 54);
+            padding: 10px;
+            font-weight: 600;
+            border-radius: 20px;
+        }
+        
+        .logout:hover{
+            background: rgb(231, 54, 54);
+            color: white;
+            text-decoration: none;
+        }
+        .new{
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 9px;
+            border: 1px solid #0056b3;
+            border-radius: 20px;
+        }
+        .new:hover{
+            background: #0056b3;
+            color: white;
+            text-decoration: none;
+        }
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -113,6 +181,13 @@
             .task-header {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+            .search-form {
+                flex-direction: row; /* Keep elements in one line */
+                width: 100%;
+            }
+            .search-form input[type="text"] {
+                margin-right: 5px; /* Space between input and button */
             }
             table, thead, tbody, th, td, tr {
                 display: block;
@@ -142,23 +217,21 @@
 <body>
     <div class="container">
         <div class="buttons">
-            <a href="/tasks/create">Create New Task</a> 
-            <a href="/logout" style="display: block; text-align: center; margin-top: 20px;">Logout</a>
+            <a href="/tasks/create" class="new">Create New Task</a> 
+            <a href="/logout" class="logout" style="display: block; text-align: center; margin-top: 20px;"><i class="fas fa-arrow-left"></i>Logout</a>
         </div>
         <hr>
         <h2>Search Tasks By Car Number</h2>
-        <form action="/tasks/search" method="get" style="display: flex; align-items: center; margin-bottom: 20px;">
-            <div class="form-group" style="flex-grow: 1;">
-                <input type="text" id="searchCarNum" name="carNum" placeholder="Enter car number" required>
-            </div>
-            <button type="submit" style="background: none; border: none; cursor: pointer;">
-                <img src="https://img.icons8.com/ios-filled/50/007bff/search.png" alt="Search" style="width: 24px; height: 24px;">
+        <form action="/tasks/search" method="get" class="search-form">
+            <input type="text" id="searchCarNum" name="carNum" placeholder="Enter car number" required>
+            <button type="submit" class="search-button">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/search.png" alt="Search">
             </button>
         </form>
 
         <div class="task-header">
             <h1>Your Tasks</h1>
-            <a href="/tasks/download" class="btn-primary">Download Tasks as CSV</a>
+            <a href="/tasks/download" class="btn-primary">Download all</a>
         </div>
 
         <% if (tasks.length > 0) { %>
