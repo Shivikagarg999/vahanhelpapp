@@ -105,6 +105,10 @@
     <h2>Create New Task</h2>
     <form action="/tasks" method="POST">
         <div class="form-group">
+            <label for="carNum">Car Number:</label>
+            <input type="text" name="carNum" id="carNum" required>
+        </div>
+        <div class="form-group">
             <label for="taskType">Task Type:</label>
             <select name="name" id="taskType" required>
                 <option value="Seller PP aligned">Seller party peshi aligned</option>
@@ -116,10 +120,6 @@
                 <option value="Car Seen Pending">Car Seen Pending</option>
                 <option value="Chalaan pending">Chalaan pending</option>
             </select>
-        </div>
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea name="description" id="description" required></textarea>
         </div>
         <div class="form-group">
             <label for="sellerName">Seller Name:</label>
@@ -304,9 +304,10 @@
         </div>
         
         <div class="form-group">
-            <label for="carNum">Car Number:</label>
-            <input type="text" name="carNum" id="carNum" required>
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" required></textarea>
         </div>
+       
         <button type="submit">Create Task</button>
     </form>
 
