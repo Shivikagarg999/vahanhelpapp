@@ -113,16 +113,14 @@
         <h1>Admin Login</h1>
         <form action="/admin/login" method="POST">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" required autocomplete="off">
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" required autocomplete="off">
             
-            <!-- Show Password Checkbox -->
             <div class="show-password-container">
                 <input type="checkbox" id="showPassword">
                 <label for="showPassword">Show Password</label>
             </div>
-
             <button type="submit">Login</button>
         </form>
         <% if (typeof error !== 'undefined' && error) { %>
@@ -133,11 +131,19 @@
     <script>
         const showPasswordCheckbox = document.getElementById('showPassword');
         const passwordInput = document.getElementById('password');
+        const loginForm = document.querySelector('form');
 
         showPasswordCheckbox.addEventListener('change', function() {
-            // Toggle the type attribute
-            const type = this.checked ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+            passwordInput.setAttribute('type', this.checked ? 'text' : 'password');
+        });
+
+        loginForm.addEventListener('submit', (event) => {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            
+            // Normalize inputs before submission
+            usernameInput.value = usernameInput.value.trim().toLowerCase();
+            passwordInput.value = passwordInput.value.trim();
         });
     </script>
 </body>
