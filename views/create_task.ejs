@@ -9,19 +9,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-       <style>
+    <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Open Sans", sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f9f9f9;
-            font-family: "Open Sans", sans-serif;
-            font-optical-sizing: auto;
+            background-color: rgb(14, 14, 46);
+            color: #fff;
         }
 
         h2 {
             text-align: center;
-            color: #333;
             margin-bottom: 20px;
         }
 
@@ -30,30 +28,33 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            margin-bottom: 30px;
+            margin: auto;
+            max-width: 600px;
         }
 
         .form-group {
             margin-bottom: 15px;
+            display: flex;
+            align-items: center; /* Align items vertically centered */
         }
 
         label {
-            display: block;
-            margin-bottom: 5px;
+            margin-right: 10px; /* Space between label and input */
             font-weight: bold;
             color: #333;
+            width: 150px; /* Fixed width for labels to align inputs */
         }
 
         input, textarea, select {
-            width: 100%;
+            flex: 1; /* Allow input fields to take the remaining space */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
             font-size: 16px;
-            box-sizing: border-box; /* Added for consistent box sizing */
+            box-sizing: border-box;      
         }
 
-        button {
+        button, .upl {
             padding: 10px 20px;
             background-color: #007bff;
             color: #fff;
@@ -61,38 +62,39 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 10px; /* Added margin for better spacing */
+            margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
         }
-
-        button:hover {
+       
+        button:hover, .upl:hover {
             background-color: #0056b3;
         }
-        .back-link {
-    text-decoration: none;
-    color:  white;
-    background-color: #007bff;
-    padding: 10px;
-    transition: background-color 0.3s;
-    border: 1px solid transparent;
-    border-radius: 50%;
-}
 
-.back-link:hover {
-    background-color:  #fff;
-    color: rgb(43, 41, 41);
-}
+        .back-link {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+
+        .back-link:hover {
+            background-color: #fff;
+            color: rgb(43, 41, 41);
+        }
+        
         /* Responsive design */
         @media (max-width: 768px) {
             form {
                 padding: 15px;
+                width: 95%; /* Adjust width for smaller screens */
             }
 
             input, textarea, select {
                 font-size: 14px; /* Slightly smaller font on smaller screens */
-            }
-
-            button {
-                width: 100%; /* Full-width button on smaller screens */
             }
         }
     </style>
@@ -103,14 +105,41 @@
       </a>
       
     <h2>Create New Task</h2>
-    <form action="/tasks" method="POST">
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        
+        <div class="form-group">
+            <label for="fileReceivedDate">File Received Date:</label>
+            <input type="date" name="fileReceivedDate" id="fileReceivedDate">
+        </div>
         <div class="form-group">
             <label for="carNum">Car Number:</label>
-            <input type="text" name="carNum" id="carNum" required>
+            <input type="text" name="carNum" id="carNum">
+        </div>
+        <div class="form-group">
+            <label for="caseType">Case type:</label>
+            <input type="text" name="caseType" id="caseType">
+        </div>
+        
+        <div class="form-group">
+            <label for="AdditionalWork">Additional Work:</label>
+            <input type="text" name="AdditionalWork" id="AdditionalWork">
+        </div>
+        <div class="form-group">
+            <label for="clientName">Client name:</label>
+            <input type="clientName" name="clientName" id="clientName">
+        </div>
+        <div class="form-group">
+            <label for="hptName">HPT name:</label>
+            <input type="hptName" name="hptName" id="hptName">
+        </div>
+        
+        <div class="form-group">
+            <label for="HPA">HPA (financer name):</label>        
+            <input type="text" name="HPA" id="HPA">
         </div>
         <div class="form-group">
             <label for="taskType">Task Type:</label>
-            <select name="name" id="taskType" required>
+            <select name="name" id="taskType">
                 <option value="Seller PP aligned">Seller party peshi aligned</option>
                 <option value="Buyer party peshi aligned">Buyer party peshi aligned</option>
                 <option value="Buyer party peshi pending">Buyer party peshi pending</option>
@@ -123,27 +152,16 @@
         </div>
         <div class="form-group">
             <label for="sellerName">Seller Name:</label>
-            <input type="text" name="sellerName" id="sellerName" required>
+            <input type="text" name="sellerName" id="sellerName">
         </div>
         <div class="form-group">
             <label for="sellerNum">Seller Number:</label>
-            <input type="text" name="sellerNum" id="sellerNumber" required>
+            <input type="text" name="sellerNum" id="sellerNumber">
         </div>
-        <div class="form-group">
-            <label for="buyerName">Buyer Name:</label>
-            <input type="text" name="buyerName" id="buyerName" required>
-        </div>
-        <div class="form-group">
-            <label for="buyerNum">Buyer Number:</label>
-            <input type="text" name="buyerNum" id="buyerNumber" required>
-        </div>
-        <div class="form-group">
-            <label for="align_date">Aligned Date:</label>
-            <input type="date" name="align_date" id="alignedDate" required>
-        </div>
+        
         <div class="form-group">
             <label for="seller_RTO_location">Seller RTO Location:</label>
-            <select name="seller_RTO_location" id="sellerRTO" required>
+            <select name="seller_RTO_location" id="sellerRTO">
                 <option value="" disabled selected>Select RTO Location</option>
                 <option value="UP11, Saharanpur">UP11, Saharanpur</option>
                 <option value="UP12, Muzaffarnagar">UP12, Muzaffarnagar</option>
@@ -220,11 +238,25 @@
                 <option value="UP95, Mahoba">UP95, Mahoba</option>
                 <option value="UP96, Chitrakoot">UP96, Chitrakoot</option>
             </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="sellerAlignedDate">Seller Aligned Date:</label>
+            <input type="date" name="sellerAlignedDate" id="sellerAlignedDate">
+        </div>
+        
+        <div class="form-group">
+            <label for="buyerName">Buyer Name:</label>
+            <input type="text" name="buyerName" id="buyerName">
+        </div>
+        <div class="form-group">
+            <label for="buyerNum">Buyer Number:</label>
+            <input type="text" name="buyerNum" id="buyerNumber">
         </div>
         
         <div class="form-group">
             <label for="buyer_RTO_location">Buyer RTO Location:</label>
-            <select name="buyer_RTO_location" id="buyerRTO" required>
+            <select name="buyer_RTO_location" id="buyerRTO">
                 <option value="" disabled selected>Select RTO Location</option>
                 <option value="UP11, Saharanpur">UP11, Saharanpur</option>
                 <option value="UP12, Muzaffarnagar">UP12, Muzaffarnagar</option>
@@ -304,16 +336,82 @@
         </div>
         
         <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea name="description" id="description" required></textarea>
+            <label for="buyerAlignedDate">Buyer Aligned Date:</label>
+            <input type="date" name="buyerAlignedDate" id="buyerAlignedDate">
         </div>
-       
-        <button type="submit">Create Task</button>
+        <div class="form-group">
+            <label for="NOCissuedDate">NOC issue Date:</label>
+            <input type="date" name="NOCissuedDate" id="NOCissuedDate">
+        </div>
+        <div class="form-group">
+            <label for="transferDate">Transfer Date:</label>
+            <input type="date" name="transferDate" id="transferDate">
+        </div>
+        <div class="form-group">
+            <label for="HandoverDate_RC">RC handover Date:</label>
+            <input type="date" name="HandoverDate_RC" id="HandoverDate_RC">
+        </div>
+
+        <div class="form-group">
+            <label for="HandoverDate_NOC">NOC handover Date:</label>
+            <input type="date" name="HandoverDate_NOC" id="HandoverDate_NOC">
+        </div>
+
+        <div class="form-group">
+            <label for="NOCreceivedDate">NOC recieved Date:</label>
+            <input type="date" name="NOCreceivedDate" id="NOCreceivedDate">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea name="description" id="description"></textarea>
+        </div>
+        <!-- New fields for file uploads -->
+    <div class="form-group">
+        <label for="sellerPhoto">Seller Photo:</label>
+        <input type="file" name="sellerPhoto" accept="image/jpeg">
+    </div>
+    <div class="form-group">
+        <label for="buyerPhoto">Buyer Photo:</label>
+        <input type="file" name="buyerPhoto" accept="image/jpeg">
+    </div>
+    <div class="form-group">
+        <label for="sellerDocs">Seller Documents:</label>
+        <input type="file" name="sellerDocs" accept="application/pdf">
+    </div>
+    <div class="form-group">
+        <label for="buyerDocs">Buyer Documents:</label>
+        <input type="file" name="buyerDocs" id="buyerDocs">
+    </div>
+    <div class="form-group">
+        <label for="carVideo">Car Video:</label>
+        <input type="file" name="carVideo" id="carVideo">
+    </div>
+    <div class="form-group">
+        <label for="sellerVideo">Seller Video:</label>
+        <input type="file" name="sellerVideo" id="sellerVideo">
+    </div>
+    <div class="form-group">
+        <label for="careOfVideo">Care Of Video:</label>
+        <input type="file" name="careOfVideo" id="careOfVideo">
+    </div>
+    <div class="form-group">
+        <label for="nocReceipt">NOC Receipt:</label>
+        <input type="file" name="nocReceipt" id="nocReceipt">
+    </div>
+    <div class="form-group">
+        <label for="transferReceipt">Transfer Receipt:</label>
+        <input type="file" name="transferReceipt" id="transferReceipt">
+    </div>
+        <div class="btnss">
+            <button type="submit">Create Task</button>
+            <a href="/upload" class="upl">Upload documents</a>
+        </div>
     </form>
 
     <h2>Import Tasks via CSV</h2>
     <form action="/tasks/import" method="post" enctype="multipart/form-data">
-        <input type="file" name="csvFile" required>
+        <input type="file" name="csvFile">
         <button type="submit">Upload CSV</button>
     </form>
 </body>

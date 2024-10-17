@@ -10,6 +10,9 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const { Parser } = require('json2csv');
 const Admin = require('./models/admin');
+const cloudinary = require('cloudinary').v2;
+const  uploadOnCloudinary = require('./cloudinary.js');
+const task = require('./models/task');
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -19,7 +22,7 @@ app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true
-}));   
+}));
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -58,8 +61,8 @@ app.post("/registerar", async (req, res) => {
         console.error('Error registering company:', err.message);
         res.status(500).render("register", { error: "Error registering company." });
     }
-});
 
+});
 
 app.post("/login", async (req, res) => {
     const { company, password } = req.body;
@@ -74,7 +77,7 @@ app.post("/login", async (req, res) => {
     } catch (err) {
         res.status(500).render("login", { error: "Error logging in." });
     }
-});
+});                                             
 
 app.get("/tasks", async (req, res) => {
     const companyId = req.cookies.token;
@@ -90,53 +93,7 @@ app.get("/tasks", async (req, res) => {
     } catch (err) {
         res.status(500).send("Error fetching tasks.");
     }
-});
-
-app.post("/tasks", async (req, res) => {
-    const {
-        name,
-        description,
-        carNum,
-        sellerName,
-        sellerNum,
-        buyerName,
-        buyerNum,
-        seller_RTO_location,
-        buyer_RTO_location,
-        align_date,
-        state
-    } = req.body;
-
-    const companyId = req.cookies.token;
-    if (!companyId) {
-        return res.redirect("/login");
-    }
-
-    try {
-        const newTask = new Task({
-            company: companyId,
-            name,
-            description,
-            sellerName,
-            sellerNum,
-            buyerName,
-            buyerNum,
-            align_date,
-            seller_RTO_location,
-            buyer_RTO_location,
-            carNum,
-            state: false
-        });
-        await newTask.save();
-
-        // Update the company's tasks array
-        await Company.findByIdAndUpdate(companyId, { $push: { tasks: newTask._id } });
-
-        res.redirect("/tasks");
-    } catch (err) {
-        res.status(500).send("Error creating task.");
-    }
-});
+}); 
 
 app.get("/tasks/create", (req, res) => {
     const companyId = req.cookies.token;
@@ -188,6 +145,25 @@ app.post("/tasks/delete/:id", async (req, res) => {
     }
 });
 
+// Admin Task Delete Route
+app.post("/admin/tasks/delete/:id", isAdminLoggedIn, async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        // Delete the task by its ID
+        await Task.findByIdAndDelete(taskId);
+
+        await Company.updateMany({}, { $pull: { tasks: taskId } });
+
+        // Redirect admin to the task listing page after successful deletion
+        res.redirect("/admin/tasks");
+    } catch (err) {
+        console.error("Error deleting task:", err);
+        return res.status(500).render("error", { message: "Error deleting task." });
+    }
+});
+
+
 app.get("/tasks/edit/:id", async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
@@ -203,9 +179,26 @@ app.get("/tasks/edit/:id", async (req, res) => {
     } catch (err) {
         res.status(500).send("Error fetching task.");
     }
+})
+
+// Admin Task Edit Route
+app.get("/admin/tasks/edit/:id", isAdminLoggedIn, async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        const task = await Task.findById(taskId);
+
+        if (!task) {
+            return res.status(404).render("error", { message: "Task not found" });
+        }
+
+        res.render("admin-edit", { task });
+    } catch (err) {
+        console.error("Error fetching task:", err);
+        return res.status(500).render("error", { message: "An error occurred while fetching the task" });
+    }
 });
 
-// CSV Import Route
 
 app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     if (!req.file) {
@@ -217,49 +210,79 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     try {
         const tasks = [];
 
-        // Using promises to handle async CSV parsing
         const parseCSV = () => {
             return new Promise((resolve, reject) => {
                 fs.createReadStream(filePath)
                     .pipe(csv())
                     .on('data', (row) => {
-                        // Check if required fields are present and not empty
-                        if (row.name && row.description && row.carNum && row.sellerName && 
-                            row.sellerNum && row.buyerName && row.buyerNum && 
-                            row.seller_RTO_location && row.buyer_RTO_location && 
-                            row.align_date) {
+                        console.log("Processing row: ", row);
+
+                        // Trim whitespace from row values
+                        const name = row.name?.trim();
+                        const description = row.description?.trim();
+
+                        // Check for essential fields to avoid blank tasks
+                        
                             tasks.push({
                                 company: req.cookies.token,
-                                name: row.name,
-                                description: row.description,
-                                carNum: row.carNum,
-                                sellerName: row.sellerName,
-                                sellerNum: row.sellerNum,
-                                buyerName: row.buyerName,
-                                buyerNum: row.buyerNum,
-                                seller_RTO_location: row.seller_RTO_location,
-                                buyer_RTO_location: row.buyer_RTO_location,
-                                align_date: row.align_date ? new Date(row.align_date) : null, // Convert to Date object if applicable
-                                state: row.state === 'true', // Assuming state is a boolean string
+                                name,
+                                description,
+                                carNum: row.carNum?.trim(),
+                                clientName: row.clientName?.trim(),
+                                caseType: row.caseType?.trim(),
+                                hptName: row.hptName?.trim(),
+                                sellerAlignedDate: row.sellerAlignedDate ? new Date(row.sellerAlignedDate) : null,
+                                buyerAlignedDate: row.buyerAlignedDate ? new Date(row.buyerAlignedDate) : null,
+                                NOCissuedDate: row.NOCissuedDate ? new Date(row.NOCissuedDate) : null,
+                                NOCreceivedDate: row.NOCreceivedDate ? new Date(row.NOCreceivedDate) : null,
+                                fileReceivedDate: row.fileReceivedDate ? new Date(row.fileReceivedDate) : null,
+                                AdditionalWork: row.AdditionalWork?.trim(),
+                                HPA: row.HPA?.trim(),
+                                transferDate: row.transferDate ? new Date(row.transferDate) : null,
+                                HandoverDate_RC: row.HandoverDate_RC ? new Date(row.HandoverDate_RC) : null,
+                                HandoverDate_NOC: row.HandoverDate_NOC ? new Date(row.HandoverDate_NOC) : null,
+                                buyerName: row.buyerName?.trim(),
+                                buyerNum: row.buyerNum?.trim(),
+                                sellerName: row.sellerName?.trim(),
+                                sellerNum: row.sellerNum?.trim(),
+                                buyer_RTO_location: row.buyer_RTO_location?.trim(),
+                                seller_RTO_location: row.seller_RTO_location?.trim(),
+                                state: row.state === 'true', 
+                                sellerPhoto: task.sellerPhoto,
+                                buyerPhoto: task.buyerPhoto,
+                                sellerDocs: task.sellerDocs,
+                                buyerDocs: task.buyerDocs,
+                                carVideo: task.carVideo,
+                                sellerVideo: task.sellerVideo,
+                                careOfVideo: task.careOfVideo,
+                                nocReceipt: task.nocReceipt,
+                                transferReceipt: task.transferReceipt,
                             });
-                        }
+                        
                     })
                     .on('end', resolve)
-                    .on('error', reject);
+                    .on('error', (err) => {
+                        console.error("Error parsing CSV:", err.message);
+                        reject(err);
+                    });
             });
         };
 
         await parseCSV();
 
-        // Use Promise.all for better performance
-        await Promise.all(tasks.map(async (task) => {
-            const newTask = new Task(task); // Create new Task with all fields
+        console.log("Parsed tasks: ", tasks); 
 
-            await newTask.save();
-            await Company.findByIdAndUpdate(task.company, { $push: { tasks: newTask._id } });
+        await Promise.all(tasks.map(async (task) => {
+            try {
+                const newTask = new Task(task);
+                await newTask.save();
+                await Company.findByIdAndUpdate(task.company, { $push: { tasks: newTask._id } });
+            } catch (err) {
+                console.error("Error saving task to DB:", err.message, "Task:", task);
+            }
         }));
 
-        // Delete the file after processing
+        // Delete the uploaded file after processing
         fs.unlink(filePath, (err) => {
             if (err) console.error('Error deleting file:', err.message);
         });
@@ -270,7 +293,7 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
         res.status(500).send("Error importing tasks.");
     }
 });
-// Route to view a single task 
+
 app.get('/tasks/view/:id', async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
@@ -355,19 +378,40 @@ app.get('/tasks/download', async (req, res) => {
         // Fetch tasks for the logged-in company
         const tasks = await Task.find({ company: companyId }).populate('company');
         
-        // Prepare data for CSV
+        // Prepare data for CSV with all fields included
         const tasksData = tasks.map(task => ({
             name: task.name,
             description: task.description,
             carNum: task.carNum,
-            sellerName: task.sellerName,
-            sellerNum: task.sellerNum,
+            clientName: task.clientName,
+            caseType: task.caseType,
+            hptName: task.hptName,
+            sellerAlignedDate: task.sellerAlignedDate ? task.sellerAlignedDate.toISOString().split('T')[0] : 'N/A',
+            buyerAlignedDate: task.buyerAlignedDate ? task.buyerAlignedDate.toISOString().split('T')[0] : 'N/A',
+            NOCissuedDate: task.NOCissuedDate ? task.NOCissuedDate.toISOString().split('T')[0] : 'N/A',
+            NOCreceivedDate: task.NOCreceivedDate ? task.NOCreceivedDate.toISOString().split('T')[0] : 'N/A',
+            fileReceivedDate: task.fileReceivedDate ? task.fileReceivedDate.toISOString().split('T')[0] : 'N/A',
+            AdditionalWork: task.AdditionalWork,
+            HPA: task.HPA,
+            transferDate: task.transferDate ? task.transferDate.toISOString().split('T')[0] : 'N/A',
+            HandoverDate_RC: task.HandoverDate_RC ? task.HandoverDate_RC.toISOString().split('T')[0] : 'N/A',
+            HandoverDate_NOC: task.HandoverDate_NOC ? task.HandoverDate_NOC.toISOString().split('T')[0] : 'N/A',
             buyerName: task.buyerName,
             buyerNum: task.buyerNum,
-            seller_RTO_location: task.seller_RTO_location,
+            sellerName: task.sellerName,
+            sellerNum: task.sellerNum,
             buyer_RTO_location: task.buyer_RTO_location,
-            align_date: task.align_date ? task.align_date.toISOString().split('T')[0] : 'N/A', // Format date as needed
-            state: task.state ? 'Completed' : 'Pending'
+            seller_RTO_location: task.seller_RTO_location,
+            state: task.state ? 'Completed' : 'Pending',
+            sellerPhoto: task.sellerPhoto,
+            buyerPhoto: task.buyerPhoto,
+            sellerDocs: task.sellerDocs,
+            buyerDocs: task.buyerDocs ,
+            carVideo: task.carVideo ,
+            sellerVideo: task.sellerVideo,
+            careOfVideo: task.careOfVideo,
+            nocReceipt: task.nocReceipt ,
+            transferReceipt: task.transferReceipt,
         }));
 
         // Convert JSON to CSV
@@ -384,13 +428,64 @@ app.get('/tasks/download', async (req, res) => {
     }
 });
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(__dirname, 'uploads'); // Temporarily store locally
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname); // Keep the original filename
+    }
+});
 
+// app.use('/uploads', express.static('uploads'));
+const uploadStorage = multer({ storage });
 
-// admin edit and delete routes
-// app.get('/admin/edit', (req,res)=>{
+app.get('/upload', (req, res)=>{
+    res.render('upload')
+})
 
-// })
+app.post('/upload', upload.fields([
+    { name: 'sellerPhoto', maxCount: 1 },
+    { name: 'buyerPhoto', maxCount: 1 },
+    { name: 'sellerDocs', maxCount: 1 },
+    { name: 'buyerDocs', maxCount: 1 },
+    { name: 'carVideo', maxCount: 1 },
+    { name: 'sellerVideo', maxCount: 1 },
+    { name: 'careOfVideo', maxCount: 1 },
+    { name: 'nocReceipt', maxCount: 1 },
+    { name: 'transferReceipt', maxCount: 1 }
+]), async (req, res) => {
+    const companyId = req.cookies.token;
+    if (!companyId) {
+        return res.redirect("/login");
+    }
 
+    try {
+        const taskData = { company: companyId };
+
+        for (let key in req.files) {
+            const file = req.files[key][0];
+            const cloudinaryResponse = await uploadOnCloudinary(file.path);
+            if (cloudinaryResponse) {
+                taskData[key] = cloudinaryResponse.secure_url;
+            }
+        }
+
+        const { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state } = req.body;
+
+        Object.assign(taskData, { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state });
+
+        const newTask = new Task(taskData);
+        await newTask.save();
+        await Company.findByIdAndUpdate(companyId, { $push: { tasks: newTask._id } });
+
+        res.redirect('/tasks');
+
+    } catch (error) {
+        res.status(500).json({ message: 'File upload failed', error });
+    }
+});
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

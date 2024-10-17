@@ -1,4 +1,0 @@
-name,description,carNum,sellerName,sellerNum,buyerName,buyerNum,seller_RTO_location,buyer_RTO_location,align_date,state
-Seller PP,"goto rto
-",6565354,Omparkas,984562494,Yaksh ,3455663666,bijnor,delhi,04-09-2024,FALSE
-Buyer PP,buyer second description,45656,Jaiprakas,83749283,ruru,92384023,meerut,delhi,02-09-2023,FALSE

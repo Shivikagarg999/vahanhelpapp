@@ -89,17 +89,100 @@
     <div class="container">
         <h1>Task Details</h1>
         <div class="task-details">
-            <p><strong>Name:</strong> <span><%= task.name %></span></p>
-            <p><strong>Description:</strong> <span><%= task.description %></span></p>
+            <p><strong>Task type:</strong> <span><%= task.name %></span></p>
+            <p><strong>File received date:</strong> <span><%= task.fileReceivedDate ? task.fileReceivedDate.toDateString() : 'N/A' %></span></p>
             <p><strong>Car Number:</strong> <span><%= task.carNum %></span></p>
+            <p><strong>Case type:</strong> <span><%= task.caseType %></span></p>
+            <p><strong>Additional work:</strong> <span><%= task.AdditionalWork %></span></p>
+            <p><strong>Client name:</strong> <span><%= task.clientName %></span></p>
+            <p><strong>HPT name:</strong> <span><%= task.hptName %></span></p>
+            <p><strong>HPA:</strong> <span><%= task.HPA %></span></p>
             <p><strong>Seller Name:</strong> <span><%= task.sellerName %></span></p>
             <p><strong>Seller Number:</strong> <span><%= task.sellerNum %></span></p>
+            <p><strong>Seller RTO Location:</strong> <span><%= task.seller_RTO_location %></span></p>
+            <p><strong>Seller Aligned Date:</strong> <span><%= task.sellerAlignedDate ? task.sellerAlignedDate.toDateString() : 'N/A' %></span></p>
             <p><strong>Buyer Name:</strong> <span><%= task.buyerName %></span></p>
             <p><strong>Buyer Number:</strong> <span><%= task.buyerNum %></span></p>
-            <p><strong>Aligned Date:</strong> <span><%= task.align_date ? task.align_date.toDateString() : 'N/A' %></span></p>
-            <p><strong>Seller RTO Location:</strong> <span><%= task.seller_RTO_location %></span></p>
             <p><strong>Buyer RTO Location:</strong> <span><%= task.buyer_RTO_location %></span></p>
+            <p><strong>Buyer Aligned Date:</strong> <span><%= task.buyerAlignedDate ? task.buyerAlignedDate.toDateString() : 'N/A' %></span></p>
+            <p><strong>NOC issued Date:</strong> <span><%= task.NOCissuedDate ? task.NOCissuedDate.toDateString() : 'N/A' %></span></p>
+            <p><strong>Transfer Date:</strong> <span><%= task.transferDate ? task.transferDate.toDateString() : 'N/A' %></span></p>
+            <p><strong>RC handover Date:</strong> <span><%= task.HandoverDate_RC ? task.HandoverDate_RC.toDateString() : 'N/A' %></span></p>
+            <p><strong>NOC handover Date:</strong> <span><%= task.HandoverDate_NOC ? task.HandoverDate_NOC.toDateString() : 'N/A' %></span></p>       
+            <p><strong>NOC received Date:</strong> <span><%= task.NOCreceivedDate ? task.NOCreceivedDate.toDateString() : 'N/A' %></span></p>
+            <p><strong>Description:</strong> <span><%= task.description %></span></p>   
             <p><strong>Status:</strong> <span><%= task && task.state ? 'Completed' : 'Pending' %></span></p>
+            <p><strong>Seller Photo:</strong> <span>
+                <% if (task.sellerPhoto) { %>
+                    <a href="<%= task.sellerPhoto %>" target="_blank">View Photo</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
+        
+            <p><strong>Buyer Photo:</strong> <span>
+                <% if (task.buyerPhoto) { %>
+                    <a href="<%= task.buyerPhoto %>" target="_blank">View Photo</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
+        
+            <p><strong>Seller Docs:</strong> <span>
+                <% if (task.sellerDocs) { %>
+                    <a href="<%= task.sellerDocs %>" target="_blank">View Document</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
+        
+            <p><strong>Buyer Docs:</strong> <span>
+                <% if (task.buyerDocs) { %>
+                    <a href="<%= task.buyerDocs %>" target="_blank">View Document</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
+        
+            <p><strong>Car Video:</strong> <span>
+                <% if (task.carVideo) { %>
+                    <a href="<%= task.carVideo %>" target="_blank">View Video</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
+        
+            <p><strong>Seller Video:</strong> <span>
+                <% if (task.sellerVideo) { %>
+                    <a href="<%= task.sellerVideo %>" target="_blank">View Video</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
+        
+            <p><strong>Care Of Video:</strong> <span>
+                <% if (task.careOfVideo) { %>
+                    <a href="<%= task.careOfVideo %>" target="_blank">View Video</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
+        
+            <p><strong>NOC Receipt:</strong> <span>
+                <% if (task.nocReceipt) { %>
+                    <a href="<%= task.nocReceipt %>" target="_blank">View Receipt</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
+        
+            <p><strong>Transfer Receipt:</strong> <span>
+                <% if (task.transferReceipt) { %>
+                    <a href="<%= task.transferReceipt %>" target="_blank">View Receipt</a>
+                <% } else { %>
+                    N/A
+                <% } %>
+            </span></p>
         </div>
         <!-- <a class="back-link" href="/tasks"><span class="icon">&#8592;</span> Back to Tasks</a> -->
     </div>

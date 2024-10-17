@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Documents</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            /* background-color:  */
+            background-color: rgb(14, 14, 46);;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center; /* Center the heading */
+        }
+        form {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        .form-group {
+            display: flex; /* Use flexbox to align items */
+            justify-content: space-between; /* Space between label and input */
+            align-items: center; /* Center align items vertically */
+            margin-bottom: 15px;
+        }
+        label {
+            margin-bottom: 0; /* Remove margin for label */
+            font-weight: bold;
+            color: #555;
+            width: 30%; /* Adjust width for responsiveness */
+        }
+        input[type="file"] {
+            width: 68%; /* Set a width for input */
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <h1>Upload Files</h1>
+        <div class="form-group">
+            <label for="sellerPhoto">Seller Photo (JPG):</label>
+            <input type="file" name="sellerPhoto" accept="image/jpeg">
+        </div>
+        <div class="form-group">
+            <label for="buyerPhoto">Buyer Photo (JPG):</label>
+            <input type="file" name="buyerPhoto" accept="image/jpeg">
+        </div>
+        <div class="form-group">
+            <label for="sellerDocs">Seller Documents (PDF):</label>
+            <input type="file" name="sellerDocs" accept="application/pdf">
+        </div>
+        <div class="form-group">
+            <label for="buyerDocs">Buyer Documents (PDF):</label>
+            <input type="file" name="buyerDocs" accept="application/pdf">
+        </div>
+        <div class="form-group">
+            <label for="carVideo">Video of Car:</label>
+            <input type="file" name="carVideo" accept="video/*">
+        </div>
+        <div class="form-group">
+            <label for="sellerVideo">Video of Seller:</label>
+            <input type="file" name="sellerVideo" accept="video/*">
+        </div>
+        <div class="form-group">
+            <label for="careOfVideo">Video of Care-of:</label>
+            <input type="file" name="careOfVideo" accept="video/*">
+        </div>
+        <div class="form-group">
+            <label for="nocReceipt">NOC Receipt (PDF):</label>
+            <input type="file" name="nocReceipt" accept="application/pdf">
+        </div>
+        <div class="form-group">
+            <label for="transferReceipt">Transfer Receipt (PDF):</label>
+            <input type="file" name="transferReceipt" accept="application/pdf">
+        </div>
+        <button type="submit">Upload Files</button>
+    </form>
+</body>
+</html>
+
+ 
