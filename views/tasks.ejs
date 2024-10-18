@@ -244,7 +244,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Description</th>
+                        <th>Case type</th>
                         <th>Car Number</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -253,8 +253,8 @@
                 <tbody>
                     <% tasks.forEach(task => { %>
                         <tr>
-                            <td data-label="Name"><%= task.name %></td>
-                            <td data-label="Description"><%= task.description %></td>
+                            <td data-label="Task Name"><%= task.name %></td>
+                            <td data-label="Case type"><%= task.caseType %></td>
                             <td data-label="Car Number"><%= task.carNum %></td>
                             <td data-label="Status"><%= task.state ? 'Completed' : 'Pending' %></td>
                             <td data-label="Actions" class="acts">
