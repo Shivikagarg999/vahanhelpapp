@@ -11,11 +11,11 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: rgb(14, 14, 46);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            /* height: 100vh; */
             font-family: "Open Sans", sans-serif;
         }
         .container {
@@ -84,12 +84,95 @@
         <h1>Edit Task</h1>
         <form action="/tasks/edit/<%= task._id %>" method="post">
             <div class="form-group">
-                <label for="name">Task Name:</label>
-                <input type="text" id="name" name="name" value="<%= task.name %>" required>
+                <label for="taskType">Task Type:</label>
+                <select name="name" id="taskType">
+                    <option value="Seller PP aligned" <%= task.name === 'Seller PP aligned' ? 'selected' : '' %>>Seller party peshi aligned</option>
+                    <option value="Buyer party peshi aligned" <%= task.name === 'Buyer party peshi aligned' ? 'selected' : '' %>>Buyer party peshi aligned</option>
+                    <option value="Buyer party peshi pending" <%= task.name === 'Buyer party peshi pending' ? 'selected' : '' %>>Buyer party peshi pending</option>
+                    <option value="Seller party peshi pending" <%= task.name === 'Seller party peshi pending' ? 'selected' : '' %>>Seller party peshi pending</option>
+                    <option value="File in RTO" <%= task.name === 'File in RTO' ? 'selected' : '' %>>File in RTO</option>
+                    <option value="File in transit" <%= task.name === 'File in transit' ? 'selected' : '' %>>File in transit</option>
+                    <option value="Car Seen Pending" <%= task.name === 'Car Seen Pending' ? 'selected' : '' %>>Car Seen Pending</option>
+                    <option value="Chalaan pending" <%= task.name === 'Chalaan pending' ? 'selected' : '' %>>Chalaan pending</option>
+                </select>
+           
+            
             </div>
             <div class="form-group">
                 <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4" required><%= task.description %></textarea>
+                <textarea id="description" name="description" rows="4"><%= task.description %></textarea>
+            </div>
+            <div class="form-group">
+                <label for="carNum">Car Number:</label>
+                <input type="text" id="carNum" name="carNum" value="<%= task.carNum %>">
+            </div>
+            <div class="form-group">
+                <label for="clientName">Client Name:</label>
+                <input type="text" id="clientName" name="clientName" value="<%= task.clientName %>">
+            </div>
+            <div class="form-group">
+                <label for="caseType">Case Type:</label>
+                <input type="text" id="caseType" name="caseType" value="<%= task.caseType %>">
+            </div>
+            <div class="form-group">
+                <label for="hptName">HPT Name:</label>
+                <input type="text" id="hptName" name="hptName" value="<%= task.hptName %>">
+            </div>
+            <div class="form-group">
+                <label for="sellerAlignedDate">Seller Aligned Date:</label>
+                <input type="date" id="sellerAlignedDate" name="sellerAlignedDate" value="<%= task.sellerAlignedDate ? task.sellerAlignedDate.toISOString().slice(0, 10) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="buyerAlignedDate">Buyer Aligned Date:</label>
+                <input type="date" id="buyerAlignedDate" name="buyerAlignedDate" value="<%= task.buyerAlignedDate ? task.buyerAlignedDate.toISOString().slice(0, 10) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="NOCissuedDate">NOC Issued Date:</label>
+                <input type="date" id="NOCissuedDate" name="NOCissuedDate" value="<%= task.NOCissuedDate ? task.NOCissuedDate.toISOString().slice(0, 10) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="NOCreceivedDate">NOC Received Date:</label>
+                <input type="date" id="NOCreceivedDate" name="NOCreceivedDate" value="<%= task.NOCreceivedDate ? task.NOCreceivedDate.toISOString().slice(0, 10) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="fileReceivedDate">File Received Date:</label>
+                <input type="date" id="fileReceivedDate" name="fileReceivedDate" value="<%= task.fileReceivedDate ? task.fileReceivedDate.toISOString().slice(0, 10) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="AdditionalWork">Additional Work:</label>
+                <input type="text" id="AdditionalWork" name="AdditionalWork" value="<%= task.AdditionalWork %>">
+            </div>
+            <div class="form-group">
+                <label for="HPA">HPA:</label>
+                <input type="text" id="HPA" name="HPA" value="<%= task.HPA %>">
+            </div>
+            <div class="form-group">
+                <label for="transferDate">Transfer Date:</label>
+                <input type="date" id="transferDate" name="transferDate" value="<%= task.transferDate ? task.transferDate.toISOString().slice(0, 10) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="HandoverDate_RC">RC Handover Date:</label>
+                <input type="date" id="HandoverDate_RC" name="HandoverDate_RC" value="<%= task.HandoverDate_RC ? task.HandoverDate_RC.toISOString().slice(0, 10) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="HandoverDate_NOC">NOC Handover Date:</label>
+                <input type="date" id="HandoverDate_NOC" name="HandoverDate_NOC" value="<%= task.HandoverDate_NOC ? task.HandoverDate_NOC.toISOString().slice(0, 10) : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="buyerName">Buyer Name:</label>
+                <input type="text" id="buyerName" name="buyerName" value="<%= task.buyerName %>">
+            </div>
+            <div class="form-group">
+                <label for="buyerNum">Buyer Number:</label>
+                <input type="number" id="buyerNum" name="buyerNum" value="<%= task.buyerNum %>">
+            </div>
+            <div class="form-group">
+                <label for="sellerName">Seller Name:</label>
+                <input type="text" id="sellerName" name="sellerName" value="<%= task.sellerName %>">
+            </div>
+            <div class="form-group">
+                <label for="sellerNum">Seller Number:</label>
+                <input type="number" id="sellerNum" name="sellerNum" value="<%= task.sellerNum %>">
             </div>
             <div class="form-group">
                 <label for="state">Status:</label>
@@ -100,6 +183,8 @@
             </div>
             <button type="submit">Update Task</button>
         </form>
+        
+        
         <a href="/tasks" class="back-link">Back to Tasks</a>
     </div>
 </body>

@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+   <style>
         body {
             font-family: 'Roboto', Arial, sans-serif;
             background-color: #f4f7f6;
@@ -19,7 +20,7 @@
         }
         .container {
             max-width: 800px;
-            margin: 60px auto;
+            margin: 20px auto;
             padding: 40px;
             background: linear-gradient(145deg, #ffffff, #e6e8ea);
             border-radius: 15px;
@@ -30,14 +31,14 @@
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 40px;
-            font-size: 30px;
+            margin-bottom: 30px;
+            font-size: 26px;
             font-weight: 700;
         }
         .task-details {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 10px;
             padding: 20px;
             border-radius: 10px;
             background: #f9fbfd;
@@ -45,32 +46,39 @@
         }
         .task-details p {
             display: flex;
-            justify-content: space-between;
-            font-size: 18px;
-            line-height: 1.6;
+            justify-content: flex-start;
+            align-items: center;
+            font-size: 16px;
+            line-height: 1.4;
             color: #555;
-            margin: 0;
-            padding: 10px;
+            margin: 5px;
+            padding: 8px;
             border-bottom: 1px solid #ececec;
             background: #fff;
             border-radius: 5px;
             transition: transform 0.2s ease-in-out;
         }
+        .task-details p strong {
+            flex: 0 0 420px; /* Ensures the label is aligned to the left */
+            text-align: left;
+            color: #0d6efd;
+        }
+        .task-details p span {
+            flex: 1;
+            text-align: left;
+        }
         .task-details p:hover {
             transform: translateX(5px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
-        .task-details p strong {
-            color: #0d6efd;
-        }
         .back-link {
             text-decoration: none;
-    color:  white;
-    background-color: #007bff;
-    padding: 10px;
-    transition: background-color 0.3s;
-    border: 1px solid transparent;
-    border-radius: 50%;
+            color: white;
+            background-color: #007bff;
+            padding: 10px;
+            transition: background-color 0.3s;
+            border: 1px solid transparent;
+            border-radius: 50%;
         }
         .back-link:hover {
             background-color: #084298;
@@ -80,12 +88,74 @@
             margin-right: 8px;
             vertical-align: middle;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            h1 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            .task-details p {
+                font-size: 14px;
+                padding: 6px;
+            }
+            .task-details p strong {
+                flex: 0 0 120px; /* Reduce width for smaller screens */
+            }
+        }
+        .download-btn {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.download-btn:hover {
+    background-color: #084298;
+}
+.biten{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 5px;
+            }
+            h1 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            .task-details p {
+                font-size: 13px;
+                padding: 5px;
+            }
+            .task-details p strong {
+                flex: 0 0 110px; /* Further reduce width on mobile */
+            }
+            .back-link {
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
-    <a href="/tasks/" class="back-link">
-        <i class="fas fa-arrow-left"></i>
-      </a>
+    <div class="biten">
+        <a href="/tasks/" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+          </a>
+          <button id="download-pdf" class="download-btn">Download as PDF</button>
+    
+    </div>
     <div class="container">
         <h1>Task Details</h1>
         <div class="task-details">
@@ -119,7 +189,6 @@
                     N/A
                 <% } %>
             </span></p>
-        
             <p><strong>Buyer Photo:</strong> <span>
                 <% if (task.buyerPhoto) { %>
                     <a href="<%= task.buyerPhoto %>" target="_blank">View Photo</a>
@@ -127,7 +196,6 @@
                     N/A
                 <% } %>
             </span></p>
-        
             <p><strong>Seller Docs:</strong> <span>
                 <% if (task.sellerDocs) { %>
                     <a href="<%= task.sellerDocs %>" target="_blank">View Document</a>
@@ -135,7 +203,6 @@
                     N/A
                 <% } %>
             </span></p>
-        
             <p><strong>Buyer Docs:</strong> <span>
                 <% if (task.buyerDocs) { %>
                     <a href="<%= task.buyerDocs %>" target="_blank">View Document</a>
@@ -143,7 +210,6 @@
                     N/A
                 <% } %>
             </span></p>
-        
             <p><strong>Car Video:</strong> <span>
                 <% if (task.carVideo) { %>
                     <a href="<%= task.carVideo %>" target="_blank">View Video</a>
@@ -151,7 +217,6 @@
                     N/A
                 <% } %>
             </span></p>
-        
             <p><strong>Seller Video:</strong> <span>
                 <% if (task.sellerVideo) { %>
                     <a href="<%= task.sellerVideo %>" target="_blank">View Video</a>
@@ -159,7 +224,6 @@
                     N/A
                 <% } %>
             </span></p>
-        
             <p><strong>Care Of Video:</strong> <span>
                 <% if (task.careOfVideo) { %>
                     <a href="<%= task.careOfVideo %>" target="_blank">View Video</a>
@@ -167,7 +231,6 @@
                     N/A
                 <% } %>
             </span></p>
-        
             <p><strong>NOC Receipt:</strong> <span>
                 <% if (task.nocReceipt) { %>
                     <a href="<%= task.nocReceipt %>" target="_blank">View Receipt</a>
@@ -175,7 +238,6 @@
                     N/A
                 <% } %>
             </span></p>
-        
             <p><strong>Transfer Receipt:</strong> <span>
                 <% if (task.transferReceipt) { %>
                     <a href="<%= task.transferReceipt %>" target="_blank">View Receipt</a>
@@ -184,7 +246,21 @@
                 <% } %>
             </span></p>
         </div>
-        <!-- <a class="back-link" href="/tasks"><span class="icon">&#8592;</span> Back to Tasks</a> -->
     </div>
+    <script>
+        document.getElementById('download-pdf').addEventListener('click', function() {
+            var element = document.querySelector('.container');
+            html2pdf()
+                .set({
+                    margin: 1,
+                    filename: 'task-details.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                })
+                .from(element)
+                .save();
+        });
+    </script>
 </body>
 </html>

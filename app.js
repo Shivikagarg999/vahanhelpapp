@@ -118,13 +118,59 @@ app.get('/tasks/search', async (req, res) => {
 
 app.post("/tasks/edit/:id", async (req, res) => {
     const taskId = req.params.id;
-    const { name, description, carNum, state } = req.body;
+
+    // Destructure all fields from req.body
+    const { 
+        name, 
+        description, 
+        carNum, 
+        clientName, 
+        caseType, 
+        hptName, 
+        sellerAlignedDate, 
+        buyerAlignedDate, 
+        NOCissuedDate, 
+        NOCreceivedDate, 
+        fileReceivedDate, 
+        AdditionalWork, 
+        HPA, 
+        transferDate, 
+        HandoverDate_RC, 
+        HandoverDate_NOC, 
+        buyerName, 
+        buyerNum, 
+        sellerName, 
+        sellerNum, 
+        buyer_RTO_location, 
+        seller_RTO_location, 
+        state // Keep state for task status
+    } = req.body; 
+
     try {
         await Task.findByIdAndUpdate(taskId, { 
             name, 
             description, 
             carNum, 
-            state: state === "true"
+            clientName, 
+            caseType, 
+            hptName, 
+            sellerAlignedDate, 
+            buyerAlignedDate, 
+            NOCissuedDate, 
+            NOCreceivedDate, 
+            fileReceivedDate, 
+            AdditionalWork, 
+            HPA, 
+            transferDate, 
+            HandoverDate_RC, 
+            HandoverDate_NOC, 
+            buyerName, 
+            buyerNum, 
+            sellerName, 
+            sellerNum, 
+            buyer_RTO_location, 
+            seller_RTO_location, 
+            state: state === "true" // Ensure state is a boolean
         });
         res.redirect("/tasks");
     } catch (err) {
@@ -132,6 +178,7 @@ app.post("/tasks/edit/:id", async (req, res) => {
         res.status(500).send("Error updating task.");
     }
 });
+
 
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;
