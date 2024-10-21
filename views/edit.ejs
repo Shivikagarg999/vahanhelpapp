@@ -82,7 +82,7 @@
 <body>
     <div class="container">
         <h1>Edit Task</h1>
-        <form action="/tasks/edit/<%= task._id %>" method="post">
+        <form action="/tasks/edit/<%= task._id %>" method="post"  enctype="multipart/form-data">
             <div class="form-group">
                 <label for="taskType">Task Type:</label>
                 <select name="name" id="taskType">
@@ -97,10 +97,6 @@
                 </select>
            
             
-            </div>
-            <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4"><%= task.description %></textarea>
             </div>
             <div class="form-group">
                 <label for="carNum">Car Number:</label>
@@ -180,6 +176,50 @@
                     <option value="true" <%= task.state ? 'selected' : '' %>>Completed</option>
                     <option value="false" <%= !task.state ? 'selected' : '' %>>Pending</option>
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="sellerPhoto">Upload Seller Photo:</label>
+                <input type="file" id="sellerPhoto" name="sellerPhoto" accept="image/*">
+            </div>
+        
+            <div class="form-group">
+                <label for="buyerPhoto">Upload Buyer Photo:</label>
+                <input type="file" id="buyerPhoto" name="buyerPhoto" accept="image/*">
+            </div>
+        
+            <div class="form-group">
+                <label for="sellerDocs">Upload Seller Documents:</label>
+                <input type="file" id="sellerDocs" name="sellerDocs" accept=".pdf,.doc,.docx,.txt" multiple>
+            </div>
+        
+            <div class="form-group">
+                <label for="buyerDocs">Upload Buyer Documents:</label>
+                <input type="file" id="buyerDocs" name="buyerDocs" accept=".pdf,.doc,.docx,.txt" multiple>
+            </div>
+        
+            <div class="form-group">
+                <label for="carVideo">Upload Car Video:</label>
+                <input type="file" id="carVideo" name="carVideo" accept="video/*">
+            </div>
+        
+            <div class="form-group">
+                <label for="sellerVideo">Upload Seller Video:</label>
+                <input type="file" id="sellerVideo" name="sellerVideo" accept="video/*">
+            </div>
+        
+            <div class="form-group">
+                <label for="careOfVideo">Upload Care Of Video:</label>
+                <input type="file" id="careOfVideo" name="careOfVideo" accept="video/*">
+            </div>
+        
+            <div class="form-group">
+                <label for="nocReceipt">Upload NOC Receipt:</label>
+                <input type="file" id="nocReceipt" name="nocReceipt" accept=".pdf,.doc,.docx,.txt">
+            </div>
+        
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4"><%= task.description %></textarea>
             </div>
             <button type="submit">Update Task</button>
         </form>

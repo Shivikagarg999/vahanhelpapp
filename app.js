@@ -116,7 +116,17 @@ app.get('/tasks/search', async (req, res) => {
     res.render('tasks', { tasks });
 });
 
-app.post("/tasks/edit/:id", async (req, res) => {
+app.post("/tasks/edit/:id", upload.fields([
+    { name: 'sellerPhoto', maxCount: 1 },
+    { name: 'buyerPhoto', maxCount: 1 },
+    { name: 'sellerDocs', maxCount: 1 },
+    { name: 'buyerDocs', maxCount: 1 },
+    { name: 'carVideo', maxCount: 1 },
+    { name: 'sellerVideo', maxCount: 1 },
+    { name: 'careOfVideo', maxCount: 1 },
+    { name: 'nocReceipt', maxCount: 1 },
+    { name: 'transferReceipt', maxCount: 1 }
+]), async (req, res) => {
     const taskId = req.params.id;
 
     // Destructure all fields from req.body
@@ -147,7 +157,8 @@ app.post("/tasks/edit/:id", async (req, res) => {
     } = req.body; 
 
     try {
-        await Task.findByIdAndUpdate(taskId, { 
+        // Prepare task data from the form fields
+        const taskData = { 
             name, 
             description, 
             carNum, 
@@ -170,14 +181,31 @@ app.post("/tasks/edit/:id", async (req, res) => {
             sellerNum, 
             buyer_RTO_location, 
             seller_RTO_location, 
-            state: state === "true" // Ensure state is a boolean
-        });
+            state: state === "true" // Ensure state is boolean
+        };
+
+        // Handle file uploads (if any)
+        if (req.files) {
+            for (let key in req.files) {
+                const file = req.files[key][0];
+                const cloudinaryResponse = await uploadOnCloudinary(file.path);
+                if (cloudinaryResponse) {
+                    taskData[key] = cloudinaryResponse.secure_url;
+                }
+            }
+        }
+
+        // Update the task with new data
+        await Task.findByIdAndUpdate(taskId, taskData);
+
         res.redirect("/tasks");
     } catch (err) {
         console.error('Error updating task:', err.message);
         res.status(500).send("Error updating task.");
     }
 });
+
+
 
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;

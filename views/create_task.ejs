@@ -95,12 +95,17 @@
             justify-content: center;
         }
         label {
-    white-space: normal; /* Allow text wrapping */
-    width: 200px; /* Or any width that suits */
-    margin-right: 10px;
-    font-weight: bold;
-    color: #333;
-}
+            white-space: normal; /* Allow text wrapping */
+            width: 150px; /* Or any width that suits */
+            margin-right: 10px;
+            font-weight: bold;
+            color: #333;
+             }
+
+        .finp{
+            width: 60px;
+             }
+
 @media (max-width: 768px) {
     label {
         font-size: 14px; /* Slightly smaller font on smaller screens */
@@ -394,39 +399,39 @@
         <!-- New fields for file uploads -->
     <div class="form-group">
         <label for="sellerPhoto">Seller Photo:</label>
-        <input type="file" name="sellerPhoto" accept="image/jpeg">
+        <input type="file" name="sellerPhoto" accept="image/jpeg" class="finp">
     </div>
     <div class="form-group">
         <label for="buyerPhoto">Buyer Photo:</label>
-        <input type="file" name="buyerPhoto" accept="image/jpeg">
+        <input type="file" name="buyerPhoto" accept="image/jpeg" class="finp">
     </div>
     <div class="form-group">
         <label for="sellerDocs">Seller Documents:</label>
-        <input type="file" name="sellerDocs" accept="application/pdf">
+        <input type="file" name="sellerDocs" accept="application/pdf" class="finp">
     </div>
     <div class="form-group">
         <label for="buyerDocs">Buyer Documents:</label>
-        <input type="file" name="buyerDocs" id="buyerDocs">
+        <input type="file" name="buyerDocs" id="buyerDocs" class="finp">
     </div>
     <div class="form-group">
         <label for="carVideo">Car Video:</label>
-        <input type="file" name="carVideo" id="carVideo">
+        <input type="file" name="carVideo" id="carVideo" class="finp">
     </div>
     <div class="form-group">
         <label for="sellerVideo">Seller Video:</label>
-        <input type="file" name="sellerVideo" id="sellerVideo">
+        <input type="file" name="sellerVideo" id="sellerVideo" class="finp">
     </div>
     <div class="form-group">
         <label for="careOfVideo">Care Of Video:</label>
-        <input type="file" name="careOfVideo" id="careOfVideo">
+        <input type="file" name="careOfVideo" id="careOfVideo" class="finp">
     </div>
     <div class="form-group">
         <label for="nocReceipt">NOC Receipt:</label>
-        <input type="file" name="nocReceipt" id="nocReceipt">
+        <input type="file" name="nocReceipt" id="nocReceipt" class="finp">
     </div>
     <div class="form-group">
         <label for="transferReceipt">Transfer Receipt:</label>
-        <input type="file" name="transferReceipt" id="transferReceipt">
+        <input type="file" name="transferReceipt" id="transferReceipt" class="finp">
     </div>
         <div class="btnss">
             <button type="submit">Create Task</button>

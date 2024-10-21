@@ -159,12 +159,14 @@
     <div class="container">
         <h1>Task Details</h1>
         <div class="task-details">
-            <p><strong>Task type:</strong> <span><%= task.name %></span></p>
+            
+            <p><strong>Client name:</strong> <span><%= task.clientName %></span></p>
+            
             <p><strong>File received date:</strong> <span><%= task.fileReceivedDate ? task.fileReceivedDate.toDateString() : 'N/A' %></span></p>
+            <p><strong>Task type:</strong> <span><%= task.name %></span></p>
             <p><strong>Car Number:</strong> <span><%= task.carNum %></span></p>
             <p><strong>Case type:</strong> <span><%= task.caseType %></span></p>
             <p><strong>Additional work:</strong> <span><%= task.AdditionalWork %></span></p>
-            <p><strong>Client name:</strong> <span><%= task.clientName %></span></p>
             <p><strong>HPT name:</strong> <span><%= task.hptName %></span></p>
             <p><strong>HPA:</strong> <span><%= task.HPA %></span></p>
             <p><strong>Seller Name:</strong> <span><%= task.sellerName %></span></p>
