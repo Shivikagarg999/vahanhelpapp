@@ -51,10 +51,19 @@
             font-size: 16px;
         }
         .buttons {
-            width: 100%;
+            min-width: 75%;
+            background-color: #fff;
             display: flex;
+            margin-left: 10%;
+            margin-right: 10%;
             align-items: center;
+            gap: 12px;
             justify-content: space-between;
+            padding-left: 12px;
+            padding-right: 12px;
+            border: 1px solid white;
+            border-radius: 21px;
+            margin-top: 9px;
         }
         button {
             background-color: #007bff;
@@ -157,6 +166,7 @@
             padding: 10px;
             font-weight: 600;
             border-radius: 20px;
+            margin-bottom: 5px;
         }
         
         .logout:hover{
@@ -176,6 +186,9 @@
             background: #0056b3;
             color: white;
             text-decoration: none;
+        }
+        .imgm{
+            height: 55px;
         }
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -220,12 +233,14 @@
     </style>
 </head>
 <body>
+    <div class="buttons">
+        <a href="/tasks/create" class="new">Create New Task</a> 
+       <img src="https://vahanhelp.in/images/2DPNG.png" class="imgm">
+        <a href="/logout" class="logout" style="display: block; text-align: center; margin-top: 20px;"><i class="fas fa-arrow-left"></i>Logout</a>
+    </div>
+    
     <div class="container">
-        <div class="buttons">
-            <a href="/tasks/create" class="new">Create New Task</a> 
-            <a href="/logout" class="logout" style="display: block; text-align: center; margin-top: 20px;"><i class="fas fa-arrow-left"></i>Logout</a>
-        </div>
-        
+      
         <h2>Search Tasks By Car Number</h2>
         <form action="/tasks/search" method="get" class="search-form">
             <input type="text" id="searchCarNum" name="carNum" placeholder="Enter car number" required>
@@ -243,9 +258,9 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Car Number</th>
                         <th>Task type</th>
                         <th>Case type</th>
-                        <th>Car Number</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -253,9 +268,9 @@
                 <tbody>
                     <% tasks.forEach(task => { %>
                         <tr>
+                            <td data-label="Car Number"><%= task.carNum %></td>
                             <td data-label="Task Name"><%= task.name %></td>
                             <td data-label="Case type"><%= task.caseType %></td>
-                            <td data-label="Car Number"><%= task.carNum %></td>
                             <td data-label="Status"><%= task.state ? 'Completed' : 'Pending' %></td>
                             <td data-label="Actions" class="acts">
                                 <a href="/tasks/view/<%= task._id %>" class="btn-view" title="View">

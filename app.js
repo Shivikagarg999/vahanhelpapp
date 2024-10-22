@@ -205,8 +205,6 @@ app.post("/tasks/edit/:id", upload.fields([
     }
 });
 
-
-
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
