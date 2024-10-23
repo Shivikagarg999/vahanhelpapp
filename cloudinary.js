@@ -13,8 +13,8 @@ const uploadOnCloudinary = async (localFilePath) => {
         if (!localFilePath) return null;
         // Upload the file to Cloudinary
         const response = await cloudinary.uploader.upload(localFilePath, {
-            // resource_type: "raw",
-            resource_type: "auto"
+            resource_type: "raw"
+            // resource_type: "auto"
         });
         
         // Remove the locally stored file
