@@ -10,8 +10,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const { Parser } = require('json2csv');
 const Admin = require('./models/admin');
-const cloudinary = require('cloudinary').v2;
-const  uploadOnCloudinary = require('./cloudinary.js');
+const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
 
 app.set("view engine", "ejs");
@@ -188,9 +187,9 @@ app.post("/tasks/edit/:id", upload.fields([
         if (req.files) {
             for (let key in req.files) {
                 const file = req.files[key][0];
-                const cloudinaryResponse = await uploadOnCloudinary(file.path);
-                if (cloudinaryResponse) {
-                    taskData[key] = cloudinaryResponse.secure_url;
+                const imageKitResponse = await uploadOnImageKit(file.path); // Using ImageKit upload
+                if (imageKitResponse) {
+                    taskData[key] = imageKitResponse.url; // Get the URL from ImageKit response
                 }
             }
         }
@@ -517,6 +516,7 @@ app.get('/upload', (req, res)=>{
     res.render('upload')
 })
 
+
 app.post('/upload', upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
     { name: 'buyerPhoto', maxCount: 1 },
@@ -538,14 +538,16 @@ app.post('/upload', upload.fields([
 
         for (let key in req.files) {
             const file = req.files[key][0];
-            const cloudinaryResponse = await uploadOnCloudinary(file.path);
-            if (cloudinaryResponse) {
-                taskData[key] = cloudinaryResponse.secure_url;
+            const imageKitResponse = await uploadOnImageKit(file.path); // Use ImageKit upload function
+            if (imageKitResponse) {
+                taskData[key] = imageKitResponse.url; // ImageKit returns a direct URL
             }
         }
 
+        // Collect additional fields from request body
         const { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state } = req.body;
 
+        // Add these fields to taskData
         Object.assign(taskData, { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state });
 
         const newTask = new Task(taskData);
@@ -555,10 +557,10 @@ app.post('/upload', upload.fields([
         res.redirect('/tasks');
 
     } catch (error) {
+        console.error('File upload failed:', error);
         res.status(500).json({ message: 'File upload failed', error });
     }
 });
-
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 }); 
