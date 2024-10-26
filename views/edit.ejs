@@ -93,7 +93,7 @@
                     <option value="File in RTO" <%= task.name === 'File in RTO' ? 'selected' : '' %>>File in RTO</option>
                     <option value="File in transit" <%= task.name === 'File in transit' ? 'selected' : '' %>>File in transit</option>
                     <option value="Car Seen Pending" <%= task.name === 'Car Seen Pending' ? 'selected' : '' %>>Car Seen Pending</option>
-                    <option value="Chalaan pending" <%= task.name === 'Chalaan pending' ? 'selected' : '' %>>Chalaan pending</option>
+                    <option value="Chalaan pending" <%= task.name === 'Challan pending' ? 'selected' : '' %>>Chalaan pending</option>
                 </select>
            
             
@@ -175,6 +175,8 @@
                 <select id="state" name="state">
                     <option value="true" <%= task.state ? 'selected' : '' %>>Completed</option>
                     <option value="false" <%= !task.state ? 'selected' : '' %>>Pending</option>
+                    <option value="false" <%= !task.state ? 'selected' : '' %>>Party peshi delay from Buyer</option>
+                    <option value="false" <%= !task.state ? 'selected' : '' %>>Party peshi delay from Seller</option>
                 </select>
             </div>
             <div class="form-group">
