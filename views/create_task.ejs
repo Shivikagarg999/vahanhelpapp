@@ -145,17 +145,12 @@ input[type="checkbox"] {
         max-width: 100%; 
     }
 }
-
+*/
 @media (max-width: 768px) {
-    label {
-        font-size: 14px; 
-        width: auto; 
-    }
-
-    input, select {
-        font-size: 14px;
-    }
-} */
+   .lab{
+    flex-direction: column;
+   }
+} 
 
        
         @media (max-width: 768px) {
@@ -236,7 +231,7 @@ input[type="checkbox"] {
         </div>
         <div class="form-group">
             <label for="hptName">HPT name:</label>
-            <select name="hptName" id="hptName">
+            <select name="hptName" id="hptName" class="finp">
                 <option value="" disabled>Select an HPT</option>
                 <option value="Indusind Bank LTD">Indusind Bank LTD</option>
                 <option value="RBL Bank LTD">RBL Bank LTD</option>
@@ -274,7 +269,7 @@ input[type="checkbox"] {
         
         <div class="form-group">
             <label for="HPA">HPA (financer name):</label>
-            <select name="HPA" id="HPA">
+            <select name="HPA" id="HPA" class="finp">
                 <option value="" disabled>Select a financer</option>
                 <option value="Indusind Bank LTD">Indusind Bank LTD</option>
                 <option value="RBL Bank LTD">RBL Bank LTD</option>
