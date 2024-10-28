@@ -88,11 +88,16 @@ app.get("/tasks", async (req, res) => {
         if (!company) {
             return res.redirect("/login");
         }
-        res.render("tasks", { tasks: company.tasks });
+
+        // Sort tasks by `createdAt` or `updatedAt` in descending order
+        const sortedTasks = company.tasks.sort((a, b) => b.createdAt - a.createdAt);
+        
+        res.render("tasks", { tasks: sortedTasks });
     } catch (err) {
         res.status(500).send("Error fetching tasks.");
     }
-}); 
+});
+
 
 app.get("/tasks/create", (req, res) => {
     const companyId = req.cookies.token;
@@ -421,13 +426,13 @@ app.post('/admin/login', async (req, res) => {
 
 app.get("/admin-tasks", isAdminLoggedIn, async (req, res) => {
     try {
-        const tasks = await Task.find().populate('company');
+        const tasks = await Task.find().populate('company').sort({ createdAt: -1 }); // Sort by newest first
         res.render("admin-tasks", { tasks });
     } catch (err) {
+        console.error("Error fetching tasks:", err);
         res.status(500).send("Error fetching tasks.");
     }
 });
-
 function isAdminLoggedIn(req, res, next) {
     if (!req.cookies.admin_token) {
         return res.redirect("/admin/login");
