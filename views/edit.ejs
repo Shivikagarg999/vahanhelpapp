@@ -171,6 +171,14 @@
                 <input type="number" id="sellerNum" name="sellerNum" value="<%= task.sellerNum %>">
             </div>
             <div class="form-group">
+                <label for="buyer_RTO_location">Buyer RTO location:</label>
+                <input type="text" id="buyer_RTO_location" name="buyer_RTO_location" value="<%= task.buyer_RTO_location %>">
+            </div>
+            <div class="form-group">
+                <label for="seller_RTO_location">Seller RTO location:</label>
+                <input type="text" id="seller_RTO_location" name="seller_RTO_location" value="<%= task.seller_RTO_location %>">
+            </div>
+            <div class="form-group">
                 <label for="state">Status:</label>
                 <select id="state" name="state">
                     <option value="true" <%= task.state ? 'selected' : '' %>>Completed</option>
