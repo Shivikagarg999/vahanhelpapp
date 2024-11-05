@@ -97,8 +97,6 @@ app.get("/tasks", async (req, res) => {
         res.status(500).send("Error fetching tasks.");
     }
 });
-
-
 app.get("/tasks/create", (req, res) => {
     const companyId = req.cookies.token;
     if (!companyId) {
@@ -257,7 +255,6 @@ app.get("/tasks/edit/:id", async (req, res) => {
     }
 })
 
-// Admin Task Edit Route
 app.get("/admin/tasks/edit/:id", isAdminLoggedIn, async (req, res) => {
     const taskId = req.params.id;
 
@@ -541,31 +538,59 @@ app.post('/upload', upload.fields([
     try {
         const taskData = { company: companyId };
 
+        // Loop through uploaded files and upload each to ImageKit
         for (let key in req.files) {
             const file = req.files[key][0];
             const imageKitResponse = await uploadOnImageKit(file.path); // Use ImageKit upload function
             if (imageKitResponse) {
-                taskData[key] = imageKitResponse.url; // ImageKit returns a direct URL
+                taskData[key] = imageKitResponse.url; // Save the URL returned by ImageKit
             }
         }
 
         // Collect additional fields from request body
-        const { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state } = req.body;
+        const {
+            name, description, carNum, clientName, caseType, hptName,
+            sellerAlignedDate, buyerAlignedDate, NOCissuedDate,
+            NOCreceivedDate, fileReceivedDate, AdditionalWork,
+            HPA, transferDate, HandoverDate_RC, HandoverDate_NOC,
+            buyerName, buyerNum, sellerName, sellerNum,
+            buyer_RTO_location, seller_RTO_location, state
+        } = req.body;
 
-        // Add these fields to taskData
-        Object.assign(taskData, { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state });
+        // Convert RTO locations to strings if they are arrays
+        taskData.buyer_RTO_location = Array.isArray(buyer_RTO_location)
+            ? buyer_RTO_location.join(', ')
+            : buyer_RTO_location;
 
+        taskData.seller_RTO_location = Array.isArray(seller_RTO_location)
+            ? seller_RTO_location.join(', ')
+            : seller_RTO_location;
+
+        // Add the rest of the fields to taskData
+        Object.assign(taskData, {
+            name, description, carNum, clientName, caseType,
+            hptName, sellerAlignedDate, buyerAlignedDate,
+            NOCissuedDate, NOCreceivedDate, fileReceivedDate,
+            AdditionalWork, HPA, transferDate, HandoverDate_RC,
+            HandoverDate_NOC, buyerName, buyerNum, sellerName,
+            sellerNum, state
+        });
+
+        // Create and save the new task
         const newTask = new Task(taskData);
         await newTask.save();
+
+        // Link the task to the company
         await Company.findByIdAndUpdate(companyId, { $push: { tasks: newTask._id } });
 
         res.redirect('/tasks');
-
     } catch (error) {
         console.error('File upload failed:', error);
         res.status(500).json({ message: 'File upload failed', error });
     }
 });
+
+
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 }); 
