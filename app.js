@@ -12,10 +12,6 @@ const { Parser } = require('json2csv');
 const Admin = require('./models/admin');
 const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
-const twilio = require('twilio');
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = new twilio(accountSid, authToken);
 
 app.set("view engine", "ejs");
 app.use(express.json());
