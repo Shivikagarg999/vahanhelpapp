@@ -12,6 +12,10 @@ const { Parser } = require('json2csv');
 const Admin = require('./models/admin');
 const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
+const twilio = require('twilio');
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = new twilio(accountSid, authToken);
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -97,6 +101,8 @@ app.get("/tasks", async (req, res) => {
         res.status(500).send("Error fetching tasks.");
     }
 });
+
+
 app.get("/tasks/create", (req, res) => {
     const companyId = req.cookies.token;
     if (!companyId) {
@@ -255,6 +261,7 @@ app.get("/tasks/edit/:id", async (req, res) => {
     }
 })
 
+// Admin Task Edit Route
 app.get("/admin/tasks/edit/:id", isAdminLoggedIn, async (req, res) => {
     const taskId = req.params.id;
 
@@ -491,13 +498,46 @@ app.get('/tasks/download', async (req, res) => {
         const json2csvParser = new Parser();
         const csv = json2csvParser.parse(tasksData);
 
-        // Set the response headers to download the file
         res.header('Content-Type', 'text/csv');
         res.attachment('tasks.csv');
         res.send(csv);
     } catch (err) {
         console.error('Error downloading tasks:', err.message);
         res.status(500).send("Error downloading tasks.");
+    }
+});
+app.get('/admin-task-download', async (req, res) => {
+    try {
+        // Fetch all tasks from the database
+        const tasks = await Task.find();
+         
+        const fields = [
+            'name', 'description', 'carNum', 'clientName', 'caseType',
+            'hptName', 'sellerAlignedDate', 'buyerAlignedDate', 'NOCissuedDate', 'NOCreceivedDate',
+            'fileReceivedDate', 'AdditionalWork', 'HPA', 'transferDate', 'HandoverDate_RC',
+            'HandoverDate_NOC', 'buyerName', 'buyerNum', 'sellerName', 'sellerNum', 'buyer_RTO_location',
+            'seller_RTO_location', 'state', 'createdAt',   'sellerPhoto',
+            'buyerPhoto',
+            'sellerDocs',
+            'buyerDocs' ,
+            'carVideo',
+            'sellerVideo',
+            'careOfVideo',
+            'nocReceipt',
+            'transferReceipt'
+        ];
+
+        // Convert tasks JSON to CSV
+        const json2csvParser = new Parser({ fields });
+        const csv = json2csvParser.parse(tasks);
+
+        // Set headers and send the CSV file as a download
+        res.header('Content-Type', 'text/csv');
+        res.attachment('tasks.csv');
+        res.send(csv);
+    } catch (error) {
+        console.error('Error generating CSV:', error);
+        res.status(500).send('An error occurred while downloading the tasks.');
     }
 });
 
@@ -518,7 +558,6 @@ app.get('/upload', (req, res)=>{
     res.render('upload')
 })
 
-
 app.post('/upload', upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
     { name: 'buyerPhoto', maxCount: 1 },
@@ -538,58 +577,83 @@ app.post('/upload', upload.fields([
     try {
         const taskData = { company: companyId };
 
-        // Loop through uploaded files and upload each to ImageKit
         for (let key in req.files) {
             const file = req.files[key][0];
             const imageKitResponse = await uploadOnImageKit(file.path); // Use ImageKit upload function
             if (imageKitResponse) {
-                taskData[key] = imageKitResponse.url; // Save the URL returned by ImageKit
+                taskData[key] = imageKitResponse.url; // ImageKit returns a direct URL
             }
         }
 
         // Collect additional fields from request body
-        const {
-            name, description, carNum, clientName, caseType, hptName,
-            sellerAlignedDate, buyerAlignedDate, NOCissuedDate,
-            NOCreceivedDate, fileReceivedDate, AdditionalWork,
-            HPA, transferDate, HandoverDate_RC, HandoverDate_NOC,
-            buyerName, buyerNum, sellerName, sellerNum,
-            buyer_RTO_location, seller_RTO_location, state
-        } = req.body;
+        const { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state } = req.body;
 
-        // Convert RTO locations to strings if they are arrays
-        taskData.buyer_RTO_location = Array.isArray(buyer_RTO_location)
-            ? buyer_RTO_location.join(', ')
-            : buyer_RTO_location;
+        // Add these fields to taskData
+        Object.assign(taskData, { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state });
 
-        taskData.seller_RTO_location = Array.isArray(seller_RTO_location)
-            ? seller_RTO_location.join(', ')
-            : seller_RTO_location;
-
-        // Add the rest of the fields to taskData
-        Object.assign(taskData, {
-            name, description, carNum, clientName, caseType,
-            hptName, sellerAlignedDate, buyerAlignedDate,
-            NOCissuedDate, NOCreceivedDate, fileReceivedDate,
-            AdditionalWork, HPA, transferDate, HandoverDate_RC,
-            HandoverDate_NOC, buyerName, buyerNum, sellerName,
-            sellerNum, state
-        });
-
-        // Create and save the new task
         const newTask = new Task(taskData);
         await newTask.save();
-
-        // Link the task to the company
         await Company.findByIdAndUpdate(companyId, { $push: { tasks: newTask._id } });
 
         res.redirect('/tasks');
+
     } catch (error) {
         console.error('File upload failed:', error);
         res.status(500).json({ message: 'File upload failed', error });
     }
 });
 
+app.get('/setrem', async (req, res) => {
+    try {
+        const tasks = await Task.find().populate('company').sort({ createdAt: -1 }); // Sort by newest first
+        res.render("reminder", { tasks });
+    } catch (error) {
+        console.error('Error fetching task data:', error);
+        res.render('reminder', { task: null }); // Or handle as appropriate if task is missing
+    }
+});
+// app.get('/buyermsg', async (req, res) => {
+//     try {
+//         const tasks = await Task.find().populate('company').sort({ createdAt: -1 });
+
+//         // Example data for a single task (or loop through `tasks` to send for each one as needed)
+//         const customerName = "John Doe"; // Example name
+//         const carNum = "ABC1234"; // Example car number
+//         const buyer_RTO_location = "Mumbai RTO"; // Example RTO location
+//         const buyerAlignedDate = "2024-11-10 10:00 AM"; // Example date and time
+//         const customerPhoneNumber = "+911234567890"; // Replace with actual buyer's phone number
+
+//         const sendMessageToBuyer = async () => {
+//             const messageBody = `Hello ${customerName}!\n\n` +
+//                 `This is a reminder from VahanHelp. For the completion of your car's RC transfer process for ${carNum}, your physical presence along with the vehicle is required at the RTO.\n\n` +
+//                 `Details:\n\nRTO Location: ${buyer_RTO_location}\nDate and Time: ${buyerAlignedDate}\n` +
+//                 `Documents Needed: Please carry original ID proof and any additional documents provided by us.\n\n` +
+//                 `Please ensure your car is in a presentable condition as it will be inspected. Let us know if you have any questions.\n\nBest regards,\nVahanHelp Team`;
+
+//             await client.messages.create({
+//                 body: messageBody,
+//                 from: process.env.TWILIO_PHONE_NUMBER,
+//                 to: customerPhoneNumber  // Make sure this is defined and valid
+//             });
+//         };
+
+//         // Call the function to send the message
+//         await sendMessageToBuyer();
+
+//         res.render("reminder", { tasks });
+//     } catch (error) {
+//         console.error('Error fetching task data or sending message:', error);
+//         res.render('reminder', { tasks: null });
+//     }
+// });
+
+app.post('/save-json', (req, res) => {
+    const jsonData = req.body;
+    console.log(jsonData); // You can log or process the data here
+  
+    // Send a response
+    res.status(200).send('JSON data received');
+  });
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');
