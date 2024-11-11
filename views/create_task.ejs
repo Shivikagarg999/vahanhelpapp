@@ -747,12 +747,42 @@ input[type="checkbox"] {
         </div>
         <div class="form-group">
             <label for="status_NOC">Physical NOC status:</label>
-            <textarea name="status_NOC" id="status_NOC"></textarea>
+            <select name="status_NOC" id="status_NOC">
+                <option value="">Select Physical NOC Status</option>
+                <option value="NOC + RC - Pending From Vendor">NOC + RC - Pending From Vendor</option>
+                <option value="NOC Pending From Vendor">NOC Pending From Vendor</option>
+                <option value="NOC Delivered To The (TO) Vendor">NOC Delivered To The (TO) Vendor</option>
+                <option value="NOC + RC Delivered To The (TO) Vendor">NOC + RC Delivered To The (TO) Vendor</option>
+                <option value="Direct Dispatched From RTO">Direct Dispatched From RTO</option>
+                <option value="NOC Return Received for Correction">NOC Return Received for Correction</option>
+                <option value="NOC Returned To The Vendor for Correction">NOC Returned To The Vendor for Correction</option>
+                <option value="NOC Received_In Office">NOC Received_In Office</option>
+                <option value="NOC Delivered By Hand">NOC Delivered By Hand</option>
+                <option value="NOC Delivered To Runner">NOC Delivered To Runner</option>
+                <option value="NOC Dispatched - In Transit">NOC Dispatched - In Transit</option>
+                <option value="NOT APPLICABLE">NOT APPLICABLE</option>
+            </select>
         </div>
+        
         <div class="form-group">
             <label for="status_RC">Physical RC status:</label>
-            <textarea name="status_RC" id="status_RC"></textarea>
+            <select name="status_RC" id="status_RC">
+                <option value="">Select Physical RC Status</option>
+                <option value="RC Delivered To Client">RC Delivered To Client</option>
+                <option value="RC Pending From RTO Vendor">RC Pending From RTO Vendor</option>
+                <option value="NOC Pending From Vendor">NOC Pending From Vendor</option>
+                <option value="NOC Delivered To Client">NOC Delivered To Client</option>
+                <option value="NOT APPLICABLE">NOT APPLICABLE</option>
+                <option value="RC Received (In Office - NCR)">RC Received (In Office - NCR)</option>
+                <option value="NOC Received (In Office - NCR)">NOC Received (In Office - NCR)</option>
+                <option value="RC Handover To Buyer By Vendor">RC Handover To Buyer By Vendor</option>
+                <option value="RC TRANSFER PENDING YET">RC TRANSFER PENDING YET</option>
+                <option value="RC Handover To Buyer ( By Vahan Help )">RC Handover To Buyer ( By Vahan Help )</option>
+                <option value="RC Received (In Office - LKO)">RC Received (In Office - LKO)</option>
+                <option value="NOC Received (In Office - LKO)">NOC Received (In Office - LKO)</option>
+            </select>
         </div>
+        
         <!-- New fields for file uploads -->
         <div class="form-group">
             <label for="sellerPhoto">Upload Seller Photo:</label>
