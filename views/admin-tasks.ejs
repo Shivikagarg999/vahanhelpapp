@@ -166,13 +166,10 @@
         }
 
         @media (max-width: 480px) {
-            .task-details div strong {
-                width: 120px;
-            }
-
-            .task-card h2 {
+          
+            /* .task-card h2 {
                 font-size: 18px;
-            }
+            } */
 
             .task-actions a {
                 font-size: 12px;
@@ -197,6 +194,7 @@
                     <div><strong>Car Number:</strong> <%= task.carNum %></div>
                     <div><strong>Client Name:</strong> <%= task.clientName %></div>
                     <div><strong>Case Type:</strong> <%= task.caseType %></div>
+                    <div><strong>Task type:</strong> <%= task.name %></div>
                     <div><strong>HPT Name:</strong> <%= task.hptName %></div>
                     <div><strong>Seller Aligned Date:</strong> <%= task.sellerAlignedDate ? task.sellerAlignedDate.toISOString().split('T')[0] : 'N/A' %></div>
                     <div><strong>Buyer Aligned Date:</strong> <%= task.buyerAlignedDate ? task.buyerAlignedDate.toISOString().split('T')[0] : 'N/A' %></div>

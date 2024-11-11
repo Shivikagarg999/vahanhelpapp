@@ -307,7 +307,14 @@ input[type="checkbox"] {
                 <option value="Spinny Capital LTD">Spinny Capital LTD</option>
             </select>
         </div>
-        
+        <div class="form-group">
+            <label for="chesisnum">Chesis Number:</label>
+            <input type="text" name="chesisnum" id="chesisnum">
+        </div>
+        <div class="form-group">
+            <label for="engineNum">Engine Number:</label>
+            <input type="text" name="engineNum" id="engineNum">
+        </div>
         <div class="form-group">
             <label for="taskType" required>Task Type:</label>
             <select name="name" id="taskType">
@@ -725,10 +732,26 @@ input[type="checkbox"] {
             <label for="NOCreceivedDate">NOC recieved Date:</label>
             <input type="date" name="NOCreceivedDate" id="NOCreceivedDate">
         </div>
-
+        
         <div class="form-group">
-            <label for="description">Description:</label>
+            <label for="courier">Courier done Date:</label>
+            <input type="date" name="courier" id="courier">
+        </div>
+        <div class="form-group">
+            <label for="deliverdate">Deliver Date:</label>
+            <input type="date" name="deliverdate" id="deliverdate">
+        </div>
+        <div class="form-group">
+            <label for="description">Remarks:</label>
             <textarea name="description" id="description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="status_NOC">Physical NOC status:</label>
+            <textarea name="status_NOC" id="status_NOC"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="status_RC">Physical RC status:</label>
+            <textarea name="status_RC" id="status_RC"></textarea>
         </div>
         <!-- New fields for file uploads -->
         <div class="form-group">

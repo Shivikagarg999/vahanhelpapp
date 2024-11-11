@@ -157,7 +157,8 @@ app.post("/tasks/edit/:id", upload.fields([
         sellerNum, 
         buyer_RTO_location, 
         seller_RTO_location, 
-        state // Keep state for task status
+        chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
+        state
     } = req.body; 
 
     try {
@@ -185,7 +186,8 @@ app.post("/tasks/edit/:id", upload.fields([
             sellerNum, 
             buyer_RTO_location, 
             seller_RTO_location, 
-            state: state === "true" // Ensure state is boolean
+            state: state === "true", // Ensure state is boolean
+            chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
         };
 
         // Handle file uploads (if any)
@@ -299,41 +301,48 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
 
                         // Check for essential fields to avoid blank tasks
                         
-                            tasks.push({
-                                company: req.cookies.token,
-                                name,
-                                description,
-                                carNum: row.carNum?.trim(),
-                                clientName: row.clientName?.trim(),
-                                caseType: row.caseType?.trim(),
-                                hptName: row.hptName?.trim(),
-                                sellerAlignedDate: row.sellerAlignedDate ? new Date(row.sellerAlignedDate) : null,
-                                buyerAlignedDate: row.buyerAlignedDate ? new Date(row.buyerAlignedDate) : null,
-                                NOCissuedDate: row.NOCissuedDate ? new Date(row.NOCissuedDate) : null,
-                                NOCreceivedDate: row.NOCreceivedDate ? new Date(row.NOCreceivedDate) : null,
-                                fileReceivedDate: row.fileReceivedDate ? new Date(row.fileReceivedDate) : null,
-                                AdditionalWork: row.AdditionalWork?.trim(),
-                                HPA: row.HPA?.trim(),
-                                transferDate: row.transferDate ? new Date(row.transferDate) : null,
-                                HandoverDate_RC: row.HandoverDate_RC ? new Date(row.HandoverDate_RC) : null,
-                                HandoverDate_NOC: row.HandoverDate_NOC ? new Date(row.HandoverDate_NOC) : null,
-                                buyerName: row.buyerName?.trim(),
-                                buyerNum: row.buyerNum?.trim(),
-                                sellerName: row.sellerName?.trim(),
-                                sellerNum: row.sellerNum?.trim(),
-                                buyer_RTO_location: row.buyer_RTO_location?.trim(),
-                                seller_RTO_location: row.seller_RTO_location?.trim(),
-                                state: row.state === 'true', 
-                                sellerPhoto: task.sellerPhoto,
-                                buyerPhoto: task.buyerPhoto,
-                                sellerDocs: task.sellerDocs,
-                                buyerDocs: task.buyerDocs,
-                                carVideo: task.carVideo,
-                                sellerVideo: task.sellerVideo,
-                                careOfVideo: task.careOfVideo,
-                                nocReceipt: task.nocReceipt,
-                                transferReceipt: task.transferReceipt,
-                            });
+                        tasks.push({
+                            company: req.cookies.token,
+                            name: row.name?.trim(),
+                            description: row.description?.trim(),
+                            carNum: row.carNum?.trim(),
+                            clientName: row.clientName?.trim(),
+                            caseType: row.caseType?.trim(),
+                            hptName: row.hptName?.trim(),
+                            sellerAlignedDate: row.sellerAlignedDate ? new Date(row.sellerAlignedDate) : null,
+                            buyerAlignedDate: row.buyerAlignedDate ? new Date(row.buyerAlignedDate) : null,
+                            NOCissuedDate: row.NOCissuedDate ? new Date(row.NOCissuedDate) : null,
+                            NOCreceivedDate: row.NOCreceivedDate ? new Date(row.NOCreceivedDate) : null,
+                            fileReceivedDate: row.fileReceivedDate ? new Date(row.fileReceivedDate) : null,
+                            AdditionalWork: row.AdditionalWork?.trim(),
+                            HPA: row.HPA?.trim(),
+                            transferDate: row.transferDate ? new Date(row.transferDate) : null,
+                            HandoverDate_RC: row.HandoverDate_RC ? new Date(row.HandoverDate_RC) : null,
+                            HandoverDate_NOC: row.HandoverDate_NOC ? new Date(row.HandoverDate_NOC) : null,
+                            buyerName: row.buyerName?.trim(),
+                            buyerNum: row.buyerNum?.trim(),
+                            sellerName: row.sellerName?.trim(),
+                            sellerNum: row.sellerNum?.trim(),
+                            buyer_RTO_location: row.buyer_RTO_location?.trim(),
+                            seller_RTO_location: row.seller_RTO_location?.trim(),
+                            state: row.state === 'true',
+                            sellerPhoto: row.sellerPhoto, // Replace task.sellerPhoto with row.sellerPhoto
+                            buyerPhoto: row.buyerPhoto,   // Same for other fields
+                            sellerDocs: row.sellerDocs,
+                            buyerDocs: row.buyerDocs,
+                            carVideo: row.carVideo,
+                            sellerVideo: row.sellerVideo,
+                            careOfVideo: row.careOfVideo,
+                            nocReceipt: row.nocReceipt,
+                            transferReceipt: row.transferReceipt,
+                            chesisnum: task.chesisnum,
+                            engineNum: task.engineNum,
+                            status_RC: task.status_RC,
+                            status_NOC: task.status_NOC,
+                            deliverdate: task.deliverdate,
+                            courierdate: task.courier
+                        });
+                        
                         
                     })
                     .on('end', resolve)
@@ -488,6 +497,12 @@ app.get('/tasks/download', async (req, res) => {
             careOfVideo: task.careOfVideo,
             nocReceipt: task.nocReceipt ,
             transferReceipt: task.transferReceipt,
+            chesisnum: task.chesisnum,
+            engineNum: task.engineNum,
+             status_RC: task.status_RC,
+              status_NOC: task.status_NOC,
+              deliverdate: task.deliverdate,
+              courierdate: task.courier
         }));
 
         // Convert JSON to CSV
@@ -508,19 +523,22 @@ app.get('/admin-task-download', async (req, res) => {
         const tasks = await Task.find();
          
         const fields = [
-            'name', 'description', 'carNum', 'clientName', 'caseType',
-            'hptName', 'sellerAlignedDate', 'buyerAlignedDate', 'NOCissuedDate', 'NOCreceivedDate',
-            'fileReceivedDate', 'AdditionalWork', 'HPA', 'transferDate', 'HandoverDate_RC',
-            'HandoverDate_NOC', 'buyerName', 'buyerNum', 'sellerName', 'sellerNum', 'buyer_RTO_location',
-            'seller_RTO_location', 'state', 'createdAt',   'sellerPhoto',
+            'clientName', 'fileReceivedDate', 'carNum', 'caseType', 'AdditionalWork',
+            'hptName',  'HPA',  'seller_RTO_location', 'buyer_RTO_location', 'sellerName', 'sellerNum', 
+            'sellerAlignedDate',
+            'nocReceipt', 'NOCissuedDate', 'NOCreceivedDate', 'HandoverDate_NOC', 
+            'buyerName', 'buyerNum',  'buyerAlignedDate',  'name',
+            'transferReceipt' ,'description', 'transferDate',      
+            'HandoverDate_RC',
+            'state', 'createdAt',   
+            'sellerPhoto',
             'buyerPhoto',
             'sellerDocs',
             'buyerDocs' ,
             'carVideo',
             'sellerVideo',
-            'careOfVideo',
-            'nocReceipt',
-            'transferReceipt'
+            'careOfVideo', 'chesisnum', 'engineNum', 'status_RC', 'status_NOC', 'deliverdate', 'courier'
+
         ];
 
         // Convert tasks JSON to CSV
@@ -582,10 +600,10 @@ app.post('/upload', upload.fields([
         }
 
         // Collect additional fields from request body
-        const { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state } = req.body;
+        const { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state, chesisnum,engineNum, status_RC, status_NOC,deliverdate, courier } = req.body;
 
         // Add these fields to taskData
-        Object.assign(taskData, { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state });
+        Object.assign(taskData, { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state , chesisnum,engineNum, status_RC, status_NOC,deliverdate, courier});
 
         const newTask = new Task(taskData);
         await newTask.save();
@@ -608,40 +626,6 @@ app.get('/setrem', async (req, res) => {
         res.render('reminder', { task: null }); // Or handle as appropriate if task is missing
     }
 });
-// app.get('/buyermsg', async (req, res) => {
-//     try {
-//         const tasks = await Task.find().populate('company').sort({ createdAt: -1 });
-
-//         // Example data for a single task (or loop through `tasks` to send for each one as needed)
-//         const customerName = "John Doe"; // Example name
-//         const carNum = "ABC1234"; // Example car number
-//         const buyer_RTO_location = "Mumbai RTO"; // Example RTO location
-//         const buyerAlignedDate = "2024-11-10 10:00 AM"; // Example date and time
-//         const customerPhoneNumber = "+911234567890"; // Replace with actual buyer's phone number
-
-//         const sendMessageToBuyer = async () => {
-//             const messageBody = `Hello ${customerName}!\n\n` +
-//                 `This is a reminder from VahanHelp. For the completion of your car's RC transfer process for ${carNum}, your physical presence along with the vehicle is required at the RTO.\n\n` +
-//                 `Details:\n\nRTO Location: ${buyer_RTO_location}\nDate and Time: ${buyerAlignedDate}\n` +
-//                 `Documents Needed: Please carry original ID proof and any additional documents provided by us.\n\n` +
-//                 `Please ensure your car is in a presentable condition as it will be inspected. Let us know if you have any questions.\n\nBest regards,\nVahanHelp Team`;
-
-//             await client.messages.create({
-//                 body: messageBody,
-//                 from: process.env.TWILIO_PHONE_NUMBER,
-//                 to: customerPhoneNumber  // Make sure this is defined and valid
-//             });
-//         };
-
-//         // Call the function to send the message
-//         await sendMessageToBuyer();
-
-//         res.render("reminder", { tasks });
-//     } catch (error) {
-//         console.error('Error fetching task data or sending message:', error);
-//         res.render('reminder', { tasks: null });
-//     }
-// });
 
 app.post('/save-json', (req, res) => {
     const jsonData = req.body;

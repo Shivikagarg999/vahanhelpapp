@@ -161,7 +161,6 @@
         <div class="task-details">
             
             <p><strong>Client name:</strong> <span><%= task.clientName %></span></p>
-            
             <p><strong>File received date:</strong> <span><%= task.fileReceivedDate ? task.fileReceivedDate.toDateString() : 'N/A' %></span></p>
             <p><strong>Task type:</strong> <span><%= task.name %></span></p>
             <p><strong>Car Number:</strong> <span><%= task.carNum %></span></p>
@@ -169,6 +168,10 @@
             <p><strong>Additional work:</strong> <span><%= task.AdditionalWork %></span></p>
             <p><strong>HPT name:</strong> <span><%= task.hptName %></span></p>
             <p><strong>HPA:</strong> <span><%= task.HPA %></span></p>
+            <p><strong>RC status:</strong> <span><%= task.status_RC %></span></p>
+            <p><strong>NOC status:</strong> <span><%= task.status_NOC %></span></p>
+            <p><strong>Chesis number:</strong> <span><%= task.chesisnum %></span></p>
+            <p><strong>Engine number:</strong> <span><%= task.engineNum %></span></p>
             <p><strong>Seller Name:</strong> <span><%= task.sellerName %></span></p>
             <p><strong>Seller Number:</strong> <span><%= task.sellerNum %></span></p>
             <p><strong>Seller RTO Location:</strong> <span><%= task.seller_RTO_location %></span></p>
@@ -181,8 +184,9 @@
             <p><strong>Transfer Date:</strong> <span><%= task.transferDate ? task.transferDate.toDateString() : 'N/A' %></span></p>
             <p><strong>RC handover Date:</strong> <span><%= task.HandoverDate_RC ? task.HandoverDate_RC.toDateString() : 'N/A' %></span></p>
             <p><strong>NOC handover Date:</strong> <span><%= task.HandoverDate_NOC ? task.HandoverDate_NOC.toDateString() : 'N/A' %></span></p>       
-            <p><strong>NOC received Date:</strong> <span><%= task.NOCreceivedDate ? task.NOCreceivedDate.toDateString() : 'N/A' %></span></p>
-            <p><strong>Description:</strong> <span><%= task.description %></span></p>   
+            <p><strong>Deliver Date:</strong> <span><%= task. deliverdate ? task. deliverdate.toDateString() : 'N/A' %></span></p>
+            <p><strong>Courier done Date:</strong> <span><%= task.courier ? task.courier.toDateString() : 'N/A' %></span></p>
+            <p><strong>Remarks:</strong> <span><%= task.description %></span></p>   
             <p><strong>Status:</strong> <span><%= task && task.state ? 'Completed' : 'Pending' %></span></p>
             <p><strong>Seller Photo:</strong> <span>
                 <% if (task.sellerPhoto) { %>

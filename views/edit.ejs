@@ -83,19 +83,60 @@
     <div class="container">
         <h1>Edit Task</h1>
         <form action="/tasks/edit/<%= task._id %>" method="post"  enctype="multipart/form-data">
+            
+            <div class="form-group">
+                <label for="fileReceivedDate">File Received Date:</label>
+                <input type="date" id="fileReceivedDate" name="fileReceivedDate" value="<%= task.fileReceivedDate ? task.fileReceivedDate.toISOString().slice(0, 10) : '' %>">
+            </div>
             <div class="form-group">
                 <label for="taskType">Task Type:</label>
                 <select name="name" id="taskType">
-                    <option value="Seller PP aligned" <%= task.name === 'Seller PP aligned' ? 'selected' : '' %>>Seller party peshi aligned</option>
-                    <option value="Buyer party peshi aligned" <%= task.name === 'Buyer party peshi aligned' ? 'selected' : '' %>>Buyer party peshi aligned</option>
-                    <option value="Buyer party peshi pending" <%= task.name === 'Buyer party peshi pending' ? 'selected' : '' %>>Buyer party peshi pending</option>
-                    <option value="Seller party peshi pending" <%= task.name === 'Seller party peshi pending' ? 'selected' : '' %>>Seller party peshi pending</option>
-                    <option value="File in RTO" <%= task.name === 'File in RTO' ? 'selected' : '' %>>File in RTO</option>
-                    <option value="File in transit" <%= task.name === 'File in transit' ? 'selected' : '' %>>File in transit</option>
-                    <option value="Car Seen Pending" <%= task.name === 'Car Seen Pending' ? 'selected' : '' %>>Car Seen Pending</option>
-                    <option value="Chalaan pending" <%= task.name === 'Challan pending' ? 'selected' : '' %>>Chalaan pending</option>
+                    <option value="None">None</option>
+                    <option value="SELLER_PP_PENDING">SELLER_PP PENDING</option>
+                    <option value="BUYER_PP_PENDING">BUYER_PP PENDING</option>
+                    <option value="SELLER_CAR_SEEN_PENDING">SELLER_CAR SEEN PENDING</option>
+                    <option value="BUYER_CAR_SEEN_PENDING">BUYER_CAR SEEN PENDING</option>
+                    <option value="DOCS_PENDING">DOCS PENDING</option>
+                    <option value="CHALLAN_PENDING">CHALLAN PENDING</option>
+                    <option value="HPA_ENDORSEMENT_PENDING">HPA ENDORSEMENT PENDING</option>
+                    <option value="FILE_IN_RTO_NO_PENDENCY">FILE IN RTO_(No Pendency)</option>
+                    <option value="FILE_TO_BE_RETURNED">FILE TO BE RETURNED</option>
+                    <option value="RTO_NOT_FUNCTIONING">RTO_NOT_FUNCTIONING</option>
+                    <option value="HSRP_NOT_UPDATED">HSRP NOT UPDATE</option>
+                    <option value="EURO_MODIFICATION_PENDING">EURO MODIFICATION PENDING</option>
+                    <option value="FILE_HOLD_BY_CLIENT">FILE HOLD BY CLIENT</option>
+                    <option value="FILE_ALLOCATION_PENDING">FILE ALLOCATION PENDING</option>
+                    <option value="HPT_MAIL_PENDING_SELLER">HPT MAIL PENDING_SELLER</option>
+                    <option value="NOC_ISSUED_PICKUP_PENDING">NOC ISSUED_PICKUP PENDING</option>
+                    <option value="CAR_SEEN_PENDING_BUYER">CAR SEEN PENDING _ BUYER</option>
+                    <option value="CAR_SEEN_PENDING_SELLER">CAR SEEN PENDING _ SELLER</option>
+                    <option value="SELLER_VIDEO_LETTER_HEAD_PENDING">SELLER VIDEO / LETTER HEAD PENDING</option>
+                    <option value="SELLER_DELAY_PP">SELLER DELAY (P.P)</option>
+                    <option value="BUYER_DELAY_PP">BUYER DELAY (P.P)</option>
+                    <option value="SELLER_VIDEO_PENDING_LHEAD_RECEIVED">SELLER VIDEO PENDING (L.HEAD RECEIVED)</option>
+                    <option value="STUCK_CASE">STUCK CASE</option>
+                    <option value="FILE_IN_TRANSIT">FILE IN TRANSIT</option>
+                    <option value="SELLER_NOT_RESPONDING">SELLER_NOT RESPONDING</option>
+                    <option value="NOT_REACHABLE_SWITCH_OFF_PP_PENDING">NOT REACHABLE/SWITCH OFF- PP Pending</option>
+                    <option value="SELLER_NOT_ALIGNED_FOR_PP">SELLER NOT ALIGNED FOR PP</option>
+                    <option value="NOT_ALIGNED_BUYER_CAR_SEEN">NOT ALIGNED BUYER CAR SEEN</option>
+                    <option value="BUYER_NOT_ALIGNED_FOR_PP">BUYER NOT ALIGNED FOR PP</option>
+                    <option value="CARE_OF_VIDEO_PENDING">CARE OF VIDEO PENDING</option>
+                    <option value="SELLER_DEATH_CASE">SELLER DEATH CASE</option>
+                    <option value="WO_BUYER_CAR_VIDEO_PENDING">W/O_BUYER - CAR VIDEO PENDING</option>
+                    <option value="NOC_IN_CORRECTION">NOC IN CORRECTION</option>
+                    <option value="NO_UPDATE_APPROVAL_PENDING_CLIENT">No Update Approval Pending - Client</option>
+                    <option value="BLACKLIST">Blacklist</option>
+                    <option value="FILE_FNT">File FNT</option>
+                    <option value="TAX_PENDING">TAX PENDING</option>
+                    <option value="SELLER_PP_ALIGNED">SELLER_PP_ALIGNED</option>
+                    <option value="BUYER_PP_ALIGNED">BUYER_PP_ALIGNED</option>
+                    <option value="BUYER_CAR_SEEN_ALIGNED">BUYER CAR SEEN ALIGNED</option>
+                    <option value="SELLER_VIDEO_CALL_ALIGNED">SELLER VIDEO CALL ALIGNED</option>
+                    <option value="FILE_RETURNED">FILE RETURNED</option>
+                    <option value="HPA_MAIL_PENDING_BUYER">HPA MAIL PENDING_BUYER</option>
+                    <option value="CNG_CASE">CNG CASE</option>
                 </select>
-           
             
             </div>
             <div class="form-group">
@@ -115,6 +156,14 @@
                 <input type="text" id="hptName" name="hptName" value="<%= task.hptName %>">
             </div>
             <div class="form-group">
+                <label for="chesisnum">Chesis Number:</label>
+                <input type="text" name="chesisnum" id="chesisnum">
+            </div>
+            <div class="form-group">
+                <label for="engineNum">Engine Number:</label>
+                <input type="text" name="engineNum" id="engineNum">
+            </div>
+            <div class="form-group">
                 <label for="sellerAlignedDate">Seller Aligned Date:</label>
                 <input type="date" id="sellerAlignedDate" name="sellerAlignedDate" value="<%= task.sellerAlignedDate ? task.sellerAlignedDate.toISOString().slice(0, 10) : '' %>">
             </div>
@@ -131,8 +180,12 @@
                 <input type="date" id="NOCreceivedDate" name="NOCreceivedDate" value="<%= task.NOCreceivedDate ? task.NOCreceivedDate.toISOString().slice(0, 10) : '' %>">
             </div>
             <div class="form-group">
-                <label for="fileReceivedDate">File Received Date:</label>
-                <input type="date" id="fileReceivedDate" name="fileReceivedDate" value="<%= task.fileReceivedDate ? task.fileReceivedDate.toISOString().slice(0, 10) : '' %>">
+                <label for="courier">Courier done Date:</label>
+                <input type="date" name="courier" id="courier">
+            </div>
+            <div class="form-group">
+                <label for="deliverdate">Deliver Date:</label>
+                <input type="date" name="deliverdate" id="deliverdate">
             </div>
             <div class="form-group">
                 <label for="AdditionalWork">Additional Work:</label>

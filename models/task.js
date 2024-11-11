@@ -40,7 +40,15 @@ const taskSchema = mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-    }
+    },
+    task1agentname: String,
+    task2agentname: String,
+    chesisnum: String,
+    engineNum: String,
+    status_RC: String,
+    status_NOC: String,
+    deliverdate: Date,
+    courier: Date
 });
 
 module.exports = mongoose.model('task', taskSchema);
