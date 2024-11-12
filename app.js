@@ -166,10 +166,10 @@ app.post("/tasks/edit/:id", upload.fields([
         seller_RTO_location, 
         chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
         state
-    } = req.body; 
+    } = req.body;
 
     try {
-        // Prepare task data from the form fields
+        // Convert arrays to strings if they exist
         const taskData = { 
             name, 
             description, 
@@ -191,8 +191,8 @@ app.post("/tasks/edit/:id", upload.fields([
             buyerNum, 
             sellerName, 
             sellerNum, 
-            buyer_RTO_location, 
-            seller_RTO_location, 
+            buyer_RTO_location: Array.isArray(buyer_RTO_location) ? buyer_RTO_location.join(", ") : buyer_RTO_location, 
+            seller_RTO_location: Array.isArray(seller_RTO_location) ? seller_RTO_location.join(", ") : seller_RTO_location, 
             state: state === "true", // Ensure state is boolean
             chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
         };
@@ -217,6 +217,7 @@ app.post("/tasks/edit/:id", upload.fields([
         res.status(500).send("Error updating task.");
     }
 });
+
 
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;
