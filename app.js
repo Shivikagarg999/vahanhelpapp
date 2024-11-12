@@ -111,14 +111,21 @@ app.get('/tasks/search', async (req, res) => {
     const { carNum } = req.query;
     let tasks;
 
-    if (carNum) {
-        tasks = await Task.find({ carNum: new RegExp(carNum, 'i') });
-    } else {
-        tasks = await Task.find();
-    }
+    try {
+        if (carNum) {
+            // Perform a case-sensitive search by removing the 'i' flag
+            tasks = await Task.find({ carNum: new RegExp(`^${carNum}$`) });
+        } else {
+            tasks = await Task.find();
+        }
 
-    res.render('tasks', { tasks });
+        res.render('tasks', { tasks });
+    } catch (err) {
+        console.error("Error fetching tasks:", err);
+        res.status(500).send("Error fetching tasks.");
+    }
 });
+
 
 app.post("/tasks/edit/:id", upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
@@ -276,6 +283,38 @@ app.get("/admin/tasks/edit/:id", isAdminLoggedIn, async (req, res) => {
         return res.status(500).render("error", { message: "An error occurred while fetching the task" });
     }
 });
+app.post("/admin/tasks/edit/:id", async (req, res) => {
+    const taskId = req.params.id;
+
+    // Destructure the required fields from req.body
+    const { 
+        carNum, 
+        task1agentname, 
+        task2agentname, 
+        description, 
+        state 
+    } = req.body;
+
+    try {
+        // Prepare task data with only the required fields
+        const taskData = { 
+            carNum, 
+            task1agentname, 
+            task2agentname, 
+            description, 
+            state: state === "true" // Ensure state is boolean
+        };
+
+        // Update the task with new data
+        await Task.findByIdAndUpdate(taskId, taskData);
+
+        // Redirect to the admin tasks page after updating
+        res.redirect("/admin-tasks");
+    } catch (err) {
+        console.error('Error updating task:', err.message);
+        res.status(500).send("Error updating task.");
+    }
+});
 
 
 app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
@@ -303,7 +342,7 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
                         
                         tasks.push({
                             company: req.cookies.token,
-                            name: row.name?.trim(),
+                            tasktype: row.name?.trim(),
                             description: row.description?.trim(),
                             carNum: row.carNum?.trim(),
                             clientName: row.clientName?.trim(),
@@ -326,8 +365,8 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
                             buyer_RTO_location: row.buyer_RTO_location?.trim(),
                             seller_RTO_location: row.seller_RTO_location?.trim(),
                             state: row.state === 'true',
-                            sellerPhoto: row.sellerPhoto, // Replace task.sellerPhoto with row.sellerPhoto
-                            buyerPhoto: row.buyerPhoto,   // Same for other fields
+                            sellerPhoto: row.sellerPhoto,
+                            buyerPhoto: row.buyerPhoto,  
                             sellerDocs: row.sellerDocs,
                             buyerDocs: row.buyerDocs,
                             carVideo: row.carVideo,
@@ -335,12 +374,12 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
                             careOfVideo: row.careOfVideo,
                             nocReceipt: row.nocReceipt,
                             transferReceipt: row.transferReceipt,
-                            chesisnum: task.chesisnum,
-                            engineNum: task.engineNum,
-                            status_RC: task.status_RC,
-                            status_NOC: task.status_NOC,
-                            deliverdate: task.deliverdate,
-                            courierdate: task.courier
+                            chesisnum: row.chesisnum,
+                            engineNum: row.engineNum,
+                            status_RC: row.status_RC,
+                            status_NOC: row.status_NOC,
+                            deliverdate: row.deliverdate,
+                            courierdate: row.courier
                         });
                         
                         

@@ -81,15 +81,147 @@
 </head>
 <body>
     <div class="container">
-        <h1>Edit Task</h1>
-        <form action="/tasks/edit/<%= task._id %>" method="post">
+        <h1> Admin Task Edit</h1>
+        <form action="/admin/tasks/edit/<%= task._id %>" method="post">
+        
             <div class="form-group">
-                <label for="carNum">Car Number:</label>
-                <input type="text" id="carNum" name="carNum" value="<%= task.carNum %>" required>
+                <label for="task1agentname">Task-1 Agent name(Seller):</label>
+                <select id="task1agentname" name="task1agentname">
+                    <option value="None" <%= task.task1agentname === 'None' ? 'selected' : '' %>>None</option>
+                    <option value="Aejaj_176" <%= task.task1agentname === 'Aejaj_176' ? 'selected' : '' %>>Aejaj_176</option>
+                    <option value="LALIT muzaffarnagar" <%= task.task1agentname === 'LALIT muzaffarnagar' ? 'selected' : '' %>>LALIT muzaffarnagar</option>
+                    <option value="NA (Not Applicable)" <%= task.task1agentname === 'NA (Not Applicable)' ? 'selected' : '' %>>NA (Not Applicable)</option>
+                    <option value="Neeraj Kumar Gupta (Hapur)" <%= task.task1agentname === 'Neeraj Kumar Gupta (Hapur)' ? 'selected' : '' %>>Neeraj Kumar Gupta (Hapur)</option>
+                    <option value="OLD CASES (Data Not Found)" <%= task.task1agentname === 'OLD CASES (Data Not Found)' ? 'selected' : '' %>>OLD CASES (Data Not Found)</option>
+                    <option value="Puneet Sir" <%= task.task1agentname === 'Puneet Sir' ? 'selected' : '' %>>Puneet Sir</option>
+                    <option value="VINOD KUSHWAHA" <%= task.task1agentname === 'VINOD KUSHWAHA' ? 'selected' : '' %>>VINOD KUSHWAHA</option>
+                    <option value="Aarush_101" <%= task.task1agentname === 'Aarush_101' ? 'selected' : '' %>>Aarush_101</option>
+                    <option value="Abhay _102" <%= task.task1agentname === 'Abhay _102' ? 'selected' : '' %>>Abhay _102</option>
+                    <option value="Ahsaan _103" <%= task.task1agentname === 'Ahsaan _103' ? 'selected' : '' %>>Ahsaan _103</option>
+                    <option value="Akshay _104" <%= task.task1agentname === 'Akshay _104' ? 'selected' : '' %>>Akshay _104</option>
+                    <option value="Aman _105" <%= task.task1agentname === 'Aman _105' ? 'selected' : '' %>>Aman _105</option>
+                    <option value="Anil Kumar _106" <%= task.task1agentname === 'Anil Kumar _106' ? 'selected' : '' %>>Anil Kumar _106</option>
+                    <option value="Armaan _107" <%= task.task1agentname === 'Armaan _107' ? 'selected' : '' %>>Armaan _107</option>
+                    <option value="Baburam _108" <%= task.task1agentname === 'Baburam _108' ? 'selected' : '' %>>Baburam _108</option>
+                    <option value="Bharat _109" <%= task.task1agentname === 'Bharat _109' ? 'selected' : '' %>>Bharat _109</option>
+                    <option value="Deepak _110" <%= task.task1agentname === 'Deepak _110' ? 'selected' : '' %>>Deepak _110</option>
+                    <option value="Dinesh Mahoba _111" <%= task.task1agentname === 'Dinesh Mahoba _111' ? 'selected' : '' %>>Dinesh Mahoba _111</option>
+                    <option value="Dinesh Rana _112" <%= task.task1agentname === 'Dinesh Rana _112' ? 'selected' : '' %>>Dinesh Rana _112</option>
+                    <option value="Gaurav _113" <%= task.task1agentname === 'Gaurav _113' ? 'selected' : '' %>>Gaurav _113</option>
+                    <option value="Gopal Pilibhit _114" <%= task.task1agentname === 'Gopal Pilibhit _114' ? 'selected' : '' %>>Gopal Pilibhit _114</option>
+                    <option value="Gopal Sharma _115" <%= task.task1agentname === 'Gopal Sharma _115' ? 'selected' : '' %>>Gopal Sharma _115</option>
+                    <option value="Gurvinder _116" <%= task.task1agentname === 'Gurvinder _116' ? 'selected' : '' %>>Gurvinder _116</option>
+                    <option value="Harish _117" <%= task.task1agentname === 'Harish _117' ? 'selected' : '' %>>Harish _117</option>
+                    <option value="Jay tomar _118" <%= task.task1agentname === 'Jay tomar _118' ? 'selected' : '' %>>Jay tomar _118</option>
+                    <option value="Jitender Raebareli _120" <%= task.task1agentname === 'Jitender Raebareli _120' ? 'selected' : '' %>>Jitender Raebareli _120</option>
+                    <option value="Kulbhushan _121" <%= task.task1agentname === 'Kulbhushan _121' ? 'selected' : '' %>>Kulbhushan _121</option>
+                    <option value="Mahendra _122" <%= task.task1agentname === 'Mahendra _122' ? 'selected' : '' %>>Mahendra _122</option>
+                    <option value="Manjeet _123" <%= task.task1agentname === 'Manjeet _123' ? 'selected' : '' %>>Manjeet _123</option>
+                    <option value="Manphool _124" <%= task.task1agentname === 'Manphool _124' ? 'selected' : '' %>>Manphool _124</option>
+                    <option value="Mohan _125" <%= task.task1agentname === 'Mohan _125' ? 'selected' : '' %>>Mohan _125</option>
+                    <option value="Mukesh _126" <%= task.task1agentname === 'Mukesh _126' ? 'selected' : '' %>>Mukesh _126</option>
+                    <option value="Neeraj Gupta _127" <%= task.task1agentname === 'Neeraj Gupta _127' ? 'selected' : '' %>>Neeraj Gupta _127</option>
+                    <option value="Nikhil _128" <%= task.task1agentname === 'Nikhil _128' ? 'selected' : '' %>>Nikhil _128</option>
+                    <option value="Pappu _129" <%= task.task1agentname === 'Pappu _129' ? 'selected' : '' %>>Pappu _129</option>
+                    <option value="Pawan _130" <%= task.task1agentname === 'Pawan _130' ? 'selected' : '' %>>Pawan _130</option>
+                    <option value="Pradeep _131" <%= task.task1agentname === 'Pradeep _131' ? 'selected' : '' %>>Pradeep _131</option>
+                    <option value="Praveen _132" <%= task.task1agentname === 'Praveen _132' ? 'selected' : '' %>>Praveen _132</option>
+                    <option value="Radhakant _133" <%= task.task1agentname === 'Radhakant _133' ? 'selected' : '' %>>Radhakant _133</option>
+                    <option value="Raj Jhansi _134" <%= task.task1agentname === 'Raj Jhansi _134' ? 'selected' : '' %>>Raj Jhansi _134</option>
+                    <option value="Rajesh _135" <%= task.task1agentname === 'Rajesh _135' ? 'selected' : '' %>>Rajesh _135</option>
+                    <option value="Rajkumar _136" <%= task.task1agentname === 'Rajkumar _136' ? 'selected' : '' %>>Rajkumar _136</option>
+                    <option value="Raman _137" <%= task.task1agentname === 'Raman _137' ? 'selected' : '' %>>Raman _137</option>
+                    <option value="Ramji Lal _138" <%= task.task1agentname === 'Ramji Lal _138' ? 'selected' : '' %>>Ramji Lal _138</option>
+                    <option value="Rinku _139" <%= task.task1agentname === 'Rinku _139' ? 'selected' : '' %>>Rinku _139</option>
+                    <option value="Rishu Yadav _140" <%= task.task1agentname === 'Rishu Yadav _140' ? 'selected' : '' %>>Rishu Yadav _140</option>
+                    <option value="Rohit _141" <%= task.task1agentname === 'Rohit _141' ? 'selected' : '' %>>Rohit _141</option>
+                    <option value="Sandeep _142" <%= task.task1agentname === 'Sandeep _142' ? 'selected' : '' %>>Sandeep _142</option>
+                    <option value="Sanju _143" <%= task.task1agentname === 'Sanju _143' ? 'selected' : '' %>>Sanju _143</option>
+                    <option value="Sanjay _144" <%= task.task1agentname === 'Sanjay _144' ? 'selected' : '' %>>Sanjay _144</option>
+                    <option value="Saurabh _145" <%= task.task1agentname === 'Saurabh _145' ? 'selected' : '' %>>Saurabh _145</option>
+                    <option value="Shah Rukh _146" <%= task.task1agentname === 'Shah Rukh _146' ? 'selected' : '' %>>Shah Rukh _146</option>
+                    <option value="Shiv Kumar _147" <%= task.task1agentname === 'Shiv Kumar _147' ? 'selected' : '' %>>Shiv Kumar _147</option>
+                    <option value="Shravan _148" <%= task.task1agentname === 'Shravan _148' ? 'selected' : '' %>>Shravan _148</option>
+                    <option value="Sonu _149" <%= task.task1agentname === 'Sonu _149' ? 'selected' : '' %>>Sonu _149</option>
+                    <option value="Sunil Kumar _150" <%= task.task1agentname === 'Sunil Kumar _150' ? 'selected' : '' %>>Sunil Kumar _150</option>
+                    <option value="Suraj _151" <%= task.task1agentname === 'Suraj _151' ? 'selected' : '' %>>Suraj _151</option>
+                    <option value="Tarun _152" <%= task.task1agentname === 'Tarun _152' ? 'selected' : '' %>>Tarun _152</option>
+                    <option value="Uday _153" <%= task.task1agentname === 'Uday _153' ? 'selected' : '' %>>Uday _153</option>
+                    <option value="Vijay _154" <%= task.task1agentname === 'Vijay _154' ? 'selected' : '' %>>Vijay _154</option>
+                    <option value="Vinay _155" <%= task.task1agentname === 'Vinay _155' ? 'selected' : '' %>>Vinay _155</option>
+                    <option value="Yogesh _156" <%= task.task1agentname === 'Yogesh _156' ? 'selected' : '' %>>Yogesh _156</option>
+                    <option value="Zaid _157" <%= task.task1agentname === 'Zaid _157' ? 'selected' : '' %>>Zaid _157</option>
+                </select>
             </div>
+            
             <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4" required><%= task.description %></textarea>
+                <label for="task2agentname">Task-2 Agent name(Buyer):</label>
+                <select id="task2agentname" name="task2agentname">
+                    <option value="None" <%= task.task2agentname === 'None' ? 'selected' : '' %>>None</option>
+                    <option value="Aejaj_176" <%= task.task2agentname === 'Aejaj_176' ? 'selected' : '' %>>Aejaj_176</option>
+                    <option value="LALIT muzaffarnagar" <%= task.task2agentname === 'LALIT muzaffarnagar' ? 'selected' : '' %>>LALIT muzaffarnagar</option>
+                    <option value="NA (Not Applicable)" <%= task.task2agentname === 'NA (Not Applicable)' ? 'selected' : '' %>>NA (Not Applicable)</option>
+                    <option value="Neeraj Kumar Gupta (Hapur)" <%= task.task2agentname === 'Neeraj Kumar Gupta (Hapur)' ? 'selected' : '' %>>Neeraj Kumar Gupta (Hapur)</option>
+                    <option value="OLD CASES (Data Not Found)" <%= task.task2agentname === 'OLD CASES (Data Not Found)' ? 'selected' : '' %>>OLD CASES (Data Not Found)</option>
+                    <option value="Puneet Sir" <%= task.task2agentname === 'Puneet Sir' ? 'selected' : '' %>>Puneet Sir</option>
+                    <option value="VINOD KUSHWAHA" <%= task.task2agentname === 'VINOD KUSHWAHA' ? 'selected' : '' %>>VINOD KUSHWAHA</option>
+                    <option value="Aarush_101" <%= task.task2agentname === 'Aarush_101' ? 'selected' : '' %>>Aarush_101</option>
+                    <option value="Abhay _102" <%= task.task2agentname === 'Abhay _102' ? 'selected' : '' %>>Abhay _102</option>
+                    <option value="Ahsaan _103" <%= task.task2agentname === 'Ahsaan _103' ? 'selected' : '' %>>Ahsaan _103</option>
+                    <option value="Akshay _104" <%= task.task2agentname === 'Akshay _104' ? 'selected' : '' %>>Akshay _104</option>
+                    <option value="Aman _105" <%= task.task2agentname === 'Aman _105' ? 'selected' : '' %>>Aman _105</option>
+                    <option value="Anil Kumar _106" <%= task.task2agentname === 'Anil Kumar _106' ? 'selected' : '' %>>Anil Kumar _106</option>
+                    <option value="Armaan _107" <%= task.task2agentname === 'Armaan _107' ? 'selected' : '' %>>Armaan _107</option>
+                    <option value="Baburam _108" <%= task.task2agentname === 'Baburam _108' ? 'selected' : '' %>>Baburam _108</option>
+                    <option value="Bharat _109" <%= task.task2agentname === 'Bharat _109' ? 'selected' : '' %>>Bharat _109</option>
+                    <option value="Deepak _110" <%= task.task2agentname === 'Deepak _110' ? 'selected' : '' %>>Deepak _110</option>
+                    <option value="Dinesh Mahoba _111" <%= task.task2agentname === 'Dinesh Mahoba _111' ? 'selected' : '' %>>Dinesh Mahoba _111</option>
+                    <option value="Dinesh Rana _112" <%= task.task2agentname === 'Dinesh Rana _112' ? 'selected' : '' %>>Dinesh Rana _112</option>
+                    <option value="Gaurav _113" <%= task.task2agentname === 'Gaurav _113' ? 'selected' : '' %>>Gaurav _113</option>
+                    <option value="Gopal Pilibhit _114" <%= task.task2agentname === 'Gopal Pilibhit _114' ? 'selected' : '' %>>Gopal Pilibhit _114</option>
+                    <option value="Gopal Sharma _115" <%= task.task2agentname === 'Gopal Sharma _115' ? 'selected' : '' %>>Gopal Sharma _115</option>
+                    <option value="Gurvinder _116" <%= task.task2agentname === 'Gurvinder _116' ? 'selected' : '' %>>Gurvinder _116</option>
+                    <option value="Harish _117" <%= task.task2agentname === 'Harish _117' ? 'selected' : '' %>>Harish _117</option>
+                    <option value="Jay tomar _118" <%= task.task2agentname === 'Jay tomar _118' ? 'selected' : '' %>>Jay tomar _118</option>
+                    <option value="Jitender Raebareli _120" <%= task.task2agentname === 'Jitender Raebareli _120' ? 'selected' : '' %>>Jitender Raebareli _120</option>
+                    <option value="Kulbhushan _121" <%= task.task2agentname === 'Kulbhushan _121' ? 'selected' : '' %>>Kulbhushan _121</option>
+                    <option value="Mahendra _122" <%= task.task2agentname === 'Mahendra _122' ? 'selected' : '' %>>Mahendra _122</option>
+                    <option value="Manjeet _123" <%= task.task2agentname === 'Manjeet _123' ? 'selected' : '' %>>Manjeet _123</option>
+                    <option value="Manphool _124" <%= task.task2agentname === 'Manphool _124' ? 'selected' : '' %>>Manphool _124</option>
+                    <option value="Mohan _125" <%= task.task2agentname === 'Mohan _125' ? 'selected' : '' %>>Mohan _125</option>
+                    <option value="Mukesh _126" <%= task.task2agentname === 'Mukesh _126' ? 'selected' : '' %>>Mukesh _126</option>
+                    <option value="Neeraj Gupta _127" <%= task.task2agentname === 'Neeraj Gupta _127' ? 'selected' : '' %>>Neeraj Gupta _127</option>
+                    <option value="Nikhil _128" <%= task.task2agentname === 'Nikhil _128' ? 'selected' : '' %>>Nikhil _128</option>
+                    <option value="Pappu _129" <%= task.task2agentname === 'Pappu _129' ? 'selected' : '' %>>Pappu _129</option>
+                    <option value="Pawan _130" <%= task.task2agentname === 'Pawan _130' ? 'selected' : '' %>>Pawan _130</option>
+                    <option value="Pradeep _131" <%= task.task2agentname === 'Pradeep _131' ? 'selected' : '' %>>Pradeep _131</option>
+                    <option value="Praveen _132" <%= task.task2agentname === 'Praveen _132' ? 'selected' : '' %>>Praveen _132</option>
+                    <option value="Radhakant _133" <%= task.task2agentname === 'Radhakant _133' ? 'selected' : '' %>>Radhakant _133</option>
+                    <option value="Raj Jhansi _134" <%= task.task2agentname === 'Raj Jhansi _134' ? 'selected' : '' %>>Raj Jhansi _134</option>
+                    <option value="Rajesh _135" <%= task.task2agentname === 'Rajesh _135' ? 'selected' : '' %>>Rajesh _135</option>
+                    <option value="Rajkumar _136" <%= task.task2agentname === 'Rajkumar _136' ? 'selected' : '' %>>Rajkumar _136</option>
+                    <option value="Raman _137" <%= task.task2agentname === 'Raman _137' ? 'selected' : '' %>>Raman _137</option>
+                    <option value="Ramji Lal _138" <%= task.task2agentname === 'Ramji Lal _138' ? 'selected' : '' %>>Ramji Lal _138</option>
+                    <option value="Rinku _139" <%= task.task2agentname === 'Rinku _139' ? 'selected' : '' %>>Rinku _139</option>
+                    <option value="Rishu Yadav _140" <%= task.task2agentname === 'Rishu Yadav _140' ? 'selected' : '' %>>Rishu Yadav _140</option>
+                    <option value="Rohit _141" <%= task.task2agentname === 'Rohit _141' ? 'selected' : '' %>>Rohit _141</option>
+                    <option value="Sandeep _142" <%= task.task2agentname === 'Sandeep _142' ? 'selected' : '' %>>Sandeep _142</option>
+                    <option value="Sanju _143" <%= task.task2agentname === 'Sanju _143' ? 'selected' : '' %>>Sanju _143</option>
+                    <option value="Sanjay _144" <%= task.task2agentname === 'Sanjay _144' ? 'selected' : '' %>>Sanjay _144</option>
+                    <option value="Saurabh _145" <%= task.task2agentname === 'Saurabh _145' ? 'selected' : '' %>>Saurabh _145</option>
+                    <option value="Shah Rukh _146" <%= task.task2agentname === 'Shah Rukh _146' ? 'selected' : '' %>>Shah Rukh _146</option>
+                    <option value="Shiv Kumar _147" <%= task.task2agentname === 'Shiv Kumar _147' ? 'selected' : '' %>>Shiv Kumar _147</option>
+                    <option value="Shravan _148" <%= task.task2agentname === 'Shravan _148' ? 'selected' : '' %>>Shravan _148</option>
+                    <option value="Sonu _149" <%= task.task2agentname === 'Sonu _149' ? 'selected' : '' %>>Sonu _149</option>
+                    <option value="Sunil Kumar _150" <%= task.task2agentname === 'Sunil Kumar _150' ? 'selected' : '' %>>Sunil Kumar _150</option>
+                    <option value="Suraj _151" <%= task.task2agentname === 'Suraj _151' ? 'selected' : '' %>>Suraj _151</option>
+                    <option value="Tarun _152" <%= task.task2agentname === 'Tarun _152' ? 'selected' : '' %>>Tarun _152</option>
+                    <option value="Uday _153" <%= task.task2agentname === 'Uday _153' ? 'selected' : '' %>>Uday _153</option>
+                    <option value="Vijay _154" <%= task.task2agentname === 'Vijay _154' ? 'selected' : '' %>>Vijay _154</option>
+                    <option value="Vinay _155" <%= task.task2agentname === 'Vinay _155' ? 'selected' : '' %>>Vinay _155</option>
+                    <option value="Yogesh _156" <%= task.task2agentname === 'Yogesh _156' ? 'selected' : '' %>>Yogesh _156</option>
+                    <option value="Zaid _157" <%= task.task2agentname === 'Zaid _157' ? 'selected' : '' %>>Zaid _157</option>
+                </select>      
             </div>
             <div class="form-group">
                 <label for="state">Status:</label>

@@ -225,12 +225,321 @@
             </div>
             <div class="form-group">
                 <label for="buyer_RTO_location">Buyer RTO location:</label>
-                <input type="text" id="buyer_RTO_location" name="buyer_RTO_location" value="<%= task.buyer_RTO_location %>">
-            </div>
+                <select name="seller_RTO_location" id="sellerRTO">
+                    <option value="" disabled selected>Select RTO Location</option>
+                    <option value="UP11, Saharanpur">UP11, Saharanpur</option>
+                    <option value="UP12, Muzaffarnagar">UP12, Muzaffarnagar</option>
+                    <option value="UP13, Bulandshahr">UP13, Bulandshahr</option>
+                    <option value="UP14, Ghaziabad">UP14, Ghaziabad</option>
+                    <option value="UP15, Meerut">UP15, Meerut</option>
+                    <option value="UP16, Noida">UP16, Noida</option>
+                    <option value="UP17, Baghpat">UP17, Baghpat</option>
+                    <option value="UP19, Shamli">UP19, Shamli</option>
+                    <option value="UP20, Bijnor">UP20, Bijnor</option>
+                    <option value="UP21, Moradabad">UP21, Moradabad</option>
+                    <option value="UP22, Rampur">UP22, Rampur</option>
+                    <option value="UP23, Amroha">UP23, Amroha</option>
+                    <option value="UP24, Budaun">UP24, Budaun</option>
+                    <option value="UP25, Bareilly">UP25, Bareilly</option>
+                    <option value="UP26, Pilibhit">UP26, Pilibhit</option>
+                    <option value="UP27, Shahjahanpur">UP27, Shahjahanpur</option>
+                    <option value="UP28, Ayodhya">UP28, Ayodhya</option>
+                    <option value="UP30, Hardoi">UP30, Hardoi</option>
+                    <option value="UP31, Lakhimpur Kheri">UP31, Lakhimpur Kheri</option>
+                    <option value="UP32, Lucknow Mahanager">UP32, Lucknow Mahanager</option>
+                    <option value="UP32, Lucknow TP Nagar">UP32, Lucknow TP Nagar</option>
+                    <option value="UP33, Raebareli">UP33, Raebareli</option>
+                    <option value="UP34, Sitapur">UP34, Sitapur</option>
+                    <option value="UP35, Unnao">UP35, Unnao</option>
+                    <option value="UP36, Amethi">UP36, Amethi</option>
+                    <option value="UP37, Hapur">UP37, Hapur</option>
+                    <option value="UP38, Sambhal">UP38, Sambhal</option>
+                    <option value="UP40, Bahraich">UP40, Bahraich</option>
+                    <option value="UP41, Barabanki">UP41, Barabanki</option>
+                    <option value="UP42, Faizabad">UP42, Faizabad</option>
+                    <option value="UP43, Gonda">UP43, Gonda</option>
+                    <option value="UP44, Sultanpur">UP44, Sultanpur</option>
+                    <option value="UP46, Shravasti">UP46, Shravasti</option>
+                    <option value="UP47, Balrampur">UP47, Balrampur</option>
+                    <option value="UP50, Azamgarh">UP50, Azamgarh</option>
+                    <option value="UP51, Basti">UP51, Basti</option>
+                    <option value="UP52, Deoria">UP52, Deoria</option>
+                    <option value="UP53, Gorakhpur">UP53, Gorakhpur</option>
+                    <option value="UP54, Mau">UP54, Mau</option>
+                    <option value="UP55, Siddharthnagar">UP55, Siddharthnagar</option>
+                    <option value="UP56, Maharajganj">UP56, Maharajganj</option>
+                    <option value="UP57, Padrauna">UP57, Padrauna</option>
+                    <option value="UP58, SANT KABIR NAGAR">UP58, SANT KABIR NAGAR</option>
+                    <option value="UP60, Balia">UP60, Balia</option>
+                    <option value="UP61, Ghazipur">UP61, Ghazipur</option>
+                    <option value="UP62, Jaunpur">UP62, Jaunpur</option>
+                    <option value="UP63, Mirzapur">UP63, Mirzapur</option>
+                    <option value="UP64, Sonbhadra">UP64, Sonbhadra</option>
+                    <option value="UP65, Varanasi">UP65, Varanasi</option>
+                    <option value="UP70, Allahabad">UP70, Allahabad</option>
+                    <option value="UP71, Fatehpur">UP71, Fatehpur</option>
+                    <option value="UP72, Pratapgarh">UP72, Pratapgarh</option>
+                    <option value="UP73, Kaushambi">UP73, Kaushambi</option>
+                    <option value="UP74, Kannauj">UP74, Kannauj</option>
+                    <option value="UP75, Etawah">UP75, Etawah</option>
+                    <option value="UP76, Farrukhabad">UP76, Farrukhabad</option>
+                    <option value="UP77, Kanpur">UP77, Kanpur</option>
+                    <option value="UP78, Kanpur">UP78, Kanpur</option>
+                    <option value="UP79, AURAIYA">UP79, AURAIYA</option>
+                    <option value="UP80, Agra">UP80, Agra</option>
+                    <option value="UP81, Aligarh">UP81, Aligarh</option>
+                    <option value="UP82, Etah">UP82, Etah</option>
+                    <option value="UP83, Firozabad">UP83, Firozabad</option>
+                    <option value="UP84, Mainpuri">UP84, Mainpuri</option>
+                    <option value="UP85, Mathura">UP85, Mathura</option>
+                    <option value="UP86, Hathras">UP86, Hathras</option>
+                    <option value="UP87, Kasganj">UP87, Kasganj</option>
+                    <option value="UP90, Banda">UP90, Banda</option>
+                    <option value="UP91, Hamirpur">UP91, Hamirpur</option>
+                    <option value="UP92, Jalaun">UP92, Jalaun</option>
+                    <option value="UP93, Jhansi">UP93, Jhansi</option>
+                    <option value="UP94, Lalitpur">UP94, Lalitpur</option>
+                    <option value="UP95, Mahoba">UP95, Mahoba</option>
+                    <option value="UP96, Chitrakoot">UP96, Chitrakoot</option>
+                    <option value="DL-01, Mall Road">DL-01, Mall Road RTO</option>
+                    <option value="DL-02, Tilak Marg">DL-02, Tilak Marg RTO</option>
+                    <option value="DL-03, Sheikh Sarai">DL-03, Sheikh Sarai RTO</option>
+                    <option value="DL-04, Janakpuri West">DL-04, Janakpuri West RTO</option>
+                    <option value="DL-05, Loni Road">DL-05, Loni Road RTO</option>
+                    <option value="DL-06, Sarai Kale Khan">DL-06, Sarai Kale Khan RTO</option>
+                    <option value="DL-07, Mayur Vihar">DL-07, Mayur Vihar RTO</option>
+                    <option value="DL-08, Wazirpur">DL-08, Wazirpur RTO</option>
+                    <option value="DL-09, Dwarka">DL-09, Dwarka RTO</option>
+                    <option value="DL-10, West Delhi">DL-10, West Delhi RTO</option>
+                    <option value="DL-11, Rohini">DL-11, Rohini RTO</option>
+                    <option value="DL-12, Vasant Vihar">DL-12, Vasant Vihar RTO</option>
+                    <option value="DL-13, Surajmal Vihar">DL-13, Surajmal Vihar RTO</option>
+                    <option value="DL-14, Surajmal Vihar">DL-14, Surajmal Vihar RTO</option>
+                      <!-- Haryana (HR) -->
+        <option value="HR-01, Ambala">HR-01, Ambala</option>
+        <option value="HR-02, Panchkula">HR-02, Panchkula</option>
+        <option value="HR-03, Karnal">HR-03, Karnal</option>
+        <option value="HR-04, Faridabad">HR-04, Faridabad</option>
+        <option value="HR-05, Gurgaon">HR-05, Gurgaon</option>
+        <option value="HR-06, Hisar">HR-06, Hisar</option>
+    
+        <!-- Himachal Pradesh (HP) -->
+        <option value="HP-01, Shimla">HP-01, Shimla</option>
+        <option value="HP-02, Hamirpur">HP-02, Hamirpur</option>
+        <option value="HP-03, Kangra">HP-03, Kangra</option>
+    
+        <!-- Kerala (KL) -->
+        <option value="KL-01, Thiruvananthapuram">KL-01, Thiruvananthapuram</option>
+        <option value="KL-02, Kollam">KL-02, Kollam</option>
+        <option value="KL-03, Pathanamthitta">KL-03, Pathanamthitta</option>
+    
+        <!-- Tamil Nadu (TN) -->
+        <option value="TN-01, Chennai">TN-01, Chennai</option>
+        <option value="TN-02, Coimbatore">TN-02, Coimbatore</option>
+        <option value="TN-03, Madurai">TN-03, Madurai</option>
+    
+        <!-- Jharkhand (JH) -->
+        <option value="JH-01, Ranchi">JH-01, Ranchi</option>
+        <option value="JH-02, Dhanbad">JH-02, Dhanbad</option>
+        <option value="JH-03, Jamshedpur">JH-03, Jamshedpur</option>
+    
+        <!-- Madhya Pradesh (MP) -->
+        <option value="MP-01, Bhopal">MP-01, Bhopal</option>
+        <option value="MP-02, Gwalior">MP-02, Gwalior</option>
+        <option value="MP-03, Indore">MP-03, Indore</option>
+    
+        <!-- Chhattisgarh (CG) -->
+        <option value="CG-01, Raipur">CG-01, Raipur</option>
+        <option value="CG-02, Bilaspur">CG-02, Bilaspur</option>
+    
+        <!-- Rajasthan (RJ) -->
+        <option value="RJ-01, Jaipur">RJ-01, Jaipur</option>
+        <option value="RJ-02, Jodhpur">RJ-02, Jodhpur</option>
+        <option value="RJ-03, Udaipur">RJ-03, Udaipur</option>
+    
+        <!-- Uttarakhand (UK) -->
+        <option value="UK-01, Dehradun">UK-01, Dehradun</option>
+        <option value="UK-02, Nainital">UK-02, Nainital</option>
+        <option value="UK-03, Pauri">UK-03, Pauri</option>
+    
+        <!-- Bihar (BR) -->
+        <option value="BR-01, Patna">BR-01, Patna</option>
+        <option value="BR-02, Gaya">BR-02, Gaya</option>
+        <option value="BR-03, Bhagalpur">BR-03, Bhagalpur</option>
+    
+        <!-- Chandigarh (CH) -->
+        <option value="CH-01, Chandigarh">CH-01, Chandigarh</option>
+    
+        <!-- Punjab (PB) -->
+        <option value="PB-01, Amritsar">PB-01, Amritsar</option>
+        <option value="PB-02, Bathinda">PB-02, Bathinda</option>
+        <option value="PB-03, Ludhiana">PB-03, Ludhiana</option>
+    
+        <!-- Karnataka (KA) -->
+        <option value="KA-01, Bengaluru">KA-01, Bengaluru</option>
+        <option value="KA-02, Mysuru">KA-02, Mysuru</option>
+        <option value="KA-03, Mangaluru">KA-03, Mangaluru</option>
+        
+        <option value="BR29_Siwan">BR29_Siwan</option>
+                </select> </div>
             <div class="form-group">
                 <label for="seller_RTO_location">Seller RTO location:</label>
-                <input type="text" id="seller_RTO_location" name="seller_RTO_location" value="<%= task.seller_RTO_location %>">
-            </div>
+                <select name="seller_RTO_location" id="sellerRTO">
+                    <option value="" disabled selected>Select RTO Location</option>
+                    <option value="UP11, Saharanpur">UP11, Saharanpur</option>
+                    <option value="UP12, Muzaffarnagar">UP12, Muzaffarnagar</option>
+                    <option value="UP13, Bulandshahr">UP13, Bulandshahr</option>
+                    <option value="UP14, Ghaziabad">UP14, Ghaziabad</option>
+                    <option value="UP15, Meerut">UP15, Meerut</option>
+                    <option value="UP16, Noida">UP16, Noida</option>
+                    <option value="UP17, Baghpat">UP17, Baghpat</option>
+                    <option value="UP19, Shamli">UP19, Shamli</option>
+                    <option value="UP20, Bijnor">UP20, Bijnor</option>
+                    <option value="UP21, Moradabad">UP21, Moradabad</option>
+                    <option value="UP22, Rampur">UP22, Rampur</option>
+                    <option value="UP23, Amroha">UP23, Amroha</option>
+                    <option value="UP24, Budaun">UP24, Budaun</option>
+                    <option value="UP25, Bareilly">UP25, Bareilly</option>
+                    <option value="UP26, Pilibhit">UP26, Pilibhit</option>
+                    <option value="UP27, Shahjahanpur">UP27, Shahjahanpur</option>
+                    <option value="UP28, Ayodhya">UP28, Ayodhya</option>
+                    <option value="UP30, Hardoi">UP30, Hardoi</option>
+                    <option value="UP31, Lakhimpur Kheri">UP31, Lakhimpur Kheri</option>
+                    <option value="UP32, Lucknow Mahanager">UP32, Lucknow Mahanager</option>
+                    <option value="UP32, Lucknow TP Nagar">UP32, Lucknow TP Nagar</option>
+                    <option value="UP33, Raebareli">UP33, Raebareli</option>
+                    <option value="UP34, Sitapur">UP34, Sitapur</option>
+                    <option value="UP35, Unnao">UP35, Unnao</option>
+                    <option value="UP36, Amethi">UP36, Amethi</option>
+                    <option value="UP37, Hapur">UP37, Hapur</option>
+                    <option value="UP38, Sambhal">UP38, Sambhal</option>
+                    <option value="UP40, Bahraich">UP40, Bahraich</option>
+                    <option value="UP41, Barabanki">UP41, Barabanki</option>
+                    <option value="UP42, Faizabad">UP42, Faizabad</option>
+                    <option value="UP43, Gonda">UP43, Gonda</option>
+                    <option value="UP44, Sultanpur">UP44, Sultanpur</option>
+                    <option value="UP46, Shravasti">UP46, Shravasti</option>
+                    <option value="UP47, Balrampur">UP47, Balrampur</option>
+                    <option value="UP50, Azamgarh">UP50, Azamgarh</option>
+                    <option value="UP51, Basti">UP51, Basti</option>
+                    <option value="UP52, Deoria">UP52, Deoria</option>
+                    <option value="UP53, Gorakhpur">UP53, Gorakhpur</option>
+                    <option value="UP54, Mau">UP54, Mau</option>
+                    <option value="UP55, Siddharthnagar">UP55, Siddharthnagar</option>
+                    <option value="UP56, Maharajganj">UP56, Maharajganj</option>
+                    <option value="UP57, Padrauna">UP57, Padrauna</option>
+                    <option value="UP58, SANT KABIR NAGAR">UP58, SANT KABIR NAGAR</option>
+                    <option value="UP60, Balia">UP60, Balia</option>
+                    <option value="UP61, Ghazipur">UP61, Ghazipur</option>
+                    <option value="UP62, Jaunpur">UP62, Jaunpur</option>
+                    <option value="UP63, Mirzapur">UP63, Mirzapur</option>
+                    <option value="UP64, Sonbhadra">UP64, Sonbhadra</option>
+                    <option value="UP65, Varanasi">UP65, Varanasi</option>
+                    <option value="UP70, Allahabad">UP70, Allahabad</option>
+                    <option value="UP71, Fatehpur">UP71, Fatehpur</option>
+                    <option value="UP72, Pratapgarh">UP72, Pratapgarh</option>
+                    <option value="UP73, Kaushambi">UP73, Kaushambi</option>
+                    <option value="UP74, Kannauj">UP74, Kannauj</option>
+                    <option value="UP75, Etawah">UP75, Etawah</option>
+                    <option value="UP76, Farrukhabad">UP76, Farrukhabad</option>
+                    <option value="UP77, Kanpur">UP77, Kanpur</option>
+                    <option value="UP78, Kanpur">UP78, Kanpur</option>
+                    <option value="UP79, AURAIYA">UP79, AURAIYA</option>
+                    <option value="UP80, Agra">UP80, Agra</option>
+                    <option value="UP81, Aligarh">UP81, Aligarh</option>
+                    <option value="UP82, Etah">UP82, Etah</option>
+                    <option value="UP83, Firozabad">UP83, Firozabad</option>
+                    <option value="UP84, Mainpuri">UP84, Mainpuri</option>
+                    <option value="UP85, Mathura">UP85, Mathura</option>
+                    <option value="UP86, Hathras">UP86, Hathras</option>
+                    <option value="UP87, Kasganj">UP87, Kasganj</option>
+                    <option value="UP90, Banda">UP90, Banda</option>
+                    <option value="UP91, Hamirpur">UP91, Hamirpur</option>
+                    <option value="UP92, Jalaun">UP92, Jalaun</option>
+                    <option value="UP93, Jhansi">UP93, Jhansi</option>
+                    <option value="UP94, Lalitpur">UP94, Lalitpur</option>
+                    <option value="UP95, Mahoba">UP95, Mahoba</option>
+                    <option value="UP96, Chitrakoot">UP96, Chitrakoot</option>
+                    <option value="DL-01, Mall Road">DL-01, Mall Road RTO</option>
+                    <option value="DL-02, Tilak Marg">DL-02, Tilak Marg RTO</option>
+                    <option value="DL-03, Sheikh Sarai">DL-03, Sheikh Sarai RTO</option>
+                    <option value="DL-04, Janakpuri West">DL-04, Janakpuri West RTO</option>
+                    <option value="DL-05, Loni Road">DL-05, Loni Road RTO</option>
+                    <option value="DL-06, Sarai Kale Khan">DL-06, Sarai Kale Khan RTO</option>
+                    <option value="DL-07, Mayur Vihar">DL-07, Mayur Vihar RTO</option>
+                    <option value="DL-08, Wazirpur">DL-08, Wazirpur RTO</option>
+                    <option value="DL-09, Dwarka">DL-09, Dwarka RTO</option>
+                    <option value="DL-10, West Delhi">DL-10, West Delhi RTO</option>
+                    <option value="DL-11, Rohini">DL-11, Rohini RTO</option>
+                    <option value="DL-12, Vasant Vihar">DL-12, Vasant Vihar RTO</option>
+                    <option value="DL-13, Surajmal Vihar">DL-13, Surajmal Vihar RTO</option>
+                    <option value="DL-14, Surajmal Vihar">DL-14, Surajmal Vihar RTO</option>
+                      <!-- Haryana (HR) -->
+        <option value="HR-01, Ambala">HR-01, Ambala</option>
+        <option value="HR-02, Panchkula">HR-02, Panchkula</option>
+        <option value="HR-03, Karnal">HR-03, Karnal</option>
+        <option value="HR-04, Faridabad">HR-04, Faridabad</option>
+        <option value="HR-05, Gurgaon">HR-05, Gurgaon</option>
+        <option value="HR-06, Hisar">HR-06, Hisar</option>
+    
+        <!-- Himachal Pradesh (HP) -->
+        <option value="HP-01, Shimla">HP-01, Shimla</option>
+        <option value="HP-02, Hamirpur">HP-02, Hamirpur</option>
+        <option value="HP-03, Kangra">HP-03, Kangra</option>
+    
+        <!-- Kerala (KL) -->
+        <option value="KL-01, Thiruvananthapuram">KL-01, Thiruvananthapuram</option>
+        <option value="KL-02, Kollam">KL-02, Kollam</option>
+        <option value="KL-03, Pathanamthitta">KL-03, Pathanamthitta</option>
+    
+        <!-- Tamil Nadu (TN) -->
+        <option value="TN-01, Chennai">TN-01, Chennai</option>
+        <option value="TN-02, Coimbatore">TN-02, Coimbatore</option>
+        <option value="TN-03, Madurai">TN-03, Madurai</option>
+    
+        <!-- Jharkhand (JH) -->
+        <option value="JH-01, Ranchi">JH-01, Ranchi</option>
+        <option value="JH-02, Dhanbad">JH-02, Dhanbad</option>
+        <option value="JH-03, Jamshedpur">JH-03, Jamshedpur</option>
+    
+        <!-- Madhya Pradesh (MP) -->
+        <option value="MP-01, Bhopal">MP-01, Bhopal</option>
+        <option value="MP-02, Gwalior">MP-02, Gwalior</option>
+        <option value="MP-03, Indore">MP-03, Indore</option>
+    
+        <!-- Chhattisgarh (CG) -->
+        <option value="CG-01, Raipur">CG-01, Raipur</option>
+        <option value="CG-02, Bilaspur">CG-02, Bilaspur</option>
+    
+        <!-- Rajasthan (RJ) -->
+        <option value="RJ-01, Jaipur">RJ-01, Jaipur</option>
+        <option value="RJ-02, Jodhpur">RJ-02, Jodhpur</option>
+        <option value="RJ-03, Udaipur">RJ-03, Udaipur</option>
+    
+        <!-- Uttarakhand (UK) -->
+        <option value="UK-01, Dehradun">UK-01, Dehradun</option>
+        <option value="UK-02, Nainital">UK-02, Nainital</option>
+        <option value="UK-03, Pauri">UK-03, Pauri</option>
+    
+        <!-- Bihar (BR) -->
+        <option value="BR-01, Patna">BR-01, Patna</option>
+        <option value="BR-02, Gaya">BR-02, Gaya</option>
+        <option value="BR-03, Bhagalpur">BR-03, Bhagalpur</option>
+    
+        <!-- Chandigarh (CH) -->
+        <option value="CH-01, Chandigarh">CH-01, Chandigarh</option>
+    
+        <!-- Punjab (PB) -->
+        <option value="PB-01, Amritsar">PB-01, Amritsar</option>
+        <option value="PB-02, Bathinda">PB-02, Bathinda</option>
+        <option value="PB-03, Ludhiana">PB-03, Ludhiana</option>
+    
+        <!-- Karnataka (KA) -->
+        <option value="KA-01, Bengaluru">KA-01, Bengaluru</option>
+        <option value="KA-02, Mysuru">KA-02, Mysuru</option>
+        <option value="KA-03, Mangaluru">KA-03, Mangaluru</option>
+        <option value="BR29_Siwan">BR29_Siwan</option>
+                </select> </div>
             <div class="form-group">
                 <label for="state">Status:</label>    
                 <select id="state" name="state">

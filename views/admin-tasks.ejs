@@ -166,11 +166,7 @@
         }
 
         @media (max-width: 480px) {
-          
-            /* .task-card h2 {
-                font-size: 18px;
-            } */
-
+            
             .task-actions a {
                 font-size: 12px;
             }
@@ -203,6 +199,12 @@
                     <div><strong>File Received Date:</strong> <%= task.fileReceivedDate ? task.fileReceivedDate.toISOString().split('T')[0] : 'N/A' %></div>
                     <div><strong>Additional Work:</strong> <%= task.AdditionalWork %></div>
                     <div><strong>HPA:</strong> <%= task.HPA %></div>
+                    <div><strong>Chesis number</strong> <%= task.chesisnum %></div>
+                    <div><strong>Engine number</strong> <%= task.engineNum %></div>
+                    <div><strong>RC status</strong> <%= task.status_RC %></div>
+                    <div><strong>NOC status</strong> <%= task.status_NOC %></div>
+                    <div><strong>Task-1 agent name(Seller)</strong> <%= task.task1agentname %></div>
+                    <div><strong>Task-2 agent name(Buyer)</strong> <%= task.task2agentname %></div>
                     <div><strong>Transfer Date:</strong> <%= task.transferDate ? task.transferDate.toISOString().split('T')[0] : 'N/A' %></div>
                     <div><strong>Handover Date (RC):</strong> <%= task.HandoverDate_RC ? task.HandoverDate_RC.toISOString().split('T')[0] : 'N/A' %></div>
                     <div><strong>Handover Date (NOC):</strong> <%= task.HandoverDate_NOC ? task.HandoverDate_NOC.toISOString().split('T')[0] : 'N/A' %></div>
