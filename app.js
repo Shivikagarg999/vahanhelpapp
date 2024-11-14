@@ -12,6 +12,10 @@ const { Parser } = require('json2csv');
 const Admin = require('./models/admin');
 const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
+const axios = require('axios');
+
+const INFIBIP_API_KEY = 'a9d5ff2dd1c093c51ba4d3c281bde099-183c6321-bfe3-458b-a10d-d7ae0dd28af5';
+const BASE_URL = 'ypvkqj.api.infobip.com';
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -667,13 +671,60 @@ app.get('/setrem', async (req, res) => {
     }
 });
 
-app.post('/save-json', (req, res) => {
-    const jsonData = req.body;
-    console.log(jsonData); // You can log or process the data here
-  
-    // Send a response
-    res.status(200).send('JSON data received');
-  });
+async function sendSMS(to) {
+    const defaultMessage = "Hello, we wanted to update you regarding your recent task. Please contact us if you need further assistance.";
+
+    try {
+        const response = await axios.post(
+            `${BASE_URL}/sms/2/text/advanced`,
+            {
+                messages: [
+                    {
+                        destinations: [
+                            {
+                                to: 6397046651
+                            }
+                        ],
+                        text: defaultMessage // The predefined custom message
+                    }
+                ]
+            },
+            {
+                headers: {
+                    Authorization: `App ${INFIBIP_API_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        console.log('Message sent successfully:', response.data);
+    } catch (error) {
+        console.error('Error sending message:', error.response ? error.response.data : error.message);
+    }
+}
+
+// Route to fetch seller's phone number and send SMS
+app.post('/notify-seller/:taskId', async (req, res) => {
+    const { taskId } = req.params;
+
+    try {
+        // Fetch the task by ID from MongoDB Atlas
+        const task = await Task.findById(taskId);
+        if (!task || !task.sellerNum) {
+            return res.status(404).send('Task or seller phone number not found');
+        }
+
+        // Send SMS using the retrieved seller's phone number
+        await sendSMS(task.sellerNum);
+
+        res.status(200).send('Message sent to seller successfully.');
+    } catch (error) {
+        console.error("Error fetching task or sending message:", error);
+        res.status(500).send('Failed to send message.');
+    }
+});
+
+
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');
