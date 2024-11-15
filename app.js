@@ -102,6 +102,7 @@ app.get("/tasks", async (req, res) => {
     }
 });
 
+
 app.get("/tasks/create", (req, res) => {
     const companyId = req.cookies.token;
     if (!companyId) {
@@ -125,6 +126,8 @@ app.get('/tasks/search', async (req, res) => {
         res.status(500).send("Error fetching task.");
     }
 });
+
+
 
 app.post("/tasks/edit/:id", upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
@@ -216,6 +219,7 @@ app.post("/tasks/edit/:id", upload.fields([
         res.status(500).send("Error updating task.");
     }
 });
+
 
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;
@@ -696,3 +700,7 @@ async function sendSMS(to) {
         console.error('Error sending message:', error.response ? error.response.data : error.message);
     }
 }
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+}); 
