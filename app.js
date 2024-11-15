@@ -102,7 +102,6 @@ app.get("/tasks", async (req, res) => {
     }
 });
 
-
 app.get("/tasks/create", (req, res) => {
     const companyId = req.cookies.token;
     if (!companyId) {
@@ -113,23 +112,19 @@ app.get("/tasks/create", (req, res) => {
 
 app.get('/tasks/search', async (req, res) => {
     const { carNum } = req.query;
-    let tasks;
 
     try {
-        if (carNum) {
-            // Perform a case-sensitive search by removing the 'i' flag
-            tasks = await Task.find({ carNum: new RegExp(`^${carNum}$`) });
-        } else {
-            tasks = await Task.find();
-        }
+        // Find a single task that exactly matches the carNum (case-insensitive)
+        const task = await Task.findOne({ carNum: new RegExp(`^${carNum}$`, 'i') });
 
-        res.render('tasks', { tasks });
+        // Render a single result as an array for compatibility with the view
+        res.render('tasks', { tasks: task ? [task] : [] });
+        
     } catch (err) {
-        console.error("Error fetching tasks:", err);
-        res.status(500).send("Error fetching tasks.");
+        console.error("Error fetching task:", err);
+        res.status(500).send("Error fetching task.");
     }
 });
-
 
 app.post("/tasks/edit/:id", upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
@@ -221,7 +216,6 @@ app.post("/tasks/edit/:id", upload.fields([
         res.status(500).send("Error updating task.");
     }
 });
-
 
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;
@@ -702,30 +696,3 @@ async function sendSMS(to) {
         console.error('Error sending message:', error.response ? error.response.data : error.message);
     }
 }
-
-// Route to fetch seller's phone number and send SMS
-app.post('/notify-seller/:taskId', async (req, res) => {
-    const { taskId } = req.params;
-
-    try {
-        // Fetch the task by ID from MongoDB Atlas
-        const task = await Task.findById(taskId);
-        if (!task || !task.sellerNum) {
-            return res.status(404).send('Task or seller phone number not found');
-        }
-
-        // Send SMS using the retrieved seller's phone number
-        await sendSMS(task.sellerNum);
-
-        res.status(200).send('Message sent to seller successfully.');
-    } catch (error) {
-        console.error("Error fetching task or sending message:", error);
-        res.status(500).send('Failed to send message.');
-    }
-});
-
-
-
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-}); 

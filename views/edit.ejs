@@ -138,8 +138,8 @@
                     <option value="FILE_RETURNED">FILE RETURNED</option>
                     <option value="HPA_MAIL_PENDING_BUYER">HPA MAIL PENDING_BUYER</option>
                     <option value="CNG_CASE">CNG CASE</option>
+                    <option value="TRANSFER">TRANSFER</option>
                 </select>
-            
             </div>
             <div class="form-group">
                 <label for="carNum">Car Number:</label>
@@ -324,18 +324,17 @@
                     <option value="NOC Dispatched - In Transit">NOC Dispatched - In Transit</option>
                     <option value="NOT APPLICABLE">NOT APPLICABLE</option>
                                   <!-- New Options -->
-    <option value="NOC RECEIPT PENDING">NOC RECEIPT PENDING</option>
-    <option value="AT_DOCS UPLOAD PENDING">AT_DOCS UPLOAD PENDING</option>
-    <option value="AT_INWARD">AT_INWARD</option>
-    <option value="AT_VERIFICATION">AT_VERIFICATION</option>
-    <option value="AT_APPROVAL">AT_APPROVAL</option>
-    <option value="NOC ISSUED">NOC ISSUED</option>
-    <option value="NOC NOT APPLICABLE_SAME RTO">NOC NOT APPLICABLE_SAME RTO</option>
-    <option value="WRONG RTO NOC ISSUED">WRONG RTO NOC ISSUED</option>
-    <option value="NOC_ALREADY ISSUED BY CLIENT">NOC_ALREADY ISSUED BY CLIENT</option>
-    <option value="NOC_RECEIPT ALREADY ISSUED BY CLIENT">NOC_RECEIPT ALREADY ISSUED BY CLIENT</option>
-    <option value="Case Type Change(16,32,70)-Local Trf">Case Type Change(16,32,70)-Local Trf</option>
-      <!-- Additional Options -->
+      <option value="NOC RECEIPT PENDING">NOC RECEIPT PENDING</option>
+      <option value="AT_DOCS UPLOAD PENDING">AT_DOCS UPLOAD PENDING</option>
+      <option value="AT_INWARD">AT_INWARD</option>
+      <option value="AT_VERIFICATION">AT_VERIFICATION</option>
+      <option value="AT_APPROVAL">AT_APPROVAL</option>
+      <option value="NOC ISSUED">NOC ISSUED</option>
+      <option value="NOC NOT APPLICABLE_SAME RTO">NOC NOT APPLICABLE_SAME RTO</option>
+      <option value="WRONG RTO NOC ISSUED">WRONG RTO NOC ISSUED</option>
+      <option value="NOC_ALREADY ISSUED BY CLIENT">NOC_ALREADY ISSUED BY CLIENT</option>
+      <option value="NOC_RECEIPT ALREADY ISSUED BY CLIENT">NOC_RECEIPT ALREADY ISSUED BY CLIENT</option>
+      <option value="Case Type Change(16,32,70)-Local Trf">Case Type Change(16,32,70)-Local Trf</option>
       <option value="NOC Awaiting Approval">NOC Awaiting Approval</option>
       <option value="NOC In Process">NOC In Process</option>
       <option value="NOC Approved">NOC Approved</option>
@@ -666,6 +665,7 @@
                     <option value="false" <%= !task.state ? 'selected' : '' %>>Pending</option>
                     <option value="false" <%= !task.state ? 'selected' : '' %>>Party peshi delay from Buyer</option>
                     <option value="false" <%= !task.state ? 'selected' : '' %>>Party peshi delay from Seller</option>
+                    <option value="false" <%= !task.state ? 'selected' : '' %>>RC PENDING</option>
                 </select>
             </div>
             <div class="form-group">
@@ -717,8 +717,6 @@
             </div>
             <button type="submit">Update Task</button>
         </form>
-        
-        
         <a href="/tasks" class="back-link">Back to Tasks</a>
     </div>
 </body>
