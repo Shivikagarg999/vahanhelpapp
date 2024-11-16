@@ -251,7 +251,6 @@ app.post("/admin/tasks/delete/:id", isAdminLoggedIn, async (req, res) => {
     }
 });
 
-
 app.get("/tasks/edit/:id", async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
@@ -668,39 +667,7 @@ app.get('/setrem', async (req, res) => {
         res.render('reminder', { task: null }); // Or handle as appropriate if task is missing
     }
 });
-
-async function sendSMS(to) {
-    const defaultMessage = "Hello, we wanted to update you regarding your recent task. Please contact us if you need further assistance.";
-
-    try {
-        const response = await axios.post(
-            `${BASE_URL}/sms/2/text/advanced`,
-            {
-                messages: [
-                    {
-                        destinations: [
-                            {
-                                to: 6397046651
-                            }
-                        ],
-                        text: defaultMessage // The predefined custom message
-                    }
-                ]
-            },
-            {
-                headers: {
-                    Authorization: `App ${INFIBIP_API_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        console.log('Message sent successfully:', response.data);
-    } catch (error) {
-        console.error('Error sending message:', error.response ? error.response.data : error.message);
-    }
-}
-
+  
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 }); 

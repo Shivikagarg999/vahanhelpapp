@@ -119,7 +119,6 @@
         .download:hover {
             background-color: #31b0d5;
         }
-
         /* Responsive Styles */
         @media (max-width: 1024px) {
             .task-details {
@@ -232,7 +231,7 @@
                     <div><strong>Transfer Letter:</strong> <a href="<%= task.transferLetter %>" target="_blank"><%= task.transferLetter ? 'View Transfer Letter' : 'No Transfer Letter' %></a></div>
                 </div>
                 <div class="task-actions">
-                    <a href="/admin/tasks/edit/<%= task._id %>">Edit</a>
+                    <a href="/admin/tasks/edit/<%= task._id %>" class="aab">Agent assign</a>
                     <a href="/setrem">Communication</a>
                 </div>
             </div>
