@@ -82,7 +82,7 @@
                 flex-direction: column;
                 align-items: center;
                 gap: 20px;
-            }
+            }  
             .container a, .container2 a {
                 font-size: 1.2rem;
                 padding: 0.8rem 1.5rem;
@@ -95,8 +95,12 @@
     <h1 class="page-heading">Choose One</h1>
     <div class="flex-wrapper">
         <div class="container">
+            <a 
+            href="https://wa.me/<%= sellerNumber %>?text=Hello%2C%20I%20am%20interested%20in%20the%20car%20<%= carNumber %>" 
+            target="_blank">
+            Send WhatsApp Message
+        </a>
             <a href="#">Buyer</a>
-
             <a href="#">Reminder-1</a>
         </div>
         <div class="container2">
@@ -106,3 +110,4 @@
     </div>
 </body>
 </html>
+ 

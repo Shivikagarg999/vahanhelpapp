@@ -48,7 +48,8 @@ const taskSchema = mongoose.Schema({
     status_RC: String,
     status_NOC: String,
     deliverdate: Date,
-    courier: Date
+    courier: Date,
+    spoc: String
 });
 
 module.exports = mongoose.model('task', taskSchema);

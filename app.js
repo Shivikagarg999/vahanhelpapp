@@ -14,8 +14,8 @@ const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
 const axios = require('axios');
 
-const INFIBIP_API_KEY = 'a9d5ff2dd1c093c51ba4d3c281bde099-183c6321-bfe3-458b-a10d-d7ae0dd28af5';
-const BASE_URL = 'ypvkqj.api.infobip.com';
+// const INFIBIP_API_KEY = 'a9d5ff2dd1c093c51ba4d3c281bde099-183c6321-bfe3-458b-a10d-d7ae0dd28af5';
+// const BASE_URL = 'ypvkqj.api.infobip.com';
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -295,7 +295,7 @@ app.post("/admin/tasks/edit/:id", async (req, res) => {
         task1agentname, 
         task2agentname, 
         description, 
-        state 
+        state,
     } = req.body;
 
     try {
@@ -613,7 +613,7 @@ const uploadStorage = multer({ storage });
 app.get('/upload', (req, res)=>{
     res.render('upload')
 })
-
+   
 app.post('/upload', upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
     { name: 'buyerPhoto', maxCount: 1 },
