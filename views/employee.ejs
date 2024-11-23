@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee- Vahan help</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0056b3;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+        .emp {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjusted min width */
+            gap: 8px; 
+        }
+        .task-card {
+            background-color: #fff;
+            padding: 95px; /* Reduced padding */
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 60%;
+            font-size: 20px;
+            word-wrap: break-word; 
+            margin: 10px auto;
+        }
+        .task-card:hover {
+            transform: translateY(-5px);
+        }
+        .task-card h2 {
+            font-size: 1.5em;
+            margin: 0 0 10px; /* Reduced margin */
+            color: #007bff;
+            margin-bottom: 32px;
+        }
+        .task-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 18px; 
+        }
+        .task-details div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Added for better alignment */
+        }
+        .task-details div strong {
+            width: 150px;
+            color: black;
+            font-weight: 600;
+        }
+        .description {
+            max-height: 80px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .task-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .task-actions a, .task-actions button {
+            padding: 10px 12px; /* Reduced padding */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .task-actions a {
+            background-color: #28a745; /* Green */
+        }
+        .task-actions button {
+            background-color: #dc3545; /* Red */
+        }
+        .task-actions a:hover {
+            background-color: #218838; /* Darker green */
+        }
+        .task-actions button:hover {
+            background-color: #c82333; /* Darker red */
+        }
+        .media-link img {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 4px;
+            margin-left: 8px;
+            object-fit: cover;
+        }
+        .media-link a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .media-link a:hover {
+            color: #0056b3;
+        }
+        .btn {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            border: 1px border-radius;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 22px;
+        }
+        .cn{
+            background: #0056b3;
+            text-decoration: none;
+            color: white;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 10px 15px;
+        }
+        .lgt{
+            background-color: rgb(244, 102, 102);
+            text-decoration: none;
+            color: white;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 10px 15px;
+        }
+        /* Style for the search form container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Style for the input field and button container */
+.search-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 15px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the input field */
+#search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: transparent;
+    outline: none;
+}
+
+/* Style for the search button */
+#search-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+/* Search button icon */
+#search-btn i {
+    margin-right: 5px;
+}
+
+/* Clear button (cross) */
+.clear-btn {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #888;
+    display: none;
+}
+
+/* Show clear button when input is not empty */
+#search-input:not(:placeholder-shown) + .clear-btn {
+    display: block;
+}
+
+/* Hover effects for buttons */
+#search-btn:hover {
+    background-color: #45a049;
+}
+
+.clear-btn:hover {
+    color: #f00;
+}
+/* Style the arrow icon */
+#scroll-to-top {
+    position: fixed;        /* Fixed positioning */
+    bottom: 20px;           /* Distance from the bottom of the page */
+    right: 20px;            /* Distance from the right of the page */
+    font-size: 36px;        /* Size of the icon */
+    background-color: #007bff;  /* No background */
+    color: white;           /* White color */
+    padding: 10px;          /* Padding around the icon */
+    border-radius: 50%;     /* Make it circular */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for better visibility */
+    cursor: pointer;       /* Make it clickable */
+}
+
+#scroll-to-top:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Light background when hovered */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
+}
+   
+/* Active state (when clicked) */
+#scroll-to-top:active {
+    transform: scale(0.95); /* Slightly shrink when clicked */
+}
+        .download {
+            background-color: #0056b3;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+        }
+        .download:hover {
+            background-color: #31b0d5;
+        }
+        .imprt{
+            background-color: #0056b3;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+        }
+        .imprt:hover{
+            background: #ffff80;
+            color: black;
+        }
+        i{
+            margin-left: 7px;
+        }
+    </style>
+</head> 
+<body>
+    <div class="container">
+        <div class="btn">
+            <a href="/tasks/create" class="cn">Create<i class="fa-solid fa-plus"></i></a>
+            <a href="emp-task-download" class="download">Export all<i class="fa-solid fa-download"></i></a>
+            <a href="/logout" class="lgt" >Logout<i class="fa-regular fa-user"></i></a>
+        </div>
+        <a href="employee" id="scroll-to-top">
+            <i class="fa-solid fa-arrow-up"></i>
+        </a> 
+        
+        <h1 class="emp">Employee login- Vahan Help</h1>
+        <h1>All Tasks</h1>
+ 
+        <form action="/searchcn" method="GET" class="search-container">
+            <div class="search-input-container">
+                <input type="text" name="search" id="search-input" placeholder="Search by car number">
+                <button type="submit" id="search-btn">
+                    <i class="fa fa-search"></i> Search
+                </button>
+                <span class="clear-btn" id="clear-btn" onclick="clearSearchInput()">&#10006;</span>
+            </div>
+        </form>
+        
+        <% tasks.forEach(task => { %>
+            <div class="task-card">
+                <!-- <h2> <%= task.company ? task.company.companyName: 'No Company Assigned' %></h2> -->
+                <div class="task-details">
+                    <div><strong>File Received Date:</strong> <%= task.fileReceivedDate ? task.fileReceivedDate.toISOString().split('T')[0] : 'N/A' %></div>
+                    <div><strong>Car Number:</strong><%= task.carNum %></a></div>
+                    <div><strong>Client Name:</strong> <%= task.clientName %></div>
+                    <div><strong>Case Type:</strong> <%= task.caseType %></div>
+                    <div><strong>Additional Work:</strong> <%= task.AdditionalWork %></div>
+                    <div><strong>Task Type:</strong> <%= task.name %></div>
+                    <div><strong>HPT Name:</strong> <%= task.hptName %></div>
+                    <div><strong>HPA:</strong> <%= task.HPA %></div>
+                    <div><strong>Chassis Number:</strong> <%= task.chesisnum %></div>
+                    <div><strong>Engine Number:</strong> <%= task.engineNum %></div>
+                    <div><strong>Seller Name:</strong> <%= task.sellerName %></div>
+                    <div><strong>Seller Number:</strong> <%= task.sellerNum %></div> 
+                    <div><strong>Buyer Name:</strong> <%= task.buyerName %></div>
+                    <div><strong>Buyer Number:</strong> <%= task.buyerNum %></div>
+                    <div><strong>Seller RTO Location:</strong> <%= task.seller_RTO_location %></div>
+                    <div><strong>Buyer RTO Location:</strong> <%= task.buyer_RTO_location %></div>
+                    <div><strong>Seller Aligned Date:</strong> <%= task.sellerAlignedDate ? task.sellerAlignedDate.toISOString().split('T')[0] : 'N/A' %></div>
+                    <div><strong>Buyer Aligned Date:</strong> <%= task.buyerAlignedDate ? task.buyerAlignedDate.toISOString().split('T')[0] : 'N/A' %></div>
+                    <div><strong>NOC Issued Date:</strong> <%= task.NOCissuedDate ? task.NOCissuedDate.toISOString().split('T')[0] : 'N/A' %></div>
+                    <div><strong>Phy NOC Status:</strong> <%= task.status_NOC %></div>
+                    <div><strong>NOC Received Date:</strong> <%= task.NOCreceivedDate ? task.NOCreceivedDate.toISOString().split('T')[0] : 'N/A' %></div>
+                    <div><strong>Task-1 Agent Name (Seller):</strong> <%= task.task1agentname %></div>
+                    <div><strong>Task-2 Agent Name (Buyer):</strong> <%= task.task2agentname %></div>
+                    <div><strong>Transfer Date:</strong> <%= task.transferDate ? task.transferDate.toISOString().split('T')[0] : 'N/A' %></div>
+                    <div><strong>Handover Date (RC):</strong> <%= task.HandoverDate_RC ? task.HandoverDate_RC.toISOString().split('T')[0] : 'N/A' %></div>
+                    <div><strong>Handover Date (NOC):</strong> <%= task.HandoverDate_NOC ? task.HandoverDate_NOC.toISOString().split('T')[0] : 'N/A' %></div>
+                    <div><strong>Remarks:</strong> <div class="description"><%= task.description %></div></div>
+                    <div><strong>Phy RC Status:</strong> <%= task.status_RC %></div>
+                    
+                    <div><strong>Status:</strong> <%= task.state ? 'Completed' : 'Pending' %></div>
+                    <div class="media-link">
+                   
+                        <strong>Seller Photo:</strong> 
+                        <!-- <a href="<%= task.sellerPhoto %>" target="_blank">View</a> -->
+                        <img src="<%= task.sellerPhoto %>" alt="Seller Photo" />
+                    </div>
+                    <div class="media-link">
+                        <strong>Buyer Photo:</strong> 
+                        <!-- <a href="<%= task.buyerPhoto %>" target="_blank">View</a> -->
+                        <img src="<%= task.buyerPhoto %>" alt="Buyer Photo" />
+                    </div>
+                    <div><strong>Seller Docs:</strong> <a href="<%= task.sellerDocs %>" target="_blank"><%= task.sellerDocs ? 'View Seller Docs' : 'No Docs Available' %></a></div>
+                    <div><strong>Buyer Docs:</strong> <a href="<%= task.buyerDocs %>" target="_blank"><%= task.buyerDocs ? 'View Buyer Docs' : 'No Docs Available' %></a></div>
+                    <div><strong>Transfer E-receipt:</strong> <a href="<%= task.transferReceipt %>" target="_blank"><%= task.transferReceipt ? 'View Transfer Receipt' : 'Transfer Receipt' %></a></div>
+                </div>
+                <hr>
+                <div class="task-actions">
+                    <a href="/tasks/edit/<%= task._id %>" class="btn">Edit Task</a>
+                    
+                    <a href="/assign/tasks/edit/<%= task._id %>" class="btn">Assign agent</a>
+                    <form action="/tasks/delete/<%= task._id %>" method="POST" style="display:inline;">
+                        <button type="submit" class="btn">Delete</button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+    <script>
+        document.getElementById("search-btn").addEventListener("click", function() {
+            const searchQuery = document.getElementById("search-input").value.toLowerCase();
+            const taskCards = document.querySelectorAll(".task-card");
+            
+            taskCards.forEach(function(card) {
+                const carNum = card.querySelector("div strong").nextSibling.textContent.trim().toLowerCase();
+                if (carNum.includes(searchQuery)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+        function clearSearchInput() {
+        document.getElementById("search-input").value = '';
+        document.getElementById("clear-btn").style.display = 'none';
+    }
+
+    // Show the clear button when the user types in the input
+    document.getElementById("search-input").addEventListener("input", function() {
+        const clearButton = document.getElementById("clear-btn");
+        if (this.value) {
+            clearButton.style.display = 'block';
+        } else {
+            clearButton.style.display = 'none';
+        }
+    });
+    </script>
+    
+</body>
+
+</html>

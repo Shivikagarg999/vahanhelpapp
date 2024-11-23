@@ -17,6 +17,8 @@
             align-items: center;
             height: 100vh;
             font-family: "Open Sans", sans-serif;
+            background-image: url('https://i.pinimg.com/736x/09/32/58/0932587bb02e1f07068ccf3668aff51c.jpg');
+           
         }
         .container {
             max-width: 600px;
@@ -26,6 +28,7 @@
             margin: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            opacity: 0.9;
         }
         h1 {
             text-align: center;
@@ -81,8 +84,8 @@
 </head>
 <body>
     <div class="container">
-        <h1> Admin Task Edit</h1>
-        <form action="/admin/tasks/edit/<%= task._id %>" method="post">
+        <h1> Agent Assignment</h1>
+        <form action="/assign/tasks/edit/<%= task._id %>" method="post">
         
             <div class="form-group">
                 <label for="task1agentname">Task-1 Agent name(Seller):</label>
@@ -223,16 +226,16 @@
                     <option value="Zaid _157" <%= task.task2agentname === 'Zaid _157' ? 'selected' : '' %>>Zaid _157</option>
                 </select>      
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="state">Status:</label>
                 <select id="state" name="state">
                     <option value="true" <%= task.state ? 'selected' : '' %>>Completed</option>
                     <option value="false" <%= !task.state ? 'selected' : '' %>>Pending</option>
                 </select>
-            </div>
+            </div> -->
             <button type="submit">Update Task</button>
         </form>
-        <a href="/tasks" class="back-link">Back to Tasks</a>
+        <a href="/employee" class="back-link">Back to Tasks</a>
     </div>
 </body>
 </html>

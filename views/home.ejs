@@ -35,20 +35,29 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 323px;
+            gap: 200px;
             z-index: 2;
             color: white;
-            width: 100%; /* Ensure the container takes full width */
+            width: 100%;
         }
         .container h1 {
             font-size: 3rem;
-            margin: 0; /* Remove bottom margin */
+            margin: 0;
             font-weight: bold;
             letter-spacing: 2px;
             position: absolute;
             top: 60px;
         }
-        .container .btn {
+        .button-container {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .btn, .new {
             padding: 1rem 2rem;
             background-color: #ffffff;
             color: black;
@@ -57,16 +66,12 @@
             text-decoration: none;
             font-size: 1.2rem;
             font-weight: bold;
-            position: absolute;
-            bottom: 60px;
-            left: 50%;
-            transform: translateX(-50%);
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-           box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
-            margin-top: 40px; 
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
             cursor: pointer;
+            display: inline-block;
         }
-        .container .btn:hover {
+        .btn:hover, .new:hover {
             background-color: #0056b3;
             box-shadow: 0 6px 10px rgba(0, 123, 255, 0.4);
             color: #ffffff;
@@ -81,13 +86,13 @@
             background-size: cover;
         }
         @media (max-width: 768px) {
-            .container{
+            .container {
                 gap: 400px;
             }
             .container h1 {
                 font-size: 2.5rem;
             }
-            .container .btn {
+            .btn, .new {
                 font-size: 1rem;
             }
         }
@@ -97,7 +102,10 @@
     <div class="background"></div>
     <div class="container">
         <h1>Welcome to Vahan Help</h1>
-        <a href="/login" class="btn">Access Your CMS</a>
+        <div class="button-container">
+            <a href="/emp/login" class="new">Vahan CMS</a> 
+            <a href="/login" class="btn">Partner CMS</a>
+        </div>
     </div>
 </body>
 </html>

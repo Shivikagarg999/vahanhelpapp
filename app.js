@@ -13,9 +13,7 @@ const Admin = require('./models/admin');
 const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
 const axios = require('axios');
-
-// const INFIBIP_API_KEY = 'a9d5ff2dd1c093c51ba4d3c281bde099-183c6321-bfe3-458b-a10d-d7ae0dd28af5';
-// const BASE_URL = 'ypvkqj.api.infobip.com';
+  
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -83,32 +81,33 @@ app.post("/login", async (req, res) => {
 });                                             
 
 app.get("/tasks", async (req, res) => {
+    const { clientName } = req.query; // Retrieve the clientName from query parameters
     const companyId = req.cookies.token;
+
     if (!companyId) {
         return res.redirect("/login");
     }
+
     try {
-        const company = await Company.findById(companyId).populate('tasks');
-        if (!company) {
-            return res.redirect("/login");
+        // Build the query dynamically
+        const query = { company: companyId }; // Filter by company
+        if (clientName) {
+            query.clientName = { $regex: clientName, $options: "i" }; // Case-insensitive search
         }
 
-        // Sort tasks by `createdAt` or `updatedAt` in descending order
-        const sortedTasks = company.tasks.sort((a, b) => b.createdAt - a.createdAt);
-        
-        res.render("tasks", { tasks: sortedTasks });
+        // Find tasks matching the query
+        const tasks = await Task.find(query).sort({ createdAt: -1 });
+
+        res.render("tasks", { tasks, clientName }); // Pass clientName for form pre-fill
     } catch (err) {
+        console.error("Error fetching tasks:", err);
         res.status(500).send("Error fetching tasks.");
     }
 });
 
-
-app.get("/tasks/create", (req, res) => {
-    const companyId = req.cookies.token;
-    if (!companyId) {
-        return res.redirect("/login");
-    }
-    res.render("create_task");
+app.get("/tasks/create", isEMPLoggedIn, async (req, res) => {
+    const companies = await Company.find({}, 'companyName'); 
+    res.render("create_task" , { companies });
 });
 
 app.get('/tasks/search', async (req, res) => {
@@ -127,149 +126,7 @@ app.get('/tasks/search', async (req, res) => {
     }
 });
 
-
-
-app.post("/tasks/edit/:id", upload.fields([
-    { name: 'sellerPhoto', maxCount: 1 },
-    { name: 'buyerPhoto', maxCount: 1 },
-    { name: 'sellerDocs', maxCount: 1 },
-    { name: 'buyerDocs', maxCount: 1 },
-    { name: 'carVideo', maxCount: 1 },
-    { name: 'sellerVideo', maxCount: 1 },
-    { name: 'careOfVideo', maxCount: 1 },
-    { name: 'nocReceipt', maxCount: 1 },
-    { name: 'transferReceipt', maxCount: 1 }
-]), async (req, res) => {
-    const taskId = req.params.id;
-
-    // Destructure all fields from req.body
-    const { 
-        name, 
-        description, 
-        carNum, 
-        clientName, 
-        caseType, 
-        hptName, 
-        sellerAlignedDate, 
-        buyerAlignedDate, 
-        NOCissuedDate, 
-        NOCreceivedDate, 
-        fileReceivedDate, 
-        AdditionalWork, 
-        HPA, 
-        transferDate, 
-        HandoverDate_RC, 
-        HandoverDate_NOC, 
-        buyerName, 
-        buyerNum, 
-        sellerName, 
-        sellerNum, 
-        buyer_RTO_location, 
-        seller_RTO_location, 
-        chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
-        state
-    } = req.body;
-
-    try {
-        // Convert arrays to strings if they exist
-        const taskData = { 
-            name, 
-            description, 
-            carNum, 
-            clientName, 
-            caseType, 
-            hptName, 
-            sellerAlignedDate, 
-            buyerAlignedDate, 
-            NOCissuedDate, 
-            NOCreceivedDate, 
-            fileReceivedDate, 
-            AdditionalWork, 
-            HPA, 
-            transferDate, 
-            HandoverDate_RC, 
-            HandoverDate_NOC, 
-            buyerName, 
-            buyerNum, 
-            sellerName, 
-            sellerNum, 
-            buyer_RTO_location: Array.isArray(buyer_RTO_location) ? buyer_RTO_location.join(", ") : buyer_RTO_location, 
-            seller_RTO_location: Array.isArray(seller_RTO_location) ? seller_RTO_location.join(", ") : seller_RTO_location, 
-            state: state === "true", // Ensure state is boolean
-            chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
-        };
-
-        // Handle file uploads (if any)
-        if (req.files) {
-            for (let key in req.files) {
-                const file = req.files[key][0];
-                const imageKitResponse = await uploadOnImageKit(file.path); // Using ImageKit upload
-                if (imageKitResponse) {
-                    taskData[key] = imageKitResponse.url; // Get the URL from ImageKit response
-                }
-            }
-        }
-
-        // Update the task with new data
-        await Task.findByIdAndUpdate(taskId, taskData);
-
-        res.redirect("/tasks");
-    } catch (err) {
-        console.error('Error updating task:', err.message);
-        res.status(500).send("Error updating task.");
-    }
-});
-
-
-app.post("/tasks/delete/:id", async (req, res) => {
-    const taskId = req.params.id;
-    const companyId = req.cookies.token;
-    try {
-        await Task.findByIdAndDelete(taskId);
-        await Company.findByIdAndUpdate(companyId, { $pull: { tasks: taskId } });
-        res.redirect("/tasks");
-    } catch (err) {
-        res.status(500).send("Error deleting task.");
-    }
-});
-
-// Admin Task Delete Route
-app.post("/admin/tasks/delete/:id", isAdminLoggedIn, async (req, res) => {
-    const taskId = req.params.id;
-
-    try {
-        // Delete the task by its ID
-        await Task.findByIdAndDelete(taskId);
-
-        await Company.updateMany({}, { $pull: { tasks: taskId } });
-
-        // Redirect admin to the task listing page after successful deletion
-        res.redirect("/admin/tasks");
-    } catch (err) {
-        console.error("Error deleting task:", err);
-        return res.status(500).render("error", { message: "Error deleting task." });
-    }
-});
-
-app.get("/tasks/edit/:id", async (req, res) => {
-    const taskId = req.params.id;
-    const companyId = req.cookies.token;
-    if (!companyId) {
-        return res.redirect("/login");
-    }
-    try {
-        const task = await Task.findOne({ _id: taskId, company: companyId });
-        if (!task) {
-            return res.status(404).send("Task not found.");
-        }
-        res.render("edit", { task });
-    } catch (err) {
-        res.status(500).send("Error fetching task.");
-    }
-})
-
-// Admin Task Edit Route
-app.get("/admin/tasks/edit/:id", isAdminLoggedIn, async (req, res) => {
+app.get("/assign/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id;
 
     try {
@@ -285,7 +142,7 @@ app.get("/admin/tasks/edit/:id", isAdminLoggedIn, async (req, res) => {
         return res.status(500).render("error", { message: "An error occurred while fetching the task" });
     }
 });
-app.post("/admin/tasks/edit/:id", async (req, res) => {
+app.post("/assign/tasks/edit/:id", async (req, res) => {
     const taskId = req.params.id;
 
     // Destructure the required fields from req.body
@@ -311,115 +168,12 @@ app.post("/admin/tasks/edit/:id", async (req, res) => {
         await Task.findByIdAndUpdate(taskId, taskData);
 
         // Redirect to the admin tasks page after updating
-        res.redirect("/admin-tasks");
+        res.redirect("/employee");
     } catch (err) {
         console.error('Error updating task:', err.message);
         res.status(500).send("Error updating task.");
     }
 });
-
-
-app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
-    if (!req.file) {
-        return res.status(400).send("No file uploaded.");
-    }
-
-    const filePath = req.file.path;
-
-    try {
-        const tasks = [];
-
-        const parseCSV = () => {
-            return new Promise((resolve, reject) => {
-                fs.createReadStream(filePath)
-                    .pipe(csv())
-                    .on('data', (row) => {
-                        console.log("Processing row: ", row);
-
-                        // Trim whitespace from row values
-                        const name = row.name?.trim();
-                        const description = row.description?.trim();
-
-                        // Check for essential fields to avoid blank tasks
-                        
-                        tasks.push({
-                            company: req.cookies.token,
-                            tasktype: row.name?.trim(),
-                            description: row.description?.trim(),
-                            carNum: row.carNum?.trim(),
-                            clientName: row.clientName?.trim(),
-                            caseType: row.caseType?.trim(),
-                            hptName: row.hptName?.trim(),
-                            sellerAlignedDate: row.sellerAlignedDate ? new Date(row.sellerAlignedDate) : null,
-                            buyerAlignedDate: row.buyerAlignedDate ? new Date(row.buyerAlignedDate) : null,
-                            NOCissuedDate: row.NOCissuedDate ? new Date(row.NOCissuedDate) : null,
-                            NOCreceivedDate: row.NOCreceivedDate ? new Date(row.NOCreceivedDate) : null,
-                            fileReceivedDate: row.fileReceivedDate ? new Date(row.fileReceivedDate) : null,
-                            AdditionalWork: row.AdditionalWork?.trim(),
-                            HPA: row.HPA?.trim(),
-                            transferDate: row.transferDate ? new Date(row.transferDate) : null,
-                            HandoverDate_RC: row.HandoverDate_RC ? new Date(row.HandoverDate_RC) : null,
-                            HandoverDate_NOC: row.HandoverDate_NOC ? new Date(row.HandoverDate_NOC) : null,
-                            buyerName: row.buyerName?.trim(),
-                            buyerNum: row.buyerNum?.trim(),
-                            sellerName: row.sellerName?.trim(),
-                            sellerNum: row.sellerNum?.trim(),
-                            buyer_RTO_location: row.buyer_RTO_location?.trim(),
-                            seller_RTO_location: row.seller_RTO_location?.trim(),
-                            state: row.state === 'true',
-                            sellerPhoto: row.sellerPhoto,
-                            buyerPhoto: row.buyerPhoto,  
-                            sellerDocs: row.sellerDocs,
-                            buyerDocs: row.buyerDocs,
-                            carVideo: row.carVideo,
-                            sellerVideo: row.sellerVideo,
-                            careOfVideo: row.careOfVideo,
-                            nocReceipt: row.nocReceipt,
-                            transferReceipt: row.transferReceipt,
-                            chesisnum: row.chesisnum,
-                            engineNum: row.engineNum,
-                            status_RC: row.status_RC,
-                            status_NOC: row.status_NOC,
-                            deliverdate: row.deliverdate,
-                            courierdate: row.courier
-                        });
-                        
-                        
-                    })
-                    .on('end', resolve)
-                    .on('error', (err) => {
-                        console.error("Error parsing CSV:", err.message);
-                        reject(err);
-                    });
-            });
-        };
-
-        await parseCSV();
-
-        console.log("Parsed tasks: ", tasks); 
-
-        await Promise.all(tasks.map(async (task) => {
-            try {
-                const newTask = new Task(task);
-                await newTask.save();
-                await Company.findByIdAndUpdate(task.company, { $push: { tasks: newTask._id } });
-            } catch (err) {
-                console.error("Error saving task to DB:", err.message, "Task:", task);
-            }
-        }));
-
-        // Delete the uploaded file after processing
-        fs.unlink(filePath, (err) => {
-            if (err) console.error('Error deleting file:', err.message);
-        });
-
-        res.redirect('/tasks');
-    } catch (err) {
-        console.error('Error importing tasks:', err.message);
-        res.status(500).send("Error importing tasks.");
-    }
-});
-
 app.get('/tasks/view/:id', async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
@@ -444,6 +198,7 @@ app.get('/tasks/view/:id', async (req, res) => {
 
 app.get("/logout", (req, res) => {
     res.clearCookie('token');
+    res.clearCookie('employee_token')
     res.redirect("/");
 });
 
@@ -454,7 +209,12 @@ function isLoggedIn(req, res, next) {
     }
     next();
 }
-
+function isEMPLoggedIn(req, res, next) {
+    if (!req.cookies.employee_token) {
+        return res.redirect("/emp/login");        
+    }
+    next(); 
+}
 app.get("/admin/login", (req, res) => {
     res.render("admin_login");
 });
@@ -558,7 +318,7 @@ app.get('/tasks/download', async (req, res) => {
         res.status(500).send("Error downloading tasks.");
     }
 });
-app.get('/admin-task-download', async (req, res) => {
+app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
     try {
         // Fetch all tasks from the database
         const tasks = await Task.find();
@@ -571,7 +331,8 @@ app.get('/admin-task-download', async (req, res) => {
             'buyerName', 'buyerNum',  'buyerAlignedDate',  'name',
             'transferReceipt' ,'description', 'transferDate',      
             'HandoverDate_RC',
-            'state', 'createdAt',   
+            'state', 'createdAt', 
+            ' task1agentname', ' task2agentname',
             'sellerPhoto',
             'buyerPhoto',
             'sellerDocs',
@@ -624,50 +385,252 @@ app.post('/upload', upload.fields([
     { name: 'nocReceipt', maxCount: 1 },
     { name: 'transferReceipt', maxCount: 1 }
 ]), async (req, res) => {
-    const companyId = req.cookies.token;
-    if (!companyId) {
-        return res.redirect("/login");
+    // Destructure all fields at the start, including clientName
+    const { 
+        name, description, clientName, carNum, caseType, hptName, 
+        sellerAlignedDate, buyerAlignedDate, NOCissuedDate, 
+        NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, 
+        transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, 
+        buyerNum, sellerName, sellerNum, buyer_RTO_location, 
+        seller_RTO_location, state, chesisnum, engineNum, status_RC, 
+        status_NOC, deliverdate, courier 
+    } = req.body;
+
+    if (!clientName) {
+        return res.status(400).send("Client name is required.");
     }
 
     try {
-        const taskData = { company: companyId };
+        // Find the company associated with the client name
+        const company = await Company.findOne({ companyName: clientName });
+        if (!company) {
+            return res.status(404).send("Company not found for the given client name.");
+        }
 
+        const companyId = company._id; // Get the company ID
+        const taskData = { company: companyId }; // Initialize task data with company ID
+
+        // Handle file uploads
         for (let key in req.files) {
             const file = req.files[key][0];
-            const imageKitResponse = await uploadOnImageKit(file.path); // Use ImageKit upload function
+            const imageKitResponse = await uploadOnImageKit(file.path); // Use your upload function
             if (imageKitResponse) {
-                taskData[key] = imageKitResponse.url; // ImageKit returns a direct URL
+                taskData[key] = imageKitResponse.url; // Store the URL from ImageKit response
             }
         }
 
-        // Collect additional fields from request body
-        const { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state, chesisnum,engineNum, status_RC, status_NOC,deliverdate, courier } = req.body;
+        // Add all fields from req.body to taskData
+        Object.assign(taskData, { 
+            name, description, clientName, carNum, caseType, hptName, 
+            sellerAlignedDate, buyerAlignedDate, NOCissuedDate, 
+            NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, 
+            transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, 
+            buyerNum, sellerName, sellerNum, buyer_RTO_location, 
+            seller_RTO_location, state, chesisnum, engineNum, status_RC, 
+            status_NOC, deliverdate, courier 
+        });
 
-        // Add these fields to taskData
-        Object.assign(taskData, { name, description, carNum, clientName, caseType, hptName, sellerAlignedDate, buyerAlignedDate, NOCissuedDate, NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, buyerNum, sellerName, sellerNum, buyer_RTO_location, seller_RTO_location, state , chesisnum,engineNum, status_RC, status_NOC,deliverdate, courier});
-
+        // Create a new task
         const newTask = new Task(taskData);
-        await newTask.save();
+        await newTask.save(); // Save the task to the database
+
+        // Update the company's task array
         await Company.findByIdAndUpdate(companyId, { $push: { tasks: newTask._id } });
 
-        res.redirect('/tasks');
-
+        res.redirect('/employee'); // Redirect to the tasks page after successful creation
     } catch (error) {
-        console.error('File upload failed:', error);
-        res.status(500).json({ message: 'File upload failed', error });
+        console.error('Task creation failed:', error.message, error);
+        res.status(500).json({ message: 'Task creation failed', error: error.message });
     }
 });
 
-app.get('/setrem', async (req, res) => {
+app.get("/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
+    const taskId = req.params.id; // Get the task ID from the URL parameters
+    console.log('Received taskId:', taskId); // Log the taskId
+
     try {
-        const tasks = await Task.find().populate('company').sort({ createdAt: -1 }); // Sort by newest first
-        res.render("reminder", { tasks });
-    } catch (error) {
-        console.error('Error fetching task data:', error);
-        res.render('reminder', { task: null }); // Or handle as appropriate if task is missing
+        const task = await Task.findById(taskId); // Find the task by ID
+        if (!task) {
+            return res.status(404).send("Task not found."); // Handle task not found
+        }
+        res.render("edit", { task }); // Render the edit view with the task data
+    } catch (err) {
+        console.error('Error fetching task:', err.message);
+        res.status(500).send("Error fetching task."); // Handle server error
     }
 });
-  
+
+app.post("/tasks/edit/:id", upload.fields([
+    { name: 'sellerPhoto', maxCount: 1 },
+    { name: 'buyerPhoto', maxCount: 1 },
+    { name: 'sellerDocs', maxCount: 1 },
+    { name: 'buyerDocs', maxCount: 1 },
+    { name: 'carVideo', maxCount: 1 },
+    { name: 'sellerVideo', maxCount: 1 },
+    { name: 'careOfVideo', maxCount: 1 },
+    { name: 'nocReceipt', maxCount: 1 },
+    { name: 'transferReceipt', maxCount: 1 }
+]), async (req, res) => {
+    const taskId = req.params.id;
+
+    // Destructure all fields from req.body
+    const { 
+        name, 
+        description, 
+        carNum, 
+        clientName, 
+        caseType, 
+        hptName, 
+        sellerAlignedDate, 
+        buyerAlignedDate, 
+        NOCissuedDate, 
+        NOCreceivedDate, 
+        fileReceivedDate, 
+        AdditionalWork, 
+        HPA, 
+        transferDate, 
+        HandoverDate_RC, 
+        HandoverDate_NOC, 
+        buyerName, 
+        buyerNum, 
+        sellerName, 
+        sellerNum, 
+        buyer_RTO_location, 
+        seller_RTO_location, 
+        chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
+        state
+    } = req.body;
+
+    try {
+        // Convert arrays to strings if they exist
+        const taskData = { 
+            name, 
+            description, 
+            carNum, 
+            clientName, 
+            caseType, 
+            hptName, 
+            sellerAlignedDate, 
+            buyerAlignedDate, 
+            NOCissuedDate, 
+            NOCreceivedDate, 
+            fileReceivedDate, 
+            AdditionalWork, 
+            HPA, 
+            transferDate, 
+            HandoverDate_RC, 
+            HandoverDate_NOC, 
+            buyerName, 
+            buyerNum, 
+            sellerName, 
+            sellerNum, 
+            buyer_RTO_location: Array.isArray(buyer_RTO_location) ? buyer_RTO_location.join(", ") : buyer_RTO_location, 
+            seller_RTO_location: Array.isArray(seller_RTO_location) ? seller_RTO_location.join(", ") : seller_RTO_location, 
+            state: state === "true", // Ensure state is boolean
+            chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
+        };
+
+        // Handle file uploads (if any)
+        if (req.files) {
+            for (let key in req.files) {
+                const file = req.files[key][0];
+                const imageKitResponse = await uploadOnImageKit(file.path); // Using ImageKit upload
+                if (imageKitResponse) {
+                    taskData[key] = imageKitResponse.url; // Get the URL from ImageKit response
+                }
+            }
+        }
+
+        // Update the task with new data
+        await Task.findByIdAndUpdate(taskId, taskData);
+
+        res.redirect("/employee");
+    } catch (err) {
+        console.error('Error updating task:', err.message);
+        res.status(500).send("Error updating task.");
+    }
+});
+ 
+
+app.post("/tasks/delete/:id", async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        // Delete the task by its ID
+        await Task.findByIdAndDelete(taskId);
+
+        await Company.updateMany({}, { $pull: { tasks: taskId } });
+
+        // Redirect admin to the task listing page after successful deletion
+        res.redirect("/employee");
+    } catch (err) {
+        console.error("Error deleting task:", err);
+        return res.status(500).render("error", { message: "Error deleting task." });
+    }
+});
+
+// Admin Task Delete Route
+app.post("/admin/tasks/delete/:id", isAdminLoggedIn, async (req, res) => {
+    const taskId = req.params.id;
+
+    try {
+        // Delete the task by its ID
+        await Task.findByIdAndDelete(taskId);
+
+        await Company.updateMany({}, { $pull: { tasks: taskId } });
+
+        // Redirect admin to the task listing page after successful deletion
+        res.redirect("/admin/tasks");
+    } catch (err) {
+        console.error("Error deleting task:", err);
+        return res.status(500).render("error", { message: "Error deleting task." });
+    }
+});
+
+app.get('/employee',isEMPLoggedIn, async (req, res) => {
+    try {
+        
+        const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
+        res.render('employee', { tasks }); // Pass tasks to the view
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+app.get('/emp/login', async(req,res)=>{
+   res.render('employeelogin')
+});
+app.post('/emp/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        if (username === process.env.EMP_USERNAME && password === process.env.EMP_PASSWORD) {
+            res.cookie('employee_token', 'employee', { httpOnly: true });
+            res.redirect('/employee');
+        } else {
+            res.render('employeelogin', { error: 'Invalid username or password.' });
+        }
+    } catch (err) {
+        console.error('Error during employee login:', err.message);
+        res.status(500).render('employeelogin', { error: 'Error during login.' });
+    }
+});
+app.get('/searchcn', async(req,res)=>{
+    let query = {}; // Default query, return all tasks
+    if (req.query.search) {
+        const searchQuery = req.query.search.toLowerCase();
+        query.carNum = { $regex: searchQuery, $options: "i" }; // Regex search, case-insensitive
+    }
+    
+    Task.find(query)
+        .then(tasks => {
+            res.render("employee", { tasks });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send("Error fetching tasks");
+        });
+})
+
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 }); 
