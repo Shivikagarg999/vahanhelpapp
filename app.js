@@ -118,7 +118,7 @@ app.get('/tasks/search', async (req, res) => {
         const task = await Task.findOne({ carNum: new RegExp(`^${carNum}$`, 'i') });
 
         // Render a single result as an array for compatibility with the view
-        res.render('tasks', { tasks: task ? [task] : [] });
+        res.render('employee', { tasks: task ? [task] : [] });
         
     } catch (err) {
         console.error("Error fetching task:", err);
