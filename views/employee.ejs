@@ -250,10 +250,10 @@
                 <div><strong>Phy RC Status:</strong> <%= task.status_RC %></div>
                 <div><strong>Status:</strong> <%= task.state ? 'Completed' : 'Pending' %></div>
                 <div class="media-link">
-                    <strong>Seller Photo:</strong> <img src="<%= task.sellerPhoto %>" alt="Seller Photo">
+                    <strong>Seller Photo:</strong> <a href="<%= task.sellerPhoto %>" target="_blank"><%= task.sellerPhoto ? 'View' : 'Not Available' %></a>
                 </div>
                 <div class="media-link">
-                    <strong>Buyer Photo:</strong> <img src="<%= task.buyerPhoto %>" alt="Buyer Photo">
+                    <strong>Seller Photo:</strong> <a href="<%= task.buyerPhoto %>" target="_blank"><%= task.buyerPhoto ? 'View' : 'Not Available' %></a>
                 </div>
                 <div><strong>Seller Docs:</strong> <a href="<%= task.sellerDocs %>" target="_blank"><%= task.sellerDocs ? 'View' : 'No Docs Available' %></a></div>
                 <div><strong>Buyer Docs:</strong> <a href="<%= task.buyerDocs %>" target="_blank"><%= task.buyerDocs ? 'View' : 'No Docs Available' %></a></div>
