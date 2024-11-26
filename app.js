@@ -332,7 +332,7 @@ app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
             'transferReceipt' ,'description', 'transferDate',      
             'HandoverDate_RC',
             'state', 'createdAt', 
-            ' task1agentname', ' task2agentname',
+            'task1agentname', 'task2agentname',
             'sellerPhoto',
             'buyerPhoto',
             'sellerDocs',
