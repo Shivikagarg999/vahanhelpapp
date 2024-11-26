@@ -81,7 +81,7 @@ app.post("/login", async (req, res) => {
 });                                             
 
 app.get("/tasks", async (req, res) => {
-    const { clientName } = req.query; // Retrieve the clientName from query parameters
+    const { clientName } = req.query; 
     const companyId = req.cookies.token;
 
     if (!companyId) {
@@ -446,7 +446,6 @@ app.post('/upload', upload.fields([
 
 app.get("/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id; // Get the task ID from the URL parameters
-    console.log('Received taskId:', taskId); // Log the taskId
 
     try {
         const task = await Task.findById(taskId); // Find the task by ID
