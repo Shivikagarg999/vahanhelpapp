@@ -16,9 +16,6 @@ const taskSchema = mongoose.Schema({
     NOCissuedDate:Date,
     NOCreceivedDate: Date,
     fileReceivedDate: Date,
-    // transferReceiptDate: Date, //new fields to be added
-    // seller align date ke baad me seller PP status
-    // buyer aligned ke baad buyer PP status- dropdown 
     AdditionalWork: String,
     HPA: String,
     transferDate: Date,
@@ -30,7 +27,7 @@ const taskSchema = mongoose.Schema({
     sellerNum: String,
     buyer_RTO_location: String,
     seller_RTO_location: String,
-    state: Boolean,
+    state: String,                                         
     sellerPhoto: String,
     buyerPhoto: String,
     sellerDocs: String,
