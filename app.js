@@ -685,73 +685,89 @@ async function fetchData() {
 }
 
 // Function to update Google Sheets
-async function updateGoogleSheet(data) {
-    try {
-        const auth = new google.auth.GoogleAuth({
-            keyFile: './task-data.json', // Path to your JSON key
-            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-        });
+// async function updateGoogleSheet(data) {
+//     try {
+//         const auth = new google.auth.GoogleAuth({
+//             keyFile: './task-data.json', // Path to your JSON key
+//             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+//         });
 
-        const authClient = await auth.getClient();
-        const sheets = google.sheets({ version: 'v4', auth: authClient });
-        const spreadsheetId = '1Oy4GrbrWkLowiHFeBBBMqsCyD3xVpGpT0ntJoWc1-Ag';
+//         const authClient = await auth.getClient();
+//         const sheets = google.sheets({ version: 'v4', auth: authClient });
+//         const spreadsheetId = '1Oy4GrbrWkLowiHFeBBBMqsCyD3xVpGpT0ntJoWc1-Ag';
 
-        const range = 'Task data-live!A:AO'; // Adjust based on your Google Sheet structure
+//         const range = 'Task data-live!A:AO'; // Adjust based on your Google Sheet structure
 
-        // Prepare headers and rows
-        const headers = [
-            'Company', 'Name', 'Description', 'Car Number', 'Client Name', 'Case Type',
-            'HPT Name', 'Seller Aligned Date', 'Buyer Aligned Date', 'NOC Issued Date',
-            'NOC Received Date', 'File Received Date', 'Additional Work', 'HPA', 'Transfer Date',
-            'Handover Date (RC)', 'Handover Date (NOC)', 'Buyer Name', 'Buyer Number', 'Seller Name',
-            'Seller Number', 'Buyer RTO Location', 'Seller RTO Location', 'State', 'Seller Photo',
-            'Buyer Photo', 'Seller Docs', 'Buyer Docs', 'Car Video', 'Seller Video', 'Care Of Video',
-            'NOC Receipt', 'Transfer Receipt', 'Created At', 'Task1 Agent Name', 'Task2 Agent Name',
-            'Chesis Number', 'Engine Number', 'Status (RC)', 'Status (NOC)', 'Deliver Date', 'Courier'
-        ];
-        const values = [headers, ...data.map(Object.values)];
+//         // Prepare headers and rows
+//         const headers = [
+//             'Company', 'Name', 'Description', 'Car Number', 'Client Name', 'Case Type',
+//             'HPT Name', 'Seller Aligned Date', 'Buyer Aligned Date', 'NOC Issued Date',
+//             'NOC Received Date', 'File Received Date', 'Additional Work', 'HPA', 'Transfer Date',
+//             'Handover Date (RC)', 'Handover Date (NOC)', 'Buyer Name', 'Buyer Number', 'Seller Name',
+//             'Seller Number', 'Buyer RTO Location', 'Seller RTO Location', 'State', 'Seller Photo',
+//             'Buyer Photo', 'Seller Docs', 'Buyer Docs', 'Car Video', 'Seller Video', 'Care Of Video',
+//             'NOC Receipt', 'Transfer Receipt', 'Created At', 'Task1 Agent Name', 'Task2 Agent Name',
+//             'Chesis Number', 'Engine Number', 'Status (RC)', 'Status (NOC)', 'Deliver Date', 'Courier'
+//         ];
+//         const values = [headers, ...data.map(Object.values)];
 
-        // Update the Google Sheet
-        await sheets.spreadsheets.values.update({
-            spreadsheetId,
-            range,
-            valueInputOption: 'RAW',
-            resource: { values },
-        });
+//         // Update the Google Sheet
+//         await sheets.spreadsheets.values.update({
+//             spreadsheetId,
+//             range,
+//             valueInputOption: 'RAW',
+//             resource: { values },
+//         });
 
-        console.log('Google Sheet updated successfully!');
-    } catch (err) {
-        console.error('Error updating Google Sheet:', err.message);
-    }
-}
+//         console.log('Google Sheet updated successfully!');
+//     } catch (err) {
+//         console.error('Error updating Google Sheet:', err.message);
+//     }
+// }
 
-// Route to update Google Sheet
-app.get('/update-sheet', async (req, res) => {
-    const data = await fetchData(); // Fetch data from MongoDB
-    await updateGoogleSheet(data); // Update Google Sheet
-    res.send('Google Sheet updated successfully!');
-});
+// // Route to update Google Sheet
+// app.get('/update-sheet', async (req, res) => {
+//     const data = await fetchData(); // Fetch data from MongoDB
+//     await updateGoogleSheet(data); // Update Google Sheet
+//     res.send('Google Sheet updated successfully!');
+// });
 
-app.get('/tasks/client/search', async (req, res) => {
-    try {
-        const carNum = req.query.carNum; // Get the car number from the query parameter
-        let tasks = [];
+// app.get('/tasks/client/search', async (req, res) => {
+//     try {
+//         const carNum = req.query.carNum; // Get the car number from the query parameter
+//         let tasks = [];
 
-        if (carNum) {
-            // If car number is provided, search for tasks with matching car number
-            tasks = await Task.find({ carNum: { $regex: carNum, $options: 'i' } }); // Case-insensitive search
-        } else {
-            // If no car number is provided, show all tasks
-            tasks = await Task.find();
-        }
+//         if (carNum) {
+//             // If car number is provided, search for tasks with matching car number
+//             tasks = await Task.find({ carNum: { $regex: carNum, $options: 'i' } }); // Case-insensitive search
+//         } else {
+//             // If no car number is provided, show all tasks
+//             tasks = await Task.find();
+//         }
 
-        // Render the view with the found tasks
-        res.render('tasks', { tasks });
-    } catch (error) {
-        console.error('Error while searching tasks:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
+//         // Render the view with the found tasks
+//         res.render('tasks', { tasks });
+//     } catch (error) {
+//         console.error('Error while searching tasks:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// });
+// async function testAuth() {
+//     try {
+//         const auth = new google.auth.GoogleAuth({
+//             keyFile: path.resolve(__dirname, 'task-data.json'),
+//             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+//         });
+
+//         const authClient = await auth.getClient();
+//         console.log('Authentication successful!');
+//     } catch (err) {
+//         console.error('Error during authentication:', err.message);
+//     }
+// }
+
+// testAuth();
+
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

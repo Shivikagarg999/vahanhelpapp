@@ -282,16 +282,16 @@
     }
 
     /* Hover effect for task cards */
-    .task-card:hover {
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Larger shadow on hover */
-        transform: scale(1.02); /* Slight scale effect */
-        transition: all 0.3s ease; /* Smooth transition */
+    /* .task-card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transform: scale(1.02);
+        transition: all 0.3s ease;
     }
     
-    /* Button hover effect for task actions */
+
     .task-actions a:hover, .task-actions button:hover {
-        background-color: #0056b3; /* Change background color */
-    }
+        background-color: #0056b3; 
+    } */
     </style>
 </head>
 <body>
@@ -343,6 +343,9 @@
                 <div><strong>Transfer Date:</strong> <%= task.transferDate ? task.transferDate.toISOString().split('T')[0] : 'N/A' %></div>
                 <div><strong>Handover Date (RC):</strong> <%= task.HandoverDate_RC ? task.HandoverDate_RC.toISOString().split('T')[0] : 'N/A' %></div>
                 <div><strong>Handover Date (NOC):</strong> <%= task.HandoverDate_NOC ? task.HandoverDate_NOC.toISOString().split('T')[0] : 'N/A' %></div>
+                <div><strong>Delivery Date:</strong> <%= task.deliverdate ? task.deliverdate.toISOString().split('T')[0] : 'N/A' %></div>
+                <div><strong>Courier done Date:</strong> <%= task.ourier ? task.ourier.toISOString().split('T')[0] : 'N/A' %></div>
+              
                 <div><strong>Remarks:</strong> <div class="description"><%= task.description %></div></div>
                 <div><strong>Phy RC Status:</strong> <%= task.status_RC %></div>
                 <div><strong>Status:</strong> <%= task.state ? 'Completed' : 'Pending' %></div>
