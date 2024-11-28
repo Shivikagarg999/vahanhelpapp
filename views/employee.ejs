@@ -256,7 +256,42 @@
 .search-form button:active {
     background-color: #003f7f;
 }
+.task-details div:hover {
+        background-color: #f1f1f1; /* Change background on hover */
+        border-radius: 5px;
+        cursor: pointer; /* Show pointer cursor */
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
 
+    /* Hover effect for specific sections (e.g., "Remarks", "Car Number") */
+    .task-details div strong {
+        color: #000;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    /* Hover color for task titles */
+    /* .task-details div strong:hover {
+        color: #0056b3;
+    } */
+
+    /* Hover effect on media links */
+    .media-link a:hover {
+        text-decoration: underline;
+        color: #007bff;
+    }
+
+    /* Hover effect for task cards */
+    .task-card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Larger shadow on hover */
+        transform: scale(1.02); /* Slight scale effect */
+        transition: all 0.3s ease; /* Smooth transition */
+    }
+    
+    /* Button hover effect for task actions */
+    .task-actions a:hover, .task-actions button:hover {
+        background-color: #0056b3; /* Change background color */
+    }
     </style>
 </head>
 <body>
