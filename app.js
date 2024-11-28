@@ -13,7 +13,8 @@ const Admin = require('./models/admin');
 const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
 const axios = require('axios');
-  
+const { google } = require('googleapis');
+
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -629,6 +630,108 @@ app.get('/searchcn', async(req,res)=>{
             res.status(500).send("Error fetching tasks");
         });
 })
+
+//app script
+async function fetchData() {
+    try {
+        const tasks = await Task.find();
+        return tasks.map(task => ({
+            company: task.company,
+            name: task.name,
+            description: task.description,
+            carNum: task.carNum,
+            clientName: task.clientName,
+            caseType: task.caseType,
+            hptName: task.hptName,
+            sellerAlignedDate: task.sellerAlignedDate,
+            buyerAlignedDate: task.buyerAlignedDate,
+            NOCissuedDate: task.NOCissuedDate,
+            NOCreceivedDate: task.NOCreceivedDate,
+            fileReceivedDate: task.fileReceivedDate,
+            AdditionalWork: task.AdditionalWork,
+            HPA: task.HPA,
+            transferDate: task.transferDate,
+            HandoverDate_RC: task.HandoverDate_RC,
+            HandoverDate_NOC: task.HandoverDate_NOC,
+            buyerName: task.buyerName,
+            buyerNum: task.buyerNum,
+            sellerName: task.sellerName,
+            sellerNum: task.sellerNum,
+            buyer_RTO_location: task.buyer_RTO_location,
+            seller_RTO_location: task.seller_RTO_location,
+            state: task.state,
+            sellerPhoto: task.sellerPhoto,
+            buyerPhoto: task.buyerPhoto,
+            sellerDocs: task.sellerDocs,
+            buyerDocs: task.buyerDocs,
+            carVideo: task.carVideo,
+            sellerVideo: task.sellerVideo,
+            careOfVideo: task.careOfVideo,
+            nocReceipt: task.nocReceipt,
+            transferReceipt: task.transferReceipt,
+            createdAt: task.createdAt,
+            task1agentname: task.task1agentname,
+            task2agentname: task.task2agentname,
+            chesisnum: task.chesisnum,
+            engineNum: task.engineNum,
+            status_RC: task.status_RC,
+            status_NOC: task.status_NOC,
+            deliverdate: task.deliverdate,
+            courier: task.courier,
+        }));
+    } catch (err) {
+        console.error('Error fetching tasks:', err.message);
+    }
+}
+
+// Function to update Google Sheets
+async function updateGoogleSheet(data) {
+    try {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: './task-data.json', // Path to your JSON key
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+
+        const authClient = await auth.getClient();
+        const sheets = google.sheets({ version: 'v4', auth: authClient });
+        const spreadsheetId = '1Oy4GrbrWkLowiHFeBBBMqsCyD3xVpGpT0ntJoWc1-Ag';
+
+        const range = 'Task data-live!A:AO'; // Adjust based on your Google Sheet structure
+
+        // Prepare headers and rows
+        const headers = [
+            'Company', 'Name', 'Description', 'Car Number', 'Client Name', 'Case Type',
+            'HPT Name', 'Seller Aligned Date', 'Buyer Aligned Date', 'NOC Issued Date',
+            'NOC Received Date', 'File Received Date', 'Additional Work', 'HPA', 'Transfer Date',
+            'Handover Date (RC)', 'Handover Date (NOC)', 'Buyer Name', 'Buyer Number', 'Seller Name',
+            'Seller Number', 'Buyer RTO Location', 'Seller RTO Location', 'State', 'Seller Photo',
+            'Buyer Photo', 'Seller Docs', 'Buyer Docs', 'Car Video', 'Seller Video', 'Care Of Video',
+            'NOC Receipt', 'Transfer Receipt', 'Created At', 'Task1 Agent Name', 'Task2 Agent Name',
+            'Chesis Number', 'Engine Number', 'Status (RC)', 'Status (NOC)', 'Deliver Date', 'Courier'
+        ];
+        const values = [headers, ...data.map(Object.values)];
+
+        // Update the Google Sheet
+        await sheets.spreadsheets.values.update({
+            spreadsheetId,
+            range,
+            valueInputOption: 'RAW',
+            resource: { values },
+        });
+
+        console.log('Google Sheet updated successfully!');
+    } catch (err) {
+        console.error('Error updating Google Sheet:', err.message);
+    }
+}
+
+// Route to update Google Sheet
+app.get('/update-sheet', async (req, res) => {
+    const data = await fetchData(); // Fetch data from MongoDB
+    await updateGoogleSheet(data); // Update Google Sheet
+    res.send('Google Sheet updated successfully!');
+});
+
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');
