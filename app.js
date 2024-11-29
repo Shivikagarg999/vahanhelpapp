@@ -289,7 +289,7 @@ app.get('/tasks/download', async (req, res) => {
             sellerNum: task.sellerNum,
             buyer_RTO_location: task.buyer_RTO_location,
             seller_RTO_location: task.seller_RTO_location,
-            state: task.state ? 'Completed' : 'Pending',
+            state: task.state,
             sellerPhoto: task.sellerPhoto,
             buyerPhoto: task.buyerPhoto,
             sellerDocs: task.sellerDocs,
