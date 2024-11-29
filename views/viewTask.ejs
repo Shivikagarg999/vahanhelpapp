@@ -187,7 +187,7 @@
             <p><strong>Deliver Date:</strong> <span><%= task. deliverdate ? task. deliverdate.toDateString() : 'N/A' %></span></p>
             <p><strong>Courier done Date:</strong> <span><%= task.courier ? task.courier.toDateString() : 'N/A' %></span></p>
             <p><strong>Remarks:</strong> <span><%= task.description %></span></p>   
-            <p><strong>Status:</strong> <span><%= task && task.state ? 'Completed' : 'Pending' %></span></p>
+            <p><strong>Status:</strong> <span><%= task && task.state %></span></p>
             <p><strong>Seller Photo:</strong> <span>
                 <% if (task.sellerPhoto) { %>
                     <a href="<%= task.sellerPhoto %>" target="_blank">View Photo</a>

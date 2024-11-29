@@ -674,11 +674,9 @@
             <div class="form-group">
                 <label for="state">Status:</label>    
                 <select id="state" name="state">
-                    <option value="true" <%= task.state ? 'selected' : '' %>>Completed</option>
-                    <option value="false" <%= !task.state ? 'selected' : '' %>>Pending</option>
-                    <option value="false" <%= !task.state ? 'selected' : '' %>>Party peshi delay from Buyer</option>
-                    <option value="false" <%= !task.state ? 'selected' : '' %>>Party peshi delay from Seller</option>
-                    <option value="false" <%= !task.state ? 'selected' : '' %>>RC PENDING</option>
+                    <option value="" disabled selected>Select</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Pending">Pending</option>
                 </select>
             </div> 
             <div class="form-group">

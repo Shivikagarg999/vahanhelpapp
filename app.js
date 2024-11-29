@@ -162,7 +162,7 @@ app.post("/assign/tasks/edit/:id", async (req, res) => {
             task1agentname, 
             task2agentname, 
             description, 
-            state: state === "true" // Ensure state is boolean
+            state
         };
 
         // Update the task with new data
@@ -420,7 +420,6 @@ app.post('/upload', upload.fields([
             }
         }
 
-        // Add all fields from req.body to taskData
         Object.assign(taskData, { 
             name, description, clientName, carNum, caseType, hptName, 
             sellerAlignedDate, buyerAlignedDate, NOCissuedDate, 
@@ -526,7 +525,7 @@ app.post("/tasks/edit/:id", upload.fields([
             sellerNum, 
             buyer_RTO_location: Array.isArray(buyer_RTO_location) ? buyer_RTO_location.join(", ") : buyer_RTO_location, 
             seller_RTO_location: Array.isArray(seller_RTO_location) ? seller_RTO_location.join(", ") : seller_RTO_location, 
-            state: state === "true", // Ensure state is boolean
+            state, 
             chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
         };
 
@@ -550,7 +549,6 @@ app.post("/tasks/edit/:id", upload.fields([
         res.status(500).send("Error updating task.");
     }
 });
- 
 
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;
@@ -632,57 +630,57 @@ app.get('/searchcn', async(req,res)=>{
 })
 
 //app script
-async function fetchData() {
-    try {
-        const tasks = await Task.find();
-        return tasks.map(task => ({
-            company: task.company,
-            name: task.name,
-            description: task.description,
-            carNum: task.carNum,
-            clientName: task.clientName,
-            caseType: task.caseType,
-            hptName: task.hptName,
-            sellerAlignedDate: task.sellerAlignedDate,
-            buyerAlignedDate: task.buyerAlignedDate,
-            NOCissuedDate: task.NOCissuedDate,
-            NOCreceivedDate: task.NOCreceivedDate,
-            fileReceivedDate: task.fileReceivedDate,
-            AdditionalWork: task.AdditionalWork,
-            HPA: task.HPA,
-            transferDate: task.transferDate,
-            HandoverDate_RC: task.HandoverDate_RC,
-            HandoverDate_NOC: task.HandoverDate_NOC,
-            buyerName: task.buyerName,
-            buyerNum: task.buyerNum,
-            sellerName: task.sellerName,
-            sellerNum: task.sellerNum,
-            buyer_RTO_location: task.buyer_RTO_location,
-            seller_RTO_location: task.seller_RTO_location,
-            state: task.state,
-            sellerPhoto: task.sellerPhoto,
-            buyerPhoto: task.buyerPhoto,
-            sellerDocs: task.sellerDocs,
-            buyerDocs: task.buyerDocs,
-            carVideo: task.carVideo,
-            sellerVideo: task.sellerVideo,
-            careOfVideo: task.careOfVideo,
-            nocReceipt: task.nocReceipt,
-            transferReceipt: task.transferReceipt,
-            createdAt: task.createdAt,
-            task1agentname: task.task1agentname,
-            task2agentname: task.task2agentname,
-            chesisnum: task.chesisnum,
-            engineNum: task.engineNum,
-            status_RC: task.status_RC,
-            status_NOC: task.status_NOC,
-            deliverdate: task.deliverdate,
-            courier: task.courier,
-        }));
-    } catch (err) {
-        console.error('Error fetching tasks:', err.message);
-    }
-}
+// async function fetchData() {
+//     try {
+//         const tasks = await Task.find();
+//         return tasks.map(task => ({
+//             company: task.company,
+//             name: task.name,
+//             description: task.description,
+//             carNum: task.carNum,
+//             clientName: task.clientName,
+//             caseType: task.caseType,
+//             hptName: task.hptName,
+//             sellerAlignedDate: task.sellerAlignedDate,
+//             buyerAlignedDate: task.buyerAlignedDate,
+//             NOCissuedDate: task.NOCissuedDate,
+//             NOCreceivedDate: task.NOCreceivedDate,
+//             fileReceivedDate: task.fileReceivedDate,
+//             AdditionalWork: task.AdditionalWork,
+//             HPA: task.HPA,
+//             transferDate: task.transferDate,
+//             HandoverDate_RC: task.HandoverDate_RC,
+//             HandoverDate_NOC: task.HandoverDate_NOC,
+//             buyerName: task.buyerName,
+//             buyerNum: task.buyerNum,
+//             sellerName: task.sellerName,
+//             sellerNum: task.sellerNum,
+//             buyer_RTO_location: task.buyer_RTO_location,
+//             seller_RTO_location: task.seller_RTO_location,
+//             state: task.state,
+//             sellerPhoto: task.sellerPhoto,
+//             buyerPhoto: task.buyerPhoto,
+//             sellerDocs: task.sellerDocs,
+//             buyerDocs: task.buyerDocs,
+//             carVideo: task.carVideo,
+//             sellerVideo: task.sellerVideo,
+//             careOfVideo: task.careOfVideo,
+//             nocReceipt: task.nocReceipt,
+//             transferReceipt: task.transferReceipt,
+//             createdAt: task.createdAt,
+//             task1agentname: task.task1agentname,
+//             task2agentname: task.task2agentname,
+//             chesisnum: task.chesisnum,
+//             engineNum: task.engineNum,
+//             status_RC: task.status_RC,
+//             status_NOC: task.status_NOC,
+//             deliverdate: task.deliverdate,
+//             courier: task.courier,
+//         }));
+//     } catch (err) {
+//         console.error('Error fetching tasks:', err.message);
+//     }
+// }
 
 // Function to update Google Sheets
 // async function updateGoogleSheet(data) {

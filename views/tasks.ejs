@@ -269,7 +269,7 @@
                             <td data-label="Car Number"><%= task.carNum %></td>
                             <td data-label="Task Name"><%= task.name %></td>
                             <td data-label="Case type"><%= task.caseType %></td>
-                            <td data-label="Status"><%= task.state ? 'Completed' : 'Pending' %></td>
+                            <td data-label="Status"><%= task.state %></td>
                             <td data-label="Actions" class="acts">
                                 <a href="/tasks/view/<%= task._id %>" class="btn-view" title="View">
                                     <button type="button" style="padding: 5px 10px; background-color: green; color: white; border: none; border-radius: 4px; cursor: pointer;">
