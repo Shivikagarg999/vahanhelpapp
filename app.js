@@ -117,9 +117,13 @@ app.get('/tasks/search', async (req, res) => {
     try {
         // Find a single task that exactly matches the carNum (case-insensitive)
         const task = await Task.findOne({ carNum: new RegExp(`^${carNum}$`, 'i') });
+ 
+        const completedCount = await Task.countDocuments({ state: 'Completed' });
+        const pendingCount = await Task.countDocuments({ state: 'Pending' });
+ 
 
         // Render a single result as an array for compatibility with the view
-        res.render('employee', { tasks: task ? [task] : [] });
+        res.render('employee', { tasks: task ? [task] : [], completedCount, pendingCount });
         
     } catch (err) {
         console.error("Error fetching task:", err);
