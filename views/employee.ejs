@@ -51,7 +51,7 @@
         }
 /* Task Card: Make it responsive */
 .task-card {
-    width: 100%; /* Full width for smaller screens */
+    /* width: 100%;  */
     max-width: 100%; /* Prevent overflow */
     margin: 15px auto; /* Center align on smaller devices */
     padding: 15px; /* Reduce padding for compact design */
@@ -270,28 +270,55 @@
         transition: color 0.3s ease;
     }
 
-    /* Hover color for task titles */
-    /* .task-details div strong:hover {
-        color: #0056b3;
-    } */
-
-    /* Hover effect on media links */
     .media-link a:hover {
         text-decoration: underline;
         color: #007bff;
     }
+    .completed-cases {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    padding: 20px;
+    /* margin: 20px 0; */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+}
 
-    /* Hover effect for task cards */
-    /* .task-card:hover {
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        transform: scale(1.02);
-        transition: all 0.3s ease;
+.completed-cases .completed {
+    background-color: #4CAF50; /* Green for completed */
+    padding: 7px 7px;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+    width: 30%; /* Take half the space */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.completed-cases .pending {
+    background-color: #F44336; /* Red for pending */
+    padding: 7px 7px;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-align: center;
+    width: 30%; /* Take half the space */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .completed-cases {
+        flex-direction: column;
+        gap: 10px;
     }
-    
 
-    .task-actions a:hover, .task-actions button:hover {
-        background-color: #0056b3; 
-    } */
+    .completed-cases .completed,
+    .completed-cases .pending {
+        width: 100%; /* Full width on smaller screens */
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -312,7 +339,14 @@
                 <button type="submit">Search</button>
             </form>
         </div>
-        
+        <div class="completed-cases">
+            <div class="completed">
+                <h3>Completed Cases: <%= completedCount %></h3>
+            </div>
+            <div class="pending">
+                <h3>Pending Cases: <%= pendingCount %></h3>
+            </div>
+        </div>
 
         <% tasks.forEach(task => { %>
         <div class="task-card">

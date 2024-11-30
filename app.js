@@ -589,7 +589,9 @@ app.get('/employee',isEMPLoggedIn, async (req, res) => {
     try {
         
         const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
-        res.render('employee', { tasks }); // Pass tasks to the view
+        const completedCount = await Task.countDocuments({ state: 'Completed' });
+        const pendingCount = await Task.countDocuments({ state: 'Pending' });
+        res.render('employee', { tasks, completedCount, pendingCount }); // Pass tasks to the view
     } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).send('Internal Server Error');
