@@ -456,7 +456,7 @@ app.get("/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
         if (!task) {
             return res.status(404).send("Task not found."); // Handle task not found
         }
-        res.render("edit", { task }); // Render the edit view with the task data
+        res.render("edit", { task });
     } catch (err) {
         console.error('Error fetching task:', err.message);
         res.status(500).send("Error fetching task."); // Handle server error
