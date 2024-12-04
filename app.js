@@ -634,6 +634,42 @@ app.get('/searchcn', async(req,res)=>{
             res.status(500).send("Error fetching tasks");
         });
 })
+// Assuming you already have a User or Company model to link tasks with companies
+
+
+// Route to handle search by car number and restrict to company-specific tasks
+app.get('/tasks/client/search', async (req, res) => {
+    try {
+        // Retrieve logged-in company's ID from cookies/session
+        const companyId = req.cookies.token; // Adjust according to your implementation
+
+        if (!companyId) {
+            return res.redirect('/login'); // Redirect to login if no companyId found
+        }
+
+        // Find the company and populate its tasks
+        const company = await Company.findById(companyId).populate('tasks');
+        if (!company) {
+            return res.status(404).send('Company not found.');
+        }
+
+        // Build query to filter tasks
+        let filteredTasks = company.tasks; // Start with all tasks linked to the company
+        if (req.query.carNum) {
+            const searchQuery = req.query.carNum.toLowerCase();
+            filteredTasks = filteredTasks.filter(task =>
+                task.carNum.toLowerCase().includes(searchQuery) // Match `carNum` with query
+            );
+        }
+
+        // Render the results
+        res.render('tasks', { tasks: filteredTasks });
+    } catch (err) {
+        console.error('Error fetching tasks:', err);
+        res.status(500).send('Error fetching tasks');
+    }
+});
+
 
 //app script
 // async function fetchData() {

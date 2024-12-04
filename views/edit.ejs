@@ -90,9 +90,7 @@
     </style>
 </head>
 <body>
-    
-    <div class="container">
-        
+    <div class="container">    
         <a href="javascript:history.back()" class="back-link">Go Back</a>
 
         <h1>Edit Task</h1>
@@ -104,7 +102,6 @@
             </div>
             <div class="form-group">
                 <label for="name">Task type</label><div>
-
                     <select name="name" id="name">
                         <option value="" disabled <%= !task.name ? 'selected' : '' %>>Select</option>
                         <% 
@@ -132,12 +129,10 @@
                             <option value="<%= option %>" <%= task.name === option ? 'selected' : '' %>><%= option %></option>
                         <% }); %>
                     </select>
-                    
             </div>
             <div class="form-group">
                 <label for="carNum">Car Number:</label>
                 <input type="text" id="carNum" name="carNum" value="<%= task.carNum %>">
-            </div>
             <div class="form-group">
                 <label for="clientName">Client Name:</label>
                 <input type="text" id="clientName" name="clientName" value="<%= task.clientName %>">
@@ -172,6 +167,7 @@
                             <option value="<%= option %>" <%= task.hptName === option ? 'selected' : '' %>><%= option %></option>
                         <% }); %>
                     </select>
+            </div>
             </div>
             <div class="form-group">
                 <label for="chesisnum">Chesis Number:</label>
@@ -338,7 +334,7 @@
                             "RJ55_Pokhran city", "RJ26_TONK CITY", "MP40_Vidisha city", "PB13_SANGRUR", "PB19_BARNALA", 
                             "PB35_PATHANKOT", "PB28_Malerkotla RTO", "PB05_FEROZEPUR", "KA14_Shimoga Karnataka", "MP28_Chhindwara", 
                             "TN59_Madurai", "HR05_KARNAL", "MP07_Gwalior", "PB32_Nawanshahr", "PB78_Shahid Bhagat Singh Nagar", 
-                            "BR29_Siwan", "PB03_Bathinda", "DD to be added"
+                            "BR29_Siwan", "PB03_Bathinda", "PB10_Ludhiana" , "DD to be added"
                         ];
                         buyerRTOOptions.forEach(option => { 
                     %>
@@ -382,7 +378,7 @@
                             "RJ55_Pokhran city", "RJ26_TONK CITY", "MP40_Vidisha city", "PB13_SANGRUR", "PB19_BARNALA", 
                             "PB35_PATHANKOT", "PB28_Malerkotla RTO", "PB05_FEROZEPUR", "KA14_Shimoga Karnataka", "MP28_Chhindwara", 
                             "TN59_Madurai", "HR05_KARNAL", "MP07_Gwalior", "PB32_Nawanshahr", "PB78_Shahid Bhagat Singh Nagar", 
-                            "BR29_Siwan", "PB03_Bathinda", "DD to be added"
+                            "BR29_Siwan", "PB03_Bathinda", "PB10_Ludhiana" , "DD to be added"
                         ];
                         sellerRTOOptions.forEach(option => { 
                     %>
