@@ -195,12 +195,13 @@
             </div>
             <div class="form-group">
                 <label for="courier">Courier done Date:</label>
-                <input type="date" name="courier" id="courier" value="<%= task.courier %>">
+                <input type="date" name="courier" id="courier" value="<%= task.courier ? task.courier.toISOString().slice(0, 10) : '' %>">
             </div>
             <div class="form-group">
                 <label for="deliverdate">Deliver Date:</label>
-                <input type="date" name="deliverdate" id="deliverdate" value="<%=task.deliverdate %>">
+                <input type="date" name="deliverdate" id="deliverdate" value="<%= task.deliverdate ? task.deliverdate.toISOString().slice(0, 10) : '' %>">
             </div>
+            
             <div class="form-group">
                 <label for="AdditionalWork">Additional Work:</label>
                 <input type="text" id="AdditionalWork" name="AdditionalWork" value="<%= task.AdditionalWork %>">

@@ -13,7 +13,7 @@ const Admin = require('./models/admin');
 const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
 const axios = require('axios');
-const { google } = require('googleapis');
+// const { google } = require('googleapis');
 
 
 app.set("view engine", "ejs");
@@ -452,16 +452,23 @@ app.get("/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id; // Get the task ID from the URL parameters
 
     try {
-        const task = await Task.findById(taskId); // Find the task by ID
+        // Fetch the task by ID and populate the associated company
+        const task = await Task.findById(taskId).populate('company'); 
         if (!task) {
             return res.status(404).send("Task not found."); // Handle task not found
         }
-        res.render("edit", { task });
+
+        // Fetch all companies to show in the dropdown or any other required display
+        const companies = await Company.find(); // Assuming you have a Company model
+
+        // Render the edit page with the task and the list of all companies
+        res.render("edit", { task, companies });
     } catch (err) {
         console.error('Error fetching task:', err.message);
         res.status(500).send("Error fetching task."); // Handle server error
     }
 });
+
 
 app.post("/tasks/edit/:id", upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
@@ -634,9 +641,6 @@ app.get('/searchcn', async(req,res)=>{
             res.status(500).send("Error fetching tasks");
         });
 })
-// Assuming you already have a User or Company model to link tasks with companies
-
-
 // Route to handle search by car number and restrict to company-specific tasks
 app.get('/tasks/client/search', async (req, res) => {
     try {
