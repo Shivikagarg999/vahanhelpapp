@@ -186,17 +186,62 @@
                 <input type="date" id="buyerAlignedDate" name="buyerAlignedDate" value="<%= task.buyerAlignedDate ? task.buyerAlignedDate.toISOString().slice(0, 10) : '' %>">
             </div>
             <div class="form-group">
-                <label for="sellerppstatus">Seller party-peshi status:</label>
-                <input type="text" name="sellerppstatus" id="sellerppstatus" value="<%= task.sellerppstatus %>">
+                <label for="sellerppstatus">Seller Party-peshi status:</label>
+                <select name="sellerppstatus" id="sellerppstatus" class="form-control">
+                    <option value="" disabled selected>Select</option>
+                    <% 
+                        const sellerppStatusOptions = [
+                            "NONE", "SELLER PP ALIGNED", "SELLER PP PENDING", "W/O SELLER VIDEO",
+                            "SELLER PP NOT REQUIRED", "CAR SEEN PENDING SELLER", "CAR SEEN DONE SELLER",
+                            "SELLER NOT ALIGNED", "SELLER CAR SEEN ALIGNED"
+                        ];
+                        sellerppStatusOptions.forEach(option => { 
+                    %>
+                        <option value="<%= option %>" <%= task.sellerppstatus === option ? 'selected' : '' %>><%= option %></option>
+                    <% }); %>
+                </select>
             </div>
             <div class="form-group">
-                <label for="buyerppstatus">Buyer party-peshi status:</label>
-                <input type="text" name="buyerppstatus" id="buyerppstatus" value="<%= task.buyerppstatus %>">
+                <label for="buyerppstatus">Buyer Party-peshi status:</label>
+                <select name="buyerppstatus" id="buyerppstatus" class="form-control">
+                    <option value="" disabled selected>Select</option>
+                    <% 
+                        const buyerppStatusOptions = [
+                            "NONE", "BUYER PP ALIGNED", "BUYER PP PENDING", "W/O BUYER VIDEO",
+                            "BUYER PP NOT REQUIRED", "CAR SEEN PENDING BUYER", "BUYER NOT ALIGNED FOR PP",
+                            "CAR SEEN DONE BUYER", "BUYER_CAR_SEEN_ALIGNED", "NOT ALIGNED BUYER CAR SEEN",
+                            "W/O CAR SEEN", "BUYER PP DONE", "NOC TO BE ISSUED", "PHYSICAL NOC IN TRANSIT",
+                            "SELLER PP DONE"
+                        ];
+                        buyerppStatusOptions.forEach(option => { 
+                    %>
+                        <option value="<%= option %>" <%= task.buyerppstatus === option ? 'selected' : '' %>><%= option %></option>
+                    <% }); %>
+                </select>
             </div>
+            
             <div class="form-group">
-                <label for="spoc">Spoc:</label>
-                <input type="text" name="spoc" id="spoc" value="<%= task.spoc %>">
+                <label for="spoc">SPOC:</label>
+                <select name="spoc" id="spoc" class="form-control">
+                    <option value="" disabled selected>Select</option>
+                    <% 
+                        const spocOptions = [
+                            "ankur.2", "shradha.panday", "Sehrawat", "kamaljeet.1", "dileep.yadav", 
+                            "Avijit", "Priyam", "Sunny Manocha", "Diksha", "SURAJ", "SUNIL", "VIKAS RAI", 
+                            "SUBHAM", "VIKAS SHARMA", "FAZIL", "SAMEER", "MANOJ", "sukhwant", "SUSHIL KUMAR", 
+                            "Kanhiaya Kumar", "Anurag", "Ritesh Nandan", "Habibi Motors", "Vipin Delhi", 
+                            "Rohit Up11", "NX car (Munendra)", "Neeraj Sachdev", "Switch My Loan (Ajit)", 
+                            "Nikhil Gonda", "Akhil", "Deepak (Puneet)", "Vikas Pandey", "Gurvinder singh bagga", 
+                            "Pankaj Kohli", "kuldeep singh", "Vivek", "gaurav kumar DUBEY", "Deepak (Cars24)", 
+                            "Nitin Agarwal (RJ)", "OLX_MANES", "Agrowheels_RJ(Sachin)"
+                        ];
+                        spocOptions.forEach(option => { 
+                    %>
+                        <option value="<%= option %>" <%= task.spoc === option ? 'selected' : '' %>><%= option %></option>
+                    <% }); %>
+                </select>
             </div>
+            
             <div class="form-group">
                 <label for="NOCissuedDate">NOC Issued Date:</label>
                 <input type="date" id="NOCissuedDate" name="NOCissuedDate" value="<%= task.NOCissuedDate ? task.NOCissuedDate.toISOString().slice(0, 10) : '' %>">
