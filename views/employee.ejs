@@ -367,6 +367,11 @@
                 <div><strong>Buyer RTO Location:</strong> <%= task.buyer_RTO_location %></div>
                 <div><strong>Seller Aligned Date:</strong> <%= task.sellerAlignedDate ? task.sellerAlignedDate.toISOString().split('T')[0] : 'N/A' %></div>
                 <div><strong>Buyer Aligned Date:</strong> <%= task.buyerAlignedDate ? task.buyerAlignedDate.toISOString().split('T')[0] : 'N/A' %></div>
+                <div><strong>Buyer party-peshi status:</strong> <%= task.buyerppstatus %></div>
+                <div><strong>Seller party-peshi status:</strong> <%= task.sellerppstatus %></div>
+                <div><strong>Spoc:</strong> <%= task.spoc %></div>
+
+
                 <div><strong>NOC Issued Date:</strong> <%= task.NOCissuedDate ? task.NOCissuedDate.toISOString().split('T')[0] : 'N/A' %></div>
                 <div><strong>Phy NOC Status:</strong> <%= task.status_NOC %></div>
                 <div><strong>NOC Received Date:</strong> <%= task.NOCreceivedDate ? task.NOCreceivedDate.toISOString().split('T')[0] : 'N/A' %></div>

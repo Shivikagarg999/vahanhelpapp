@@ -28,9 +28,9 @@ const taskSchema = mongoose.Schema({
     buyer_RTO_location: String,
     seller_RTO_location: String,
     // new fields 
-    // buyerppstatus: String,
-    // sellerppstatus: String,
-    // spoc: String,
+    buyerppstatus: String,
+    sellerppstatus: String,
+    spoc: String,
 
     state: String,                                         
     sellerPhoto: String,

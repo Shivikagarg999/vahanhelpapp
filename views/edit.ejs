@@ -186,6 +186,18 @@
                 <input type="date" id="buyerAlignedDate" name="buyerAlignedDate" value="<%= task.buyerAlignedDate ? task.buyerAlignedDate.toISOString().slice(0, 10) : '' %>">
             </div>
             <div class="form-group">
+                <label for="sellerppstatus">Seller party-peshi status:</label>
+                <input type="text" name="sellerppstatus" id="sellerppstatus" value="<%= task.sellerppstatus %>">
+            </div>
+            <div class="form-group">
+                <label for="buyerppstatus">Buyer party-peshi status:</label>
+                <input type="text" name="buyerppstatus" id="buyerppstatus" value="<%= task.buyerppstatus %>">
+            </div>
+            <div class="form-group">
+                <label for="spoc">Spoc:</label>
+                <input type="text" name="spoc" id="spoc" value="<%= task.spoc %>">
+            </div>
+            <div class="form-group">
                 <label for="NOCissuedDate">NOC Issued Date:</label>
                 <input type="date" id="NOCissuedDate" name="NOCissuedDate" value="<%= task.NOCissuedDate ? task.NOCissuedDate.toISOString().slice(0, 10) : '' %>">
             </div>

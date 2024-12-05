@@ -284,6 +284,10 @@ app.get('/tasks/download', async (req, res) => {
             fileReceivedDate: task.fileReceivedDate ? task.fileReceivedDate.toISOString().split('T')[0] : 'N/A',
             AdditionalWork: task.AdditionalWork,
             HPA: task.HPA,
+            buyer_pp_status: task.buyerppstatus,
+            seller_pp_status: task.seller_pp_status,
+            client_spoc: task.spoc,
+
             transferDate: task.transferDate ? task.transferDate.toISOString().split('T')[0] : 'N/A',
             HandoverDate_RC: task.HandoverDate_RC ? task.HandoverDate_RC.toISOString().split('T')[0] : 'N/A',
             HandoverDate_NOC: task.HandoverDate_NOC ? task.HandoverDate_NOC.toISOString().split('T')[0] : 'N/A',
@@ -331,20 +335,23 @@ app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
         const fields = [
             'clientName', 'fileReceivedDate', 'carNum', 'caseType', 'AdditionalWork',
             'hptName',  'HPA',  'seller_RTO_location', 'buyer_RTO_location', 'sellerName', 'sellerNum', 
-            'sellerAlignedDate',
+            'sellerAlignedDate',  'sellerppstatus',
             'nocReceipt', 'NOCissuedDate', 'NOCreceivedDate', 'HandoverDate_NOC', 
-            'buyerName', 'buyerNum',  'buyerAlignedDate',  'name',
+            'buyerName', 'buyerNum',  'buyerAlignedDate', 'buyerppstatus', 'name',
             'transferReceipt' ,'description', 'transferDate',      
             'HandoverDate_RC',
             'state', 'createdAt', 
             'task1agentname', 'task2agentname',
+            'spoc',
             'sellerPhoto',
             'buyerPhoto',
             'sellerDocs',
             'buyerDocs' ,
             'carVideo',
             'sellerVideo',
-            'careOfVideo', 'chesisnum', 'engineNum', 'status_RC', 'status_NOC', 'deliverdate', 'courier'
+            'careOfVideo', 'chesisnum', 
+            'engineNum', 'status_RC', 'status_NOC',
+            'deliverdate', 'courier'
 
         ];
 
@@ -398,7 +405,7 @@ app.post('/upload', upload.fields([
         transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, 
         buyerNum, sellerName, sellerNum, buyer_RTO_location, 
         seller_RTO_location, state, chesisnum, engineNum, status_RC, 
-        status_NOC, deliverdate, courier 
+        status_NOC, deliverdate, courier, buyerppstatus, sellerppstatus, spoc
     } = req.body;
 
     if (!clientName) {
@@ -431,7 +438,7 @@ app.post('/upload', upload.fields([
             transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, 
             buyerNum, sellerName, sellerNum, buyer_RTO_location, 
             seller_RTO_location, state, chesisnum, engineNum, status_RC, 
-            status_NOC, deliverdate, courier 
+            status_NOC, deliverdate, courier, buyerppstatus, sellerppstatus, spoc
         });
 
         // Create a new task
@@ -508,6 +515,7 @@ app.post("/tasks/edit/:id", upload.fields([
         buyer_RTO_location, 
         seller_RTO_location, 
         chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
+        buyerppstatus, sellerppstatus, spoc,
         state
     } = req.body;
 
@@ -538,6 +546,7 @@ app.post("/tasks/edit/:id", upload.fields([
             seller_RTO_location: Array.isArray(seller_RTO_location) ? seller_RTO_location.join(", ") : seller_RTO_location, 
             state, 
             chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
+            buyerppstatus, sellerppstatus, spoc,
         };
 
         // Handle file uploads (if any)
