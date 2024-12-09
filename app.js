@@ -13,8 +13,7 @@ const Admin = require('./models/admin');
 const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
 const axios = require('axios');
-// const { google } = require('googleapis');
-
+const moment = require('moment');
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -378,7 +377,7 @@ const storage = multer.diskStorage({
         cb(null, file.originalname); // Keep the original filename
     }
 });
-
+  
 // app.use('/uploads', express.static('uploads'));
 const uploadStorage = multer({ storage });
 
@@ -441,7 +440,6 @@ app.post('/upload', upload.fields([
             status_NOC, deliverdate, courier, buyerppstatus, sellerppstatus, spoc
         });
 
-        // Create a new task
         const newTask = new Task(taskData);
         await newTask.save(); // Save the task to the database
 
@@ -683,145 +681,37 @@ app.get('/tasks/client/search', async (req, res) => {
     }
 });
 
+app.get('/analytics', isEMPLoggedIn, async (req, res) => {
+    try {
+        // Fetch all-time task stats
+        const totalTasks = await Task.countDocuments();
+        const pendingTasks = await Task.countDocuments({ state: 'Pending' });
+        const completedTasks = await Task.countDocuments({ state: 'Completed' });
 
-//app script
-// async function fetchData() {
-//     try {
-//         const tasks = await Task.find();
-//         return tasks.map(task => ({
-//             company: task.company,
-//             name: task.name,
-//             description: task.description,
-//             carNum: task.carNum,
-//             clientName: task.clientName,
-//             caseType: task.caseType,
-//             hptName: task.hptName,
-//             sellerAlignedDate: task.sellerAlignedDate,
-//             buyerAlignedDate: task.buyerAlignedDate,
-//             NOCissuedDate: task.NOCissuedDate,
-//             NOCreceivedDate: task.NOCreceivedDate,
-//             fileReceivedDate: task.fileReceivedDate,
-//             AdditionalWork: task.AdditionalWork,
-//             HPA: task.HPA,
-//             transferDate: task.transferDate,
-//             HandoverDate_RC: task.HandoverDate_RC,
-//             HandoverDate_NOC: task.HandoverDate_NOC,
-//             buyerName: task.buyerName,
-//             buyerNum: task.buyerNum,
-//             sellerName: task.sellerName,
-//             sellerNum: task.sellerNum,
-//             buyer_RTO_location: task.buyer_RTO_location,
-//             seller_RTO_location: task.seller_RTO_location,
-//             state: task.state,
-//             sellerPhoto: task.sellerPhoto,
-//             buyerPhoto: task.buyerPhoto,
-//             sellerDocs: task.sellerDocs,
-//             buyerDocs: task.buyerDocs,
-//             carVideo: task.carVideo,
-//             sellerVideo: task.sellerVideo,
-//             careOfVideo: task.careOfVideo,
-//             nocReceipt: task.nocReceipt,
-//             transferReceipt: task.transferReceipt,
-//             createdAt: task.createdAt,
-//             task1agentname: task.task1agentname,
-//             task2agentname: task.task2agentname,
-//             chesisnum: task.chesisnum,
-//             engineNum: task.engineNum,
-//             status_RC: task.status_RC,
-//             status_NOC: task.status_NOC,
-//             deliverdate: task.deliverdate,
-//             courier: task.courier,
-//         }));
-//     } catch (err) {
-//         console.error('Error fetching tasks:', err.message);
-//     }
-// }
+        // Render the 'analytics' view and pass all-time totals
+        res.render('analytics', {
+            totalTasks,
+            pendingTasks,
+            completedTasks
+        });
+    } catch (error) {
+        console.error('Error fetching analytics data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
-// Function to update Google Sheets
-// async function updateGoogleSheet(data) {
-//     try {
-//         const auth = new google.auth.GoogleAuth({
-//             keyFile: './task-data.json', // Path to your JSON key
-//             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-//         });
-
-//         const authClient = await auth.getClient();
-//         const sheets = google.sheets({ version: 'v4', auth: authClient });
-//         const spreadsheetId = '1Oy4GrbrWkLowiHFeBBBMqsCyD3xVpGpT0ntJoWc1-Ag';
-
-//         const range = 'Task data-live!A:AO'; // Adjust based on your Google Sheet structure
-
-//         // Prepare headers and rows
-//         const headers = [
-//             'Company', 'Name', 'Description', 'Car Number', 'Client Name', 'Case Type',
-//             'HPT Name', 'Seller Aligned Date', 'Buyer Aligned Date', 'NOC Issued Date',
-//             'NOC Received Date', 'File Received Date', 'Additional Work', 'HPA', 'Transfer Date',
-//             'Handover Date (RC)', 'Handover Date (NOC)', 'Buyer Name', 'Buyer Number', 'Seller Name',
-//             'Seller Number', 'Buyer RTO Location', 'Seller RTO Location', 'State', 'Seller Photo',
-//             'Buyer Photo', 'Seller Docs', 'Buyer Docs', 'Car Video', 'Seller Video', 'Care Of Video',
-//             'NOC Receipt', 'Transfer Receipt', 'Created At', 'Task1 Agent Name', 'Task2 Agent Name',
-//             'Chesis Number', 'Engine Number', 'Status (RC)', 'Status (NOC)', 'Deliver Date', 'Courier'
-//         ];
-//         const values = [headers, ...data.map(Object.values)];
-
-//         // Update the Google Sheet
-//         await sheets.spreadsheets.values.update({
-//             spreadsheetId,
-//             range,
-//             valueInputOption: 'RAW',
-//             resource: { values },
-//         });
-
-//         console.log('Google Sheet updated successfully!');
-//     } catch (err) {
-//         console.error('Error updating Google Sheet:', err.message);
-//     }
-// }
-
-// // Route to update Google Sheet
-// app.get('/update-sheet', async (req, res) => {
-//     const data = await fetchData(); // Fetch data from MongoDB
-//     await updateGoogleSheet(data); // Update Google Sheet
-//     res.send('Google Sheet updated successfully!');
-// });
-
-// app.get('/tasks/client/search', async (req, res) => {
-//     try {
-//         const carNum = req.query.carNum; // Get the car number from the query parameter
-//         let tasks = [];
-
-//         if (carNum) {
-//             // If car number is provided, search for tasks with matching car number
-//             tasks = await Task.find({ carNum: { $regex: carNum, $options: 'i' } }); // Case-insensitive search
-//         } else {
-//             // If no car number is provided, show all tasks
-//             tasks = await Task.find();
-//         }
-
-//         // Render the view with the found tasks
-//         res.render('tasks', { tasks });
-//     } catch (error) {
-//         console.error('Error while searching tasks:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// });
-// async function testAuth() {
-//     try {
-//         const auth = new google.auth.GoogleAuth({
-//             keyFile: path.resolve(__dirname, 'task-data.json'),
-//             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-//         });
-
-//         const authClient = await auth.getClient();
-//         console.log('Authentication successful!');
-//     } catch (err) {
-//         console.error('Error during authentication:', err.message);
-//     }
-// }
-
-// testAuth();
-
-
+app.get('/get-data', async (req, res) => {
+    try {
+      // Fetch all tasks from the MongoDB database
+      const tasks = await Task.find();
+  
+      // Send the tasks data as JSON response
+      res.json(tasks);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      res.status(500).json({ message: 'Error fetching tasks' });
+    }
+  });
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 }); 

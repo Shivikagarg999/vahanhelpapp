@@ -124,7 +124,9 @@
                 padding: 15px;
                 width: 95%;
             }
-
+            .media{
+                width: 100px;
+            }
             input, textarea, select {
                 font-size: 14px; 
             }
@@ -304,7 +306,7 @@
         </div>
         <div class="form-group">
             <label for="taskType" required>Task Type:</label>
-            <select name="name" id="taskType">
+            <select name="name" id="taskType"  class="media">
                 <option value="None">None</option>
                 <option value="SELLER PP PENDING">SELLER_PP PENDING</option>
                 <option value="BUYER PP PENDING">BUYER_PP PENDING</option>
@@ -365,7 +367,7 @@
         </div>
         <div class="form-group">
             <label for="seller_RTO_location">Seller RTO Location:</label>
-            <select name="seller_RTO_location" id="sellerRTO">
+            <select name="seller_RTO_location" id="sellerRTO"  class="media">
                 <option value="" disabled selected>Select RTO Location</option>
                 <option value="UP11_SAHARANPUR">UP11_SAHARANPUR</option>
                 <option value="UP12_MUZAFFARNAGAR">UP12_MUZAFFARNAGAR</option>
@@ -489,9 +491,11 @@
 <option value="RJ19_JODHPUR">RJ19_JODHPUR</option>
 <option value="UK04 - NANITAL">UK04 - NANITAL</option>
 <option value="UK06 - UDHAM SINGH NAGAR">UK06 - UDHAM SINGH NAGAR</option>
+<option value="UK07_Dehradun">UK07_Dehradun</option>
 <option value="HR98 - BADSHAPUR GGN">HR98 - BADSHAPUR GGN</option>
 <option value="BR10 - BHAGALPUR">BR10 - BHAGALPUR</option>
 <option value="CH01 - CHANDIGARH">CH01 - CHANDIGARH</option>
+<option value="CG07_Durg Chhattisgarh">CG07_Durg Chhattisgarh</option>
 <option value="RJ55_Pokhran city">RJ55_Pokhran city</option>
 <option value="RJ26_TONK CITY">RJ26_TONK CITY</option>
 <option value="MP40_Vidisha city">MP40_Vidisha city</option>
@@ -503,10 +507,12 @@
 <option value="KA14_Shimoga Karnataka">KA14_Shimoga Karnataka</option>
 <option value="MP28_Chhindwara">MP28_Chhindwara</option>
 <option value="TN59_Madurai">TN59_Madurai</option>
+<option value="TN49_Thanjavur">TN49_Thanjavur</option>
 <option value="HR05_KARNAL">HR05_KARNAL</option>
 <option value="TN19_KANCHEEPURAM">TN19_KANCHEEPURAM</option>
 <option value="MP07_Gwalior">MP07_Gwalior</option>
 <option value="PB32_Nawanshahr">PB32_Nawanshahr</option>
+<option value="PB10_Ludhiana">PB10_Ludhiana</option>
 <option value="PB78_Shahid Bhagat Singh Nagar">PB78_Shahid Bhagat Singh Nagar</option>
 <option value="BR29_Siwan">BR29_Siwan</option>
 <option value="PB03_Bathinda">PB03 Bathinda</option>
@@ -527,7 +533,7 @@
         </div>
         <div class="form-group">
             <label for="buyer_RTO_location">Buyer RTO Location:</label>
-            <select name="buyer_RTO_location" id="buyerRTO">
+            <select name="buyer_RTO_location" id="buyerRTO"  class="media">
                 <option value="" disabled selected>Select RTO Location</option>
                 <option value="UP11_SAHARANPUR">UP11_SAHARANPUR</option>
                 <option value="UP12_MUZAFFARNAGAR">UP12_MUZAFFARNAGAR</option>
@@ -678,7 +684,7 @@
         </div>
         <div class="form-group">
             <label for="buyerAlignedDate">Buyer Aligned Date:</label>
-            <input type="date" name="buyerAlignedDate" id="buyerAlignedDate">
+            <input type="date" name="buyerAlignedDate" id="buyerAlignedDate"  class="media">
         </div>
         <div class="form-group">
             <label for="buyerppstatus">Buyer Party-peshi status:</label>
@@ -704,7 +710,7 @@
         
         <div class="form-group">
             <label for="sellerppstatus">Seller Party-peshi status:</label>
-            <select name="sellerppstatus" id="sellerppstatus" class="form-control">
+            <select name="sellerppstatus" id="sellerppstatus" class="form-control"  class="media">
                 <option value="">Select</option>
                 <option value="NONE">NONE</option>
                 <option value="SELLER PP ALIGNED">SELLER PP ALIGNED</option>
@@ -804,7 +810,7 @@
         </div>
         <div class="form-group">
             <label for="status_NOC">Physical NOC status:</label>
-            <select name="status_NOC" id="status_NOC">
+            <select name="status_NOC" id="status_NOC"  class="media">
                 <option value="">Select Physical NOC Status</option>
                 <option value="NOC IN OFFICE_BUYER PP PENDING">NOC IN OFFICE_BUYER PP PENDING</option>
                 <option value="NOC ISSUED_PICKUP PENDING">NOC ISSUED_PICKUP PENDING</option>
@@ -839,7 +845,7 @@
         
         <div class="form-group">
             <label for="status_RC">Physical RC status:</label>
-            <select name="status_RC" id="status_RC">
+            <select name="status_RC" id="status_RC"  class="media">
                 <option value="">Select Physical RC Status</option>
                 <option value="RC Delivered To Client">RC Delivered To Client</option>
                 <option value="RC Pending From RTO Vendor">RC Pending From RTO Vendor</option>
@@ -867,46 +873,46 @@
         
         <div class="form-group">
             <label for="sellerPhoto">Upload Seller Photo:</label>
-            <input type="file" id="sellerPhoto" name="sellerPhoto" accept="image/*">
+            <input type="file"  class="media" id="sellerPhoto" name="sellerPhoto" accept="image/*">
         </div>
     
         <div class="form-group">
             <label for="buyerPhoto">Upload Buyer Photo:</label>
-            <input type="file" id="buyerPhoto" name="buyerPhoto" accept="image/*">
+            <input type="file"  class="media" id="buyerPhoto" name="buyerPhoto" accept="image/*">
         </div>
     
         <div class="form-group">
             <label for="sellerDocs">Upload Seller Documents:</label>
-            <input type="file" id="sellerDocs" name="sellerDocs" accept=".pdf,.doc,.docx,.txt" multiple>
+            <input type="file"  class="media" id="sellerDocs" name="sellerDocs" accept=".pdf,.doc,.docx,.txt" multiple>
         </div>
     
         <div class="form-group">
             <label for="buyerDocs">Upload Buyer Documents:</label>
-            <input type="file" id="buyerDocs" name="buyerDocs" accept=".pdf,.doc,.docx,.txt" multiple>
+            <input type="file"  class="media" id="buyerDocs" name="buyerDocs" accept=".pdf,.doc,.docx,.txt" multiple>
         </div>
     
         <div class="form-group">
             <label for="carVideo">Upload Car Video:</label>
-            <input type="file" id="carVideo" name="carVideo" accept="video/*">
+            <input type="file"  class="media" id="carVideo" name="carVideo" accept="video/*">
         </div>
     
         <div class="form-group">
             <label for="sellerVideo">Upload Seller Video:</label>
-            <input type="file" id="sellerVideo" name="sellerVideo" accept="video/*">
+            <input type="file"  class="media" id="sellerVideo" name="sellerVideo" accept="video/*">
         </div>
     
         <div class="form-group">
             <label for="careOfVideo">Upload Care Of Video:</label>
-            <input type="file" id="careOfVideo" name="careOfVideo" accept="video/*">
+            <input type="file"  class="media" id="careOfVideo" name="careOfVideo" accept="video/*">
         </div>
     
         <div class="form-group">
             <label for="nocReceipt">Upload NOC Receipt:</label>
-            <input type="file" id="nocReceipt" name="nocReceipt" accept=".pdf,.doc,.docx,.txt">
+            <input type="file"  class="media" id="nocReceipt" name="nocReceipt" accept=".pdf,.doc,.docx,.txt">
         </div>
         <div class="form-group">
             <label for="transferReceipt">Upload Transfer Receipt:</label>
-            <input type="file" id="transferReceipt" name="transferReceipt" accept=".pdf,.doc,.docx,.txt">
+            <input type="file"  class="media" id="transferReceipt" name="transferReceipt" accept=".pdf,.doc,.docx,.txt">
         </div>
         <div class="btnss">
             <button type="submit">Create Task</button>
