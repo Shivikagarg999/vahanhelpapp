@@ -199,13 +199,11 @@ app.get('/tasks/view/:id', async (req, res) => {
         res.status(500).send("Error fetching task.");
     }
 });
-
 app.get("/logout", (req, res) => {
     res.clearCookie('token');
     res.clearCookie('employee_token')
     res.redirect("/");
 });
-
 function isLoggedIn(req, res, next) {
     const token = req.cookies.token;
     if (!token) {
@@ -222,7 +220,6 @@ function isEMPLoggedIn(req, res, next) {
 app.get("/admin/login", (req, res) => {
     res.render("admin_login");
 });
-
 app.post('/admin/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -237,7 +234,6 @@ app.post('/admin/login', async (req, res) => {
         res.status(500).render('admin_login', { error: 'Error during login.' });
     }
 });
-
 app.get("/admin-tasks", isAdminLoggedIn, async (req, res) => {
     try {
         const tasks = await Task.find().populate('company').sort({ createdAt: -1 }); // Sort by newest first
@@ -253,7 +249,6 @@ function isAdminLoggedIn(req, res, next) {
     }
     next();
 }
-
 app.get('/admin/logout', (req, res) => {
     res.clearCookie('admin_token');
     res.redirect('/admin/login');
@@ -680,7 +675,6 @@ app.get('/tasks/client/search', async (req, res) => {
         res.status(500).send('Error fetching tasks');
     }
 });
-
 app.get('/analytics', isEMPLoggedIn, async (req, res) => {
     try {
         // Fetch all-time task stats
@@ -712,6 +706,193 @@ app.get('/get-data', async (req, res) => {
       res.status(500).json({ message: 'Error fetching tasks' });
     }
   });
+
+
+function isAgentLogin(req, res) {
+    const { username, password } = req.body;
+
+    const AGENT_NAME = process.env.AGENT_NAME;
+    const AGENT_PASS = process.env.AGENT_PASS;
+
+    if (username === AGENT_NAME && password === AGENT_PASS) {
+        return true;
+    }
+    return false;
+}
+
+// Routes
+app.get('/agent-login', (req, res) => {
+    res.render('agentlogin');
+});
+
+app.post('/agent-login', async (req, res) => {
+    if (await isAgentLogin(req, res)) {
+        try {
+            res.render('agent', { tasks: [] });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Error fetching tasks');
+        }
+    } else {
+        res.status(401).send('Invalid credentials!');
+    }
+});
+
+app.post('/search-car', async (req, res) => {
+    const carNum = req.body.carNum;
+    try {
+        // Filter tasks based on the car number
+        const tasks = await Task.find({ carNum: new RegExp(carNum, 'i') });
+
+        // Render the agent page with filtered tasks
+        res.render('agent', { tasks: tasks });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error searching tasks');
+    }
+});
+
+app.post('/sync-tasks', async (req, res) => {
+    try {
+        // Fetch tasks from MongoDB
+        const tasks = await Task.find({}); // Modify this query as needed
+
+        // Prepare the data to send to Google Apps Script
+        const taskData = {
+            tasks: tasks.map(task => ({
+                name: task.name,
+                clientName: task.clientName,
+                carNum: task.carNum,
+                sellerName: task.sellerName,
+                buyerName: task.buyerName,
+                sellerAlignedDate: task.sellerAlignedDate,
+                buyerAlignedDate: task.buyerAlignedDate,
+                NOCissuedDate: task.NOCissuedDate,
+                transferDate: task.transferDate,
+                HandoverDate_RC: task.HandoverDate_RC
+            }))
+        };
+
+        // Google Apps Script URL (replace with your actual URL)
+        const googleScriptUrl = 'https://script.google.com/macros/s/your_script_url/exec'; // Replace with the actual script URL
+
+        // Send the data to Google Apps Script
+        const response = await axios.post(googleScriptUrl, taskData);
+
+        // Send success response back
+        res.status(200).send('Tasks synced to Google Sheets successfully!');
+    } catch (error) {
+        console.error('Error syncing tasks:', error);
+        res.status(500).send('Error syncing tasks');
+    }
+});
+
+app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send("No file uploaded.");
+    }
+
+    const filePath = req.file.path;
+
+    try {
+        const tasks = [];
+
+        const parseCSV = () => {
+            return new Promise((resolve, reject) => {
+                fs.createReadStream(filePath)
+                    .pipe(csv())
+                    .on('data', (row) => {
+                        console.log("Processing row: ", row);
+
+                        // Trim whitespace from row values
+                        const name = row.name?.trim();
+                        const description = row.description?.trim();
+
+                        // Check for essential fields to avoid blank tasks
+                        
+                        tasks.push({
+                            company: req.cookies.token,
+                            tasktype: row.name?.trim(),
+                            description: row.description?.trim(),
+                            carNum: row.carNum?.trim(),
+                            clientName: row.clientName?.trim(),
+                            caseType: row.caseType?.trim(),
+                            hptName: row.hptName?.trim(),
+                            sellerAlignedDate: row.sellerAlignedDate ? new Date(row.sellerAlignedDate) : null,
+                            buyerAlignedDate: row.buyerAlignedDate ? new Date(row.buyerAlignedDate) : null,
+                            NOCissuedDate: row.NOCissuedDate ? new Date(row.NOCissuedDate) : null,
+                            NOCreceivedDate: row.NOCreceivedDate ? new Date(row.NOCreceivedDate) : null,
+                            fileReceivedDate: row.fileReceivedDate ? new Date(row.fileReceivedDate) : null,
+                            AdditionalWork: row.AdditionalWork?.trim(),
+                            HPA: row.HPA?.trim(),
+                            transferDate: row.transferDate ? new Date(row.transferDate) : null,
+                            HandoverDate_RC: row.HandoverDate_RC ? new Date(row.HandoverDate_RC) : null,
+                            HandoverDate_NOC: row.HandoverDate_NOC ? new Date(row.HandoverDate_NOC) : null,
+                            buyerName: row.buyerName?.trim(),
+                            buyerNum: row.buyerNum?.trim(),
+                            sellerName: row.sellerName?.trim(),
+                            sellerNum: row.sellerNum?.trim(),
+                            buyer_RTO_location: row.buyer_RTO_location?.trim(),
+                            seller_RTO_location: row.seller_RTO_location?.trim(),
+                            state: row.state === 'true',
+                            sellerPhoto: row.sellerPhoto,
+                            buyerPhoto: row.buyerPhoto,  
+                            sellerDocs: row.sellerDocs,
+                            buyerDocs: row.buyerDocs,
+                            carVideo: row.carVideo,
+                            sellerVideo: row.sellerVideo,
+                            careOfVideo: row.careOfVideo,
+                            nocReceipt: row.nocReceipt,
+                            transferReceipt: row.transferReceipt,
+                            chesisnum: row.chesisnum,
+                            engineNum: row.engineNum,
+                            status_RC: row.status_RC,
+                            status_NOC: row.status_NOC,
+                            deliverdate: row.deliverdate,
+                            courierdate: row.courier
+                        });
+                        
+                        
+                    })
+                    .on('end', resolve)
+                    .on('error', (err) => {
+                        console.error("Error parsing CSV:", err.message);
+                        reject(err);
+                    });
+            });
+        };
+
+        await parseCSV();
+
+        console.log("Parsed tasks: ", tasks); 
+
+        await Promise.all(tasks.map(async (task) => {
+            try {
+                const newTask = new Task(task);
+                await newTask.save();
+                await Company.findByIdAndUpdate(task.company, { $push: { tasks: newTask._id } });
+            } catch (err) {
+                console.error("Error saving task to DB:", err.message, "Task:", task);
+            }
+        }));
+
+        // Delete the uploaded file after processing
+        fs.unlink(filePath, (err) => {
+            if (err) console.error('Error deleting file:', err.message);
+        });
+
+        res.redirect('/employee');
+    } catch (err) {
+        console.error('Error importing tasks:', err.message);
+        res.status(500).send("Error importing tasks.");
+    }
+});
+
+
+
+app.use((req, res, next) => {
+    res.status(404).render('404');
+});
 app.listen(3000, () => {
     console.log('Server running on port 3000');
 }); 

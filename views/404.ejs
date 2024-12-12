@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found</title>
+    <style>
+        /* General body styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: rgb(59, 5, 59); 
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Container for error page */
+        .error-container {
+            display: flex;
+            flex-wrap: nowrap; /* Prevents stacking unless small screen */
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Left side image */
+        .error-image {
+            flex: 1;
+            background-image: url('https://i.pinimg.com/736x/d8/63/30/d86330d50370082f5debe8e32a44c832.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 43%;
+            min-width: 300px;
+            border-radius: 15px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Right side text */
+        .error-text {
+            flex: 1;
+            padding: 40px;
+            text-align: left;
+        }
+
+        .error-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .error-text p {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-bottom: 30px;
+        }
+
+        .back-home-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            color: #fff;
+            background-color: #ff4081;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-home-btn:hover {
+            background-color: #ff2577;
+        }
+
+        /* Responsiveness for smaller screens */
+        @media (max-width: 768px) {
+            .error-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .error-image {
+                height: 300px; /* Adjust image size for mobile */
+                min-width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .error-text {
+                padding: 20px;
+            }
+
+            .error-text h1 {
+                font-size: 2.5rem; /* Smaller font size on mobile */
+            }
+
+            .error-text p {
+                font-size: 1rem; /* Smaller text on mobile */
+            }
+
+            .back-home-btn {
+                padding: 10px 20px;
+                font-size: 1rem; /* Smaller button on mobile */
+            }
+        }
+
+        /* Responsiveness for very small screens */
+        @media (max-width: 480px) {
+            .error-text h1 {
+                font-size: 2rem; /* Further reduce heading size */
+            }
+
+            .error-text p {
+                font-size: 0.9rem; /* Further reduce paragraph text */
+            }
+
+            .back-home-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem; /* Further reduce button size */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="error-container">
+        <!-- Left side Image -->
+        <div class="error-image"></div>
+        
+        <!-- Right side Text -->
+        <div class="error-text">
+            <h1>Oops! Page Not Found</h1>
+            <p>It seems the page you're looking for doesn't exist or has been moved. But don't worry, you can always go back to the homepage!</p>
+            <a href="/" class="back-home-btn">Back to Home</a>
+        </div>
+    </div>
+
+</body>
+</html>
