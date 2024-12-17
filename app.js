@@ -28,7 +28,7 @@ app.use(session({
 const upload = multer({ dest: 'uploads/' });
 
 app.get("/", (req, res) => {
-    res.render("home");
+    res.render("home");console.log('Server running on port 3000');
 });
 
 app.get("/registerar", (req, res) => {
@@ -114,21 +114,25 @@ app.get('/tasks/search', async (req, res) => {
     const { carNum } = req.query;
 
     try {
-        // Find a single task that exactly matches the carNum (case-insensitive)
-        const task = await Task.findOne({ carNum: new RegExp(`^${carNum}$`, 'i') });
- 
+        let tasks = []; // Default: no tasks found
+
+        if (carNum) {
+            // Find tasks matching the car number (partial or full, case-insensitive)
+            tasks = await Task.find({ carNum: new RegExp(carNum, 'i') });
+        }
+
+        // Count documents for task states
         const completedCount = await Task.countDocuments({ state: 'Completed' });
         const pendingCount = await Task.countDocuments({ state: 'Pending' });
- 
 
-        // Render a single result as an array for compatibility with the view
-        res.render('employee', { tasks: task ? [task] : [], completedCount, pendingCount });
-        
+        // Render the view with tasks and counts
+        res.render('employee', { tasks, completedCount, pendingCount });
     } catch (err) {
-        console.error("Error fetching task:", err);
-        res.status(500).send("Error fetching task.");
+        console.error("Error fetching tasks:", err);
+        res.status(500).send("Error fetching tasks.");
     }
 });
+
 
 app.get("/assign/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id;
@@ -372,7 +376,7 @@ const storage = multer.diskStorage({
         cb(null, file.originalname); // Keep the original filename
     }
 });
-  
+ 
 // app.use('/uploads', express.static('uploads'));
 const uploadStorage = multer({ storage });
 
@@ -627,22 +631,24 @@ app.post('/emp/login', async (req, res) => {
         res.status(500).render('employeelogin', { error: 'Error during login.' });
     }
 });
-app.get('/searchcn', async(req,res)=>{
-    let query = {}; // Default query, return all tasks
-    if (req.query.search) {
-        const searchQuery = req.query.search.toLowerCase();
-        query.carNum = { $regex: searchQuery, $options: "i" }; // Regex search, case-insensitive
+
+app.post('/searchcn', async (req, res) => {
+    const carNum = req.body.carNum;
+    try {
+        // Filter tasks based on the car number
+        const tasks = await Task.find({ carNum: new RegExp(carNum, 'i') });
+        const completedCount = await Task.countDocuments({ state: 'Completed' });
+        const pendingCount = await Task.countDocuments({ state: 'Pending' });
+ 
+        // Render the agent page with filtered tasks
+        res.render('employee',  { tasks: task ? [task] : [], completedCount, pendingCount });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error searching tasks');
     }
-    
-    Task.find(query)
-        .then(tasks => {
-            res.render("employee", { tasks });
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).send("Error fetching tasks");
-        });
-})
+});
+
+
 // Route to handle search by car number and restrict to company-specific tasks
 app.get('/tasks/client/search', async (req, res) => {
     try {
@@ -888,8 +894,14 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     }
 });
 
-
-
+app.get('/api/hpa', (req, res) => {
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbzvY3plk7PPa7INhmxeHhVYRV7Py-XaB26Xf2RGkwH7iiVbRW50b-4ZjX39yKO8cohH/exec';
+    
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => res.json(data)) // Sends the data back to the frontend
+        .catch(error => res.status(500).send("Error fetching data"));
+});
 app.use((req, res, next) => {
     res.status(404).render('404');
 });
