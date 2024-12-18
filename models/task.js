@@ -31,7 +31,6 @@ const taskSchema = mongoose.Schema({
     buyerppstatus: String,
     sellerppstatus: String,
     spoc: String,
-
     state: String,                                         
     sellerPhoto: String,
     buyerPhoto: String,

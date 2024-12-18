@@ -154,8 +154,8 @@
                                 "Piramal Capital & Housing", "Poonawalla Fincorp LTD", "IDFC First Bank LTD", 
                                 "Bajaj Finserv Limited", "HDB Financial Services LTD", "Yes Bank LTD", 
                                 "AEON CREDIT SERVICES", "Kotak Mahindra Bank LTD", "Kotak Mahindra Prime LTD", 
-                                "IDBI Bank LTD", "State Bank of India", "Axis Bank LTD", "NISSAN RENAULT FIN. SER IND. PVT. LTD.",
-                                "Cholamandalam Investment & Finanace Co.LTD", "Union Bank of India", 
+                                "IDBI Bank LTD", "State Bank of India","TATA MOTORS FINANCE LTD", "Axis Bank LTD", "NISSAN RENAULT FIN. SER IND. PVT. LTD.",
+                                "Cholamandalam Investment & Finanace Co.LTD", "Union Bank of India","TATA MOTORS FINANCE LTD",
                                 "ICICI Bank LTD", "Shriram Finance Limited", "Kogta Financial India LTD", 
                                 "Manappuram Finance LTD", " NISSAN RENAULT FIN. SER IND. PVT. LTD.","Hinduja Leyland Finance LTD", "HDFC Bank LTD", 
                                 "Cars24 Financial Services PVT LTD","ORIX AUTO IRFRASTRACTURE SERV LTD", "Spinny Capital LTD", "Bank of Baroda", 
@@ -283,7 +283,7 @@
                             "Union Bank of India", "ICICI Bank LTD","BANK OF INDIA", "Shriram Finance Limited", 
                             "Kogta Financial India LTD"," NISSAN RENAULT FIN. SER IND. PVT. LTD", "Manappuram Finance LTD", "Hinduja Leyland Finance LTD", 
                             "HDFC Bank LTD", "Cars24 Financial Services PVT LTD", "Spinny Capital LTD", 
-                            "Bank of Baroda","Punjab sindh bank","THE NEW INDIA ASSURANCE CO.LTD.",
+                            "Bank of Baroda","Punjab sindh bank","THE NEW INDIA ASSURANCE CO.LTD.","TATA MOTORS FINANCE LTD",
                             "CENTRAL BANK OF INDIA","UCO BANK","GAIL (INDIA)LTD", "BANDHAN BANK LTD", "Hero Fincorp LTD", "Toyota Financial Services India LTD", 
                             "Gulshan bank", "GULSHAN MERCANTILE URBAN CO-OPERATIVE BANK", "INDIAN OVERSEAS BANK" ,
                             "CANARA BANK Punjab", "Sindh Bank" ,"INDOSTAR CAPITAL FINANCE LIMITED", "THE NEW INDIA ASSURANCE CO.LTD" , "CENTRAL BANK OF INDIA" ,
@@ -395,7 +395,7 @@
                             "TN19_KANCHEEPURAM", "JH04_DUMKA", "MP19_SATNA", "CG04_RAIPUR", "JH05_JAMSHEDPUR", 
                             "MP13_UJJAIN", "RJ45_JAIPUR NORTH", "MP09_INDORE", "MP04_BHOPAL", "RJ19_JODHPUR", 
                             "UK04 - NANITAL", "UK06 - UDHAM SINGH NAGAR", "HR98 - BADSHAPUR GGN", "BR10 - BHAGALPUR", "CH01 - CHANDIGARH", 
-                            "RJ55_Pokhran city",
+                            "RJ55_Pokhran city","KA01_Banglore Central",
                             "CG07_Durg Chhattisgarh", "RJ26_TONK CITY", "MP40_Vidisha city", "PB13_SANGRUR", "PB19_BARNALA", 
                             "PB35_PATHANKOT", "PB28_Malerkotla RTO", "PB05_FEROZEPUR","TN49_Thanjavur", "KA14_Shimoga Karnataka", "MP28_Chhindwara", 
                             "TN59_Madurai", "HR05_KARNAL", "MP07_Gwalior", "PB32_Nawanshahr", "PB78_Shahid Bhagat Singh Nagar", 
@@ -407,7 +407,6 @@
                     <% }); %>
                 </select>
             </div>
-            
             <div class="form-group">
                 <label for="seller_RTO_location">Seller RTO location:</label>
                 <select name="seller_RTO_location" id="sellerRTO">
@@ -438,7 +437,7 @@
                             "HR29 - BALLABGARH", "HR11  GUHANA", "HR01 - AMBALA", "HR91  GHARAUNDA", "23BH", 
                             "HP12_NALAGARH", "KL74_KATTAKKADA", "KL68_DEVIKULAM", "TN01_CHENNAI CENTRAL", "TN41_POLACHI", 
                             "TN19_KANCHEEPURAM", "JH04_DUMKA", "MP19_SATNA", "CG04_RAIPUR", "JH05_JAMSHEDPUR", 
-                            "MP13_UJJAIN", "RJ45_JAIPUR NORTH", "MP09_INDORE", "MP04_BHOPAL", "RJ19_JODHPUR", 
+                            "MP13_UJJAIN", "KA01_Banglore Central" , "RJ45_JAIPUR NORTH", "MP09_INDORE", "MP04_BHOPAL", "RJ19_JODHPUR", 
                             "UK04 - NANITAL", "UK06 - UDHAM SINGH NAGAR", "HR98 - BADSHAPUR GGN", "BR10 - BHAGALPUR", "CH01 - CHANDIGARH", 
                             "RJ55_Pokhran city", "RJ26_TONK CITY", "MP40_Vidisha city", "PB13_SANGRUR", "PB19_BARNALA", 
                             "PB35_PATHANKOT", "PB28_Malerkotla RTO", "PB05_FEROZEPUR", "KA14_Shimoga Karnataka", "MP28_Chhindwara", 
@@ -468,10 +467,16 @@
                     <% }); %>
                 </select>
             </div>
-            
+          
             <div class="form-group">
                 <label for="sellerPhoto">Upload Seller Photo:</label>
-                <input type="file" id="sellerPhoto" name="sellerPhoto" accept="image/*">
+                <div>
+                    Previously Uploaded: 
+                    <span>
+                        <%= task.sellerPhoto ? task.sellerPhoto.split('/').pop() : "No file uploaded" %>
+                    </span>
+                </div>
+                <input type="file" id="sellerPhoto" name="sellerPhoto" accept="image/*" class="form-control">
             </div>
             
             <div class="form-group">
@@ -503,7 +508,6 @@
                 <label for="careOfVideo">Upload Care Of Video:</label>
                 <input type="file" id="careOfVideo" name="careOfVideo" accept="video/*">
             </div>
-        
             <div class="form-group">
                 <label for="nocReceipt">Upload NOC Receipt:</label>
                 <input type="file" id="nocReceipt" name="nocReceipt" accept=".pdf,.doc,.docx,.txt, .jpeg">
