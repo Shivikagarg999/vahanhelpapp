@@ -4,37 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance - VAHAN HELP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr td:nth-child(1) {
+            font-weight: bold;
+            width: 30%;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        ul li {
+            padding: 2px 0;
+        }
+
+        .separator-row {
+            background-color: #e6e6e6;
+            height: 10px;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>Finance</h1>
-    <table border="1">
+    <table>
         <thead>
             <tr>
-                <!-- <th>Task ID</th> -->
-                <!-- <th>Company</th> -->
-                <th>Car number</th>
-                <th>Client Name</th>
-                <th>Case type</th>
-                <th>Task type</th>
-                <th>Seller agent</th>
-                <th>Buyer agent</th>
-                <th>Cost</th>
-                <th>Sale</th>
-                <th>Actions</th>
+                <th>Field</th>
+                <th>Details</th>
             </tr>
         </thead>
         <tbody>
-
             <% tasks.forEach(task => { %>
                 <tr>
-                    <!-- <td><%= task._id %></td>
-                    <td><%= task.company %></td> -->
+                    <td>Car Number</td>
                     <td><%= task.carNum %></td>
+                </tr>
+                <tr>
+                    <td>Client Name</td>
                     <td><%= task.clientName %></td>
-                    <td><%= task.caseType %></td> 
+                </tr>
+                <tr>
+                    <td>Case Type</td>
+                    <td><%= task.caseType %></td>
+                </tr>
+                <tr>
+                    <td>Task Type</td>
                     <td><%= task.name %></td>
+                </tr>
+                <tr>
+                    <td>Seller Agent</td>
                     <td><%= task.task1agentname %></td>
+                </tr>
+                <tr>
+                    <td>Buyer Agent</td>
                     <td><%= task.task2agentname %></td>
+                </tr>
+                <tr>
+                    <td>Cost</td>
                     <td>
                         <ul>
                             <% Object.keys(task.cost).forEach(field => { %>
@@ -42,6 +117,9 @@
                             <% }) %>
                         </ul>
                     </td>
+                </tr>
+                <tr>
+                    <td>Sale</td>
                     <td>
                         <ul>
                             <% Object.keys(task.sale).forEach(field => { %>
@@ -49,13 +127,18 @@
                             <% }) %>
                         </ul>
                     </td>
+                </tr>
+                <tr>
+                    <td>Actions</td>
                     <td>
                         <a href="/finance/<%= task._id %>/edit">Edit</a>
                     </td>
                 </tr>
+                <tr class="separator-row">
+                    <td colspan="2"></td>
+                </tr>
             <% }) %>
         </tbody>
     </table>
-
 </body>
 </html>
