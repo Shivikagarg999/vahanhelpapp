@@ -222,7 +222,6 @@
                     <% }); %>
                 </select>
             </div>
-            
             <div class="form-group">
                 <label for="spoc">SPOC:</label>
                 <select name="spoc" id="spoc" class="form-control">
@@ -244,7 +243,6 @@
                     <% }); %>
                 </select>
             </div>
-            
             <div class="form-group">
                 <label for="NOCissuedDate">NOC Issued Date:</label>
                 <input type="date" id="NOCissuedDate" name="NOCissuedDate" value="<%= task.NOCissuedDate ? task.NOCissuedDate.toISOString().slice(0, 10) : '' %>">
@@ -261,7 +259,6 @@
                 <label for="deliverdate">Deliver Date:</label>
                 <input type="date" name="deliverdate" id="deliverdate" value="<%= task.deliverdate ? task.deliverdate.toISOString().slice(0, 10) : '' %>">
             </div>
-            
             <div class="form-group">
                 <label for="AdditionalWork">Additional Work:</label>
                 <input type="text" id="AdditionalWork" name="AdditionalWork" value="<%= task.AdditionalWork %>">
@@ -478,7 +475,7 @@
                 </div>
                 <input type="file" id="sellerPhoto" name="sellerPhoto" accept="image/*" class="form-control">
             </div>
-            
+             
             <div class="form-group">
                 <label for="buyerPhoto">Upload Buyer Photo:</label>
                 <input type="file" id="buyerPhoto" name="buyerPhoto" accept="image/*">

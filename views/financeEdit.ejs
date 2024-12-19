@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign cost</title>
+</head>
+<body>
+    <h1>Assign cost - <%= task.carNum %></h1>
+
+    <form action="/finance/<%= task._id %>/update" method="POST">
+        <h2>Cost</h2>
+        <% Object.keys(task.cost).forEach(field => { %>
+            <div>
+                <label for="<%= field %>"><%= field %>:</label>
+                <input type="number" id="<%= field %>" name="cost[<%= field %>]" value="<%= task.cost[field] %>" required>
+            </div>
+        <% }) %>
+
+        <h2>Sale</h2>
+        <% Object.keys(task.sale).forEach(field => { %>
+            <div>
+                <label for="<%= field %>"><%= field %>:</label>
+                <input type="number" id="<%= field %>" name="sale[<%= field %>]" value="<%= task.sale[field] %>" required>
+            </div>
+        <% }) %>
+
+        <button type="submit">Update cost</button>
+    </form>
+</body>
+</html>

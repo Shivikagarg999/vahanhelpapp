@@ -53,6 +53,34 @@ const taskSchema = mongoose.Schema({
     status_NOC: String,
     deliverdate: Date,
     courier: Date,
+    cost:{
+        type: Object,
+        default: {
+            DRC: 0,
+            EURO_MODIFY: 0,
+            HPT: 0,
+            NOC: 0,
+            NOC_REGD: 0,
+            TO: 0,
+            LOCAL_TRF: 0,
+            HPA: 0,
+            RC_PARTICULAR: 0
+        }
+    },
+    sale:{
+        type: Object,
+        default: {
+            DRC: 0,
+            EURO_MODIFY: 0,
+            HPT: 0,
+            NOC: 0,
+            NOC_REGD: 0,
+            TO: 0,
+            LOCAL_TRF: 0,
+            HPA: 0,
+            RC_PARTICULAR: 0
+        }
+    }
 });
 
 module.exports = mongoose.model('task', taskSchema);

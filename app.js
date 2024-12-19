@@ -132,8 +132,6 @@ app.get('/tasks/search', async (req, res) => {
         res.status(500).send("Error fetching tasks.");
     }
 });
-
-
 app.get("/assign/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id;
 
@@ -331,13 +329,17 @@ app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
         const tasks = await Task.find();
          
         const fields = [
-            'clientName', 'fileReceivedDate', 'carNum', 'caseType', 'AdditionalWork',
-            'hptName',  'HPA',  'seller_RTO_location', 'buyer_RTO_location', 'sellerName', 'sellerNum', 
+            'clientName', 'fileReceivedDate', 
+            'carNum', 'caseType', 'AdditionalWork',
+            'hptName',  'HPA',  'seller_RTO_location', 
+            'buyer_RTO_location', 'sellerName', 'sellerNum', 
             'sellerAlignedDate',  'sellerppstatus',
-            'nocReceipt', 'NOCissuedDate', 'NOCreceivedDate', 'HandoverDate_NOC', 
-            'buyerName', 'buyerNum',  'buyerAlignedDate', 'buyerppstatus', 'name',
-            'transferReceipt' ,'description', 'transferDate',      
-            'HandoverDate_RC',
+            'nocReceipt', 'NOCissuedDate', 
+            'NOCreceivedDate', 'HandoverDate_NOC', 
+            'buyerName', 'buyerNum',  'buyerAlignedDate', 
+            'buyerppstatus', 'name',
+            'transferReceipt' ,'description', 
+            'transferDate','HandoverDate_RC',
             'state', 'createdAt', 
             'task1agentname', 'task2agentname',
             'spoc',
@@ -350,7 +352,6 @@ app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
             'careOfVideo', 'chesisnum', 
             'engineNum', 'status_RC', 'status_NOC',
             'deliverdate', 'courier'
-
         ];
 
         // Convert tasks JSON to CSV
@@ -902,6 +903,47 @@ app.get('/api/hpa', (req, res) => {
         .then(data => res.json(data)) // Sends the data back to the frontend
         .catch(error => res.status(500).send("Error fetching data"));
 });
+
+// finance page
+app.get("/finance", async(req,res)=>{
+    try {
+        const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
+        // const completedCount = await Task.countDocuments({ state: 'Completed' });
+        // const pendingCount = await Task.countDocuments({ state: 'Pending' });
+        res.render('finance', { tasks});
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})
+
+app.get('/finance/:id/edit', async (req, res) => {
+    const taskId = req.params.id;
+    try {
+        const task = await Task.findById(taskId); // Find the task to edit
+        res.render('financeEdit', { task });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching task');
+    }
+});
+app.post('/finance/:id/update', async (req, res) => {
+    const taskId = req.params.id;
+    const { cost, sale } = req.body; // Get updated cost and sale data from the form submission
+    try {
+        const updatedTask = await Task.findByIdAndUpdate(taskId, {
+            cost,
+            sale
+        }, { new: true });
+        
+        res.redirect(`/finance`); // Redirect to the finance page after update
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error updating task');
+    }
+});
+
+
 app.use((req, res, next) => {
     res.status(404).render('404');
 });
