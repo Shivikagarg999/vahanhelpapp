@@ -53,19 +53,19 @@ const taskSchema = mongoose.Schema({
     status_NOC: String,
     deliverdate: Date,
     courier: Date,
-    cost:{
+    cost: {
         type: Object,
-        default: {
-            DRC: 0,
-            EURO_MODIFY: 0,
-            HPT: 0,
-            NOC: 0,
-            NOC_REGD: 0,
-            TO: 0,
-            LOCAL_TRF: 0,
-            HPA: 0,
-            RC_PARTICULAR: 0
-        }
+        default: () => ({
+            DRC: { value: 0, seller: false, buyer: false },
+            EURO_MODIFY: { value: 0, seller: false, buyer: false },
+            HPT: { value: 0, seller: false, buyer: false },
+            NOC: { value: 0, seller: false, buyer: false },
+            NOC_REGD: { value: 0, seller: false, buyer: false },
+            TO: { value: 0, seller: false, buyer: false },
+            LOCAL_TRF: { value: 0, seller: false, buyer: false },
+            HPA: { value: 0, seller: false, buyer: false },
+            RC_PARTICULAR: { value: 0, seller: false, buyer: false }
+        })
     },
     sale:{
         type: Object,

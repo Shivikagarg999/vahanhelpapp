@@ -21,7 +21,7 @@
 
         table {
             width: 80%;
-            margin: 20px auto;
+            margin: 40px auto;
             border-collapse: collapse;
             background: #fff;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -111,13 +111,22 @@
                 <tr>
                     <td>Cost</td>
                     <td>
-                        <ul>
+                        <table>
                             <% Object.keys(task.cost).forEach(field => { %>
-                                <li><%= field %>: <%= task.cost[field] %></li>
+                                <tr>
+                                    <td><%= field %></td>
+                                    <td><%= task.cost[field] %></td>
+                                    <td>
+                                        <input type="checkbox" name="<%= field %>_seller" /> Seller
+                                        <input type="checkbox" name="<%= field %>_buyer" /> Buyer
+                                    </td>
+                                </tr>
                             <% }) %>
-                        </ul>
+                        </table>
                     </td>
                 </tr>
+                
+                
                 <tr>
                     <td>Sale</td>
                     <td>
