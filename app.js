@@ -895,53 +895,73 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     }
 });
 
-app.get('/api/hpa', (req, res) => {
-    const apiUrl = 'https://script.google.com/macros/s/AKfycbzvY3plk7PPa7INhmxeHhVYRV7Py-XaB26Xf2RGkwH7iiVbRW50b-4ZjX39yKO8cohH/exec';
+// app.get('/api/hpa', (req, res) => {
+//     const apiUrl = 'https://script.google.com/macros/s/AKfycbzvY3plk7PPa7INhmxeHhVYRV7Py-XaB26Xf2RGkwH7iiVbRW50b-4ZjX39yKO8cohH/exec';
     
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => res.json(data)) // Sends the data back to the frontend
-        .catch(error => res.status(500).send("Error fetching data"));
-});
+//     fetch(apiUrl)
+//         .then(response => response.json())
+//         .then(data => res.json(data)) // Sends the data back to the frontend
+//         .catch(error => res.status(500).send("Error fetching data"));
+// });
 
 // finance page
-app.get("/finance", async(req,res)=>{
-    try {
-        const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
-        // const completedCount = await Task.countDocuments({ state: 'Completed' });
-        // const pendingCount = await Task.countDocuments({ state: 'Pending' });
-        res.render('finance', { tasks});
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-        res.status(500).send('Internal Server Error');
-    }
-})
+// app.get("/finance", async(req,res)=>{
+//     try {
+//         const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
+//         // const completedCount = await Task.countDocuments({ state: 'Completed' });
+//         // const pendingCount = await Task.countDocuments({ state: 'Pending' });
+//         res.render('finance', { tasks});
+//     } catch (error) {
+//         console.error('Error fetching tasks:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// })
 
-app.get('/finance/:id/edit', async (req, res) => {
-    const taskId = req.params.id;
-    try {
-        const task = await Task.findById(taskId); // Find the task to edit
-        res.render('financeEdit', { task });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error fetching task');
-    }
-});
-app.post('/finance/:id/update', async (req, res) => {
-    const taskId = req.params.id;
-    const { cost, sale } = req.body; // Get updated cost and sale data from the form submission
-    try {
-        const updatedTask = await Task.findByIdAndUpdate(taskId, {
-            cost,
-            sale
-        }, { new: true });
+
+
+// app.post('/finance/:id/save', async (req, res) => {
+//     const { id } = req.params; // Use URL parameter `id` directly
+//     const task_id = id; // This will be the same as the parameter
+
+//     try {
+//         // Find the task by ID
+//         const task = await Task.findById(task_id);
         
-        res.redirect(`/finance`); // Redirect to the finance page after update
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error updating task');
-    }
-});
+//         if (!task) {
+//             return res.status(404).send('Task not found');
+//         }
+
+//         // Iterate over each cost field and update seller and buyer values
+//         Object.keys(req.body).forEach(field => {
+//             if (field.endsWith('_seller_value') || field.endsWith('_buyer_value')) {
+//                 const fieldName = field.split('_')[0]; // Extract the cost field name (e.g., DRC)
+//                 const type = field.includes('seller') ? 'seller' : 'buyer';
+                
+//                 // Update the seller or buyer value
+//                 const fieldValue = req.body[field] === 'on' || req.body[field] === '1'; // Check if it's checked or 'on'
+//                 if (task.cost[fieldName]) {
+//                     task.cost[fieldName][type] = fieldValue;
+//                 }
+//             } else if (field.endsWith('_value')) {
+//                 const fieldName = field.split('_')[0]; // Extract the cost field name (e.g., DRC)
+//                 const value = req.body[field];
+                
+//                 // Update the cost value
+//                 if (task.cost[fieldName]) {
+//                     task.cost[fieldName].value = value;
+//                 }
+//             }
+//         });
+
+//         // Save the task
+//         await task.save();
+//         res.redirect('/finance');
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Error saving task');
+//     }
+// });
+
 
 
 app.use((req, res, next) => {

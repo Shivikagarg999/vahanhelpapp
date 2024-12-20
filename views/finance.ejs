@@ -75,6 +75,7 @@
 </head>
 <body>
     <h1>Finance</h1>
+
     <table>
         <thead>
             <tr>
@@ -83,71 +84,160 @@
             </tr>
         </thead>
         <tbody>
-            <% tasks.forEach(task => { %>
+            <% tasks.forEach(task => { %> <!-- Iterating over tasks -->
                 <tr>
                     <td>Car Number</td>
-                    <td><%= task.carNum %></td>
+                    <td><span class="editable" data-field="carNum" data-id="<%= task._id %>"><%= task.carNum %></span></td>
                 </tr>
                 <tr>
                     <td>Client Name</td>
-                    <td><%= task.clientName %></td>
+                    <td><span class="editable" data-field="clientName" data-id="<%= task._id %>"><%= task.clientName %></span></td>
                 </tr>
-                <tr>
-                    <td>Case Type</td>
-                    <td><%= task.caseType %></td>
-                </tr>
-                <tr>
-                    <td>Task Type</td>
-                    <td><%= task.name %></td>
-                </tr>
-                <tr>
-                    <td>Seller Agent</td>
-                    <td><%= task.task1agentname %></td>
-                </tr>
-                <tr>
-                    <td>Buyer Agent</td>
-                    <td><%= task.task2agentname %></td>
-                </tr>
+                <!-- Add other fields as needed -->
+                
+                <!-- Cost Fields -->
                 <tr>
                     <td>Cost</td>
                     <td>
                         <table>
-                            <% Object.keys(task.cost).forEach(field => { %>
-                                <tr>
-                                    <td><%= field %></td>
-                                    <td><%= task.cost[field] %></td>
-                                    <td>
-                                        <input type="checkbox" name="<%= field %>_seller" /> Seller
-                                        <input type="checkbox" name="<%= field %>_buyer" /> Buyer
-                                    </td>
-                                </tr>
-                            <% }) %>
+                            <% if (task.cost) { %> <!-- Check if cost object exists -->
+                                <% Object.keys(task.cost).forEach(field => { %>
+                                    <tr>
+                                        <td><%= field %></td>
+                                        <td>
+                                            <span class="editable" data-field="cost_<%= field %>" data-id="<%= task._id %>">
+                                                <%= task.cost[field] && task.cost[field].value ? task.cost[field].value : 0 %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" name="<%= field %>_seller" data-task-id="<%= task._id %>" data-field="<%= field %>" <% if (task.cost[field] && task.cost[field].seller) { %>checked<% } %> /> Seller
+                                            <input type="checkbox" name="<%= field %>_buyer" data-task-id="<%= task._id %>" data-field="<%= field %>" <% if (task.cost[field] && task.cost[field].buyer) { %>checked<% } %> /> Buyer
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <p>No cost data available</p>
+                            <% } %>
                         </table>
                     </td>
                 </tr>
                 
-                
+                <!-- Sale Fields -->
                 <tr>
                     <td>Sale</td>
                     <td>
-                        <ul>
-                            <% Object.keys(task.sale).forEach(field => { %>
-                                <li><%= field %>: <%= task.sale[field] %></li>
-                            <% }) %>
-                        </ul>
+                        <table>
+                            <% if (task.sale) { %> <!-- Check if sale object exists -->
+                                <% Object.keys(task.sale).forEach(field => { %>
+                                    <tr>
+                                        <td><%= field %></td>
+                                        <td>
+                                            <span class="editable" data-field="sale_<%= field %>" data-id="<%= task._id %>">
+                                                <%= task.sale[field] && task.sale[field].value ? task.sale[field].value : 0 %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <p>No sale data available</p>
+                            <% } %>
+                        </table>
                     </td>
                 </tr>
+
+                <!-- Save Form and Actions -->
                 <tr>
                     <td>Actions</td>
                     <td>
-                        <a href="/finance/<%= task._id %>/edit">Edit</a>
+                        <!-- Save form should be outside the loop for each task -->
+                        <form action="/finance/save_all" method="POST">
+                            <input type="hidden" name="task_id" value="<%= task._id %>">
+                            <% Object.keys(task.cost).forEach(field => { %>
+                                <input type="hidden" name="<%= field %>_seller_value" value="<%= task.cost[field].seller ? 1 : 0 %>">
+                                <input type="hidden" name="<%= field %>_buyer_value" value="<%= task.cost[field].buyer ? 1 : 0 %>">
+                            <% }) %>
+                            <% Object.keys(task.sale).forEach(field => { %>
+                                <input type="hidden" name="<%= field %>_value" value="<%= task.sale[field].value %>">
+                            <% }) %>
+                            <button type="submit">Save All</button>
+                        </form>
                     </td>
-                </tr>
+                </tr> 
                 <tr class="separator-row">
                     <td colspan="2"></td>
                 </tr>
-            <% }) %>
-        </tbody>
-    </table>
+            <% }) %> <!-- End of tasks iteration -->
+        </tbody>  
+    </table>             
+
+    <script>
+        // Editable field handler
+        document.querySelectorAll('.editable').forEach(item => {
+            item.addEventListener('click', () => {
+                const taskId = item.dataset.id;
+                const field = item.dataset.field;
+                const currentValue = item.textContent;
+
+                const newValue = prompt(`Enter new value for ${field}:`, currentValue);
+                if (newValue !== null) {
+                    // Perform AJAX or form submission to save the new value
+                    fetch(`/finance/update/${taskId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            field,
+                            value: newValue
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            item.textContent = newValue; // Update displayed value
+                        } else {
+                            alert('Failed to update value');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error updating value');
+                    });
+                }
+            });
+        });
+
+        // Checkbox handling for seller and buyer
+        document.querySelectorAll('input[type="checkbox"]').forEach(item => {
+            item.addEventListener('change', () => {
+                const taskId = item.dataset.taskId;
+                const field = item.dataset.field;
+                const isSeller = item.name.includes('seller');
+                const value = item.checked ? 1 : 0;
+
+                fetch(`/finance/update/${taskId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        field,
+                        value,
+                        isSeller
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Checkbox updated successfully');
+                    } else {
+                        alert('Failed to update checkbox');
+                    }
+                })
+                .catch(error => {
+                    alert('Error updating checkbox');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

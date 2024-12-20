@@ -64,22 +64,34 @@ const taskSchema = mongoose.Schema({
             TO: { value: 0, seller: false, buyer: false },
             LOCAL_TRF: { value: 0, seller: false, buyer: false },
             HPA: { value: 0, seller: false, buyer: false },
-            RC_PARTICULAR: { value: 0, seller: false, buyer: false }
-        })
+            RC_PARTICULAR: { value: 0, seller: false, buyer: false },
+            ADDITIONAL_WORK: { value: 0, seller: false, buyer: false }
+        }),
+        validate: {
+            validator: function (v) {
+                return Object.values(v).every(
+                    field => typeof field.value === 'number' &&
+                             typeof field.seller === 'boolean' &&
+                             typeof field.buyer === 'boolean'
+                );
+            },
+            message: props => `Invalid cost field values!`
+        }
     },
     sale:{
         type: Object,
-        default: {
-            DRC: 0,
-            EURO_MODIFY: 0,
-            HPT: 0,
-            NOC: 0,
-            NOC_REGD: 0,
-            TO: 0,
-            LOCAL_TRF: 0,
-            HPA: 0,
-            RC_PARTICULAR: 0
-        }
+        default: () => ({
+            DRC: { value: 0},
+            EURO_MODIFY: { value: 0},
+            HPT: { value: 0},
+            NOC: { value: 0},
+            NOC_REGD: { value: 0},
+            TO: { value: 0},
+            LOCAL_TRF: { value: 0},
+            HPA: { value: 0},
+            RC_PARTICULAR: { value: 0},
+            ADDITIONAL_WORK: { value: 0}
+        })
     }
 });
 
