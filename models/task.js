@@ -52,38 +52,38 @@ const taskSchema = mongoose.Schema({
     status_RC: String,
     status_NOC: String,
     deliverdate: Date,
-    courier: Date,
+    courier: Date,   
     cost: {
         type: Object,
         default: () => ({
-            DRC: { value: 0, seller: false, buyer: false },
-            EURO_MODIFY: { value: 0, seller: false, buyer: false },
-            HPT: { value: 0, seller: false, buyer: false },
-            NOC: { value: 0, seller: false, buyer: false },
-            NOC_REGD: { value: 0, seller: false, buyer: false },
-            TO: { value: 0, seller: false, buyer: false },
-            LOCAL_TRF: { value: 0, seller: false, buyer: false },
-            HPA: { value: 0, seller: false, buyer: false },
-            RC_PARTICULAR: { value: 0, seller: false, buyer: false },
-            ADDITIONAL_WORK: { value: 0, seller: false, buyer: false }
+            DRC: { value: 0, party: null },
+            EURO_MODIFY: { value: 0, party: null },
+            HPT: { value: 0, party: null },
+            NOC: { value: 0, party: null },
+            NOC_REGD: { value: 0, party: null },
+            TO: { value: 0, party: null },
+            LOCAL_TRF: { value: 0, party: null },
+            HPA: { value: 0, party: null },
+            RC_PARTICULAR: { value: 0, party: null },
+            ADDITIONAL_WORK: { value: 0, party: null }
         }),
         validate: {
             validator: function (v) {
                 return Object.values(v).every(
-                    field => typeof field.value === 'number' &&
-                             typeof field.seller === 'boolean' &&
-                             typeof field.buyer === 'boolean'
+                    field =>
+                        typeof field.value === 'number' &&
+                        (field.party === null || ['seller', 'buyer', 'both'].includes(field.party))
                 );
             },
-            message: props => `Invalid cost field values!`
+            message: props => `Invalid cost field values! Party must be "seller", "buyer", or null.`
         }
     },
-    sale:{
+    sale:{ 
         type: Object,
         default: () => ({
             DRC: { value: 0},
             EURO_MODIFY: { value: 0},
-            HPT: { value: 0},
+            HPT: { value: 0},                                   
             NOC: { value: 0},
             NOC_REGD: { value: 0},
             TO: { value: 0},

@@ -13,7 +13,6 @@ const Admin = require('./models/admin');
 const uploadOnImageKit = require('./imagekit');
 const task = require('./models/task');
 const axios = require('axios');
-const moment = require('moment');
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -31,39 +30,6 @@ app.get("/", (req, res) => {
     res.render("home");console.log('Server running on port 3000');
 });
 
-app.get("/registerar", (req, res) => {
-    res.render("register");
-});
-
-app.get("/login", (req, res) => {
-    res.render("login");
-});
-
-app.post("/registerar", async (req, res) => {
-    const { company, password } = req.body;
-    try {
-        if (!company || !password) {
-            return res.render("register", { error: "Company name and password are required." });
-        }
-
-        // Check if the company already exists
-        const existingCompany = await Company.findOne({ companyName: company });
-        if (existingCompany) {
-            return res.render("register", { error: "Company name already exists. Please choose another." });
-        }
-
-        const newCompany = new Company({ companyName: company, password });
-        await newCompany.save();
-
-        // Set a token cookie upon registration
-        res.cookie('token', newCompany._id.toString(), { httpOnly: true });
-        res.redirect("/login");
-    } catch (err) {
-        console.error('Error registering company:', err.message);
-        res.status(500).render("register", { error: "Error registering company." });
-    }
-
-});
 
 app.post("/login", async (req, res) => {
     const { company, password } = req.body;
@@ -104,6 +70,34 @@ app.get("/tasks", async (req, res) => {
         res.status(500).send("Error fetching tasks.");
     }
 });
+app.get("/login", (req, res) => {
+    res.render("login");
+});
+
+app.post("/registerar", async (req, res) => {
+    const { company, password } = req.body;
+    try {
+        if (!company || !password) {
+            return res.render("register", { error: "Company name and password are required." });
+        }
+
+        const existingCompany = await Company.findOne({ companyName: company });
+        if (existingCompany) {
+            return res.render("register", { error: "Company name already exists. Please choose another." });
+        }
+
+        const newCompany = new Company({ companyName: company, password });
+        await newCompany.save();
+
+        // Set a token cookie upon registration
+        res.cookie('token', newCompany._id.toString(), { httpOnly: true });
+        res.redirect("/login");
+    } catch (err) {
+        console.error('Error registering company:', err.message);
+        res.status(500).render("register", { error: "Error registering company." });
+    }
+
+});
 
 app.get("/tasks/create", isEMPLoggedIn, async (req, res) => {
     const companies = await Company.find({}, 'companyName'); 
@@ -123,10 +117,10 @@ app.get('/tasks/search', async (req, res) => {
 
         // Count documents for task states
         const completedCount = await Task.countDocuments({ state: 'Completed' });
-        const pendingCount = await Task.countDocuments({ state: 'Pending' });
+        // const pendingCount = await Task.countDocuments({ state: 'Pending' });
 
         // Render the view with tasks and counts
-        res.render('employee', { tasks, completedCount, pendingCount });
+        res.render('employee', { tasks, completedCount, });
     } catch (err) {
         console.error("Error fetching tasks:", err);
         res.status(500).send("Error fetching tasks.");
@@ -283,7 +277,6 @@ app.get('/tasks/download', async (req, res) => {
             buyer_pp_status: task.buyerppstatus,
             seller_pp_status: task.seller_pp_status,
             client_spoc: task.spoc,
-
             transferDate: task.transferDate ? task.transferDate.toISOString().split('T')[0] : 'N/A',
             HandoverDate_RC: task.HandoverDate_RC ? task.HandoverDate_RC.toISOString().split('T')[0] : 'N/A',
             HandoverDate_NOC: task.HandoverDate_NOC ? task.HandoverDate_NOC.toISOString().split('T')[0] : 'N/A',
@@ -305,12 +298,12 @@ app.get('/tasks/download', async (req, res) => {
             transferReceipt: task.transferReceipt,
             chesisnum: task.chesisnum,
             engineNum: task.engineNum,
-             status_RC: task.status_RC,
-              status_NOC: task.status_NOC,
-              deliverdate: task.deliverdate,
-              courierdate: task.courier
+            status_RC: task.status_RC,
+            status_NOC: task.status_NOC,
+            deliverdate: task.deliverdate,
+            courierdate: task.courier
         }));
-
+  
         // Convert JSON to CSV
         const json2csvParser = new Parser();
         const csv = json2csvParser.parse(tasksData);
@@ -412,7 +405,6 @@ app.post('/upload', upload.fields([
     }
 
     try {
-        // Find the company associated with the client name
         const company = await Company.findOne({ companyName: clientName });
         if (!company) {
             return res.status(404).send("Company not found for the given client name.");
@@ -453,6 +445,9 @@ app.post('/upload', upload.fields([
     }
 });
 
+app.get("/registerar", (req, res) => {
+    res.render("register");
+});
 app.get("/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id; // Get the task ID from the URL parameters
 
@@ -473,7 +468,6 @@ app.get("/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
         res.status(500).send("Error fetching task."); // Handle server error
     }
 });
-
 
 app.post("/tasks/edit/:id", upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
@@ -512,13 +506,15 @@ app.post("/tasks/edit/:id", upload.fields([
         sellerNum, 
         buyer_RTO_location, 
         seller_RTO_location, 
-        chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
-        buyerppstatus, sellerppstatus, spoc,
-        state
+        chesisnum, engineNum, 
+        status_RC, status_NOC,
+        deliverdate, courier,
+        buyerppstatus,
+        sellerppstatus,
+        spoc, state
     } = req.body;
 
     try {
-        // Convert arrays to strings if they exist
         const taskData = { 
             name, 
             description, 
@@ -585,7 +581,6 @@ app.post("/tasks/delete/:id", async (req, res) => {
     }
 });
 
-// Admin Task Delete Route
 app.post("/admin/tasks/delete/:id", isAdminLoggedIn, async (req, res) => {
     const taskId = req.params.id;
 
@@ -605,7 +600,6 @@ app.post("/admin/tasks/delete/:id", isAdminLoggedIn, async (req, res) => {
 
 app.get('/employee',isEMPLoggedIn, async (req, res) => {
     try {
-        
         const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
         const completedCount = await Task.countDocuments({ state: 'Completed' });
         const pendingCount = await Task.countDocuments({ state: 'Pending' });
@@ -632,7 +626,6 @@ app.post('/emp/login', async (req, res) => {
         res.status(500).render('employeelogin', { error: 'Error during login.' });
     }
 });
-
 app.post('/searchcn', async (req, res) => {
     const carNum = req.body.carNum;
     try {
@@ -648,8 +641,6 @@ app.post('/searchcn', async (req, res) => {
         res.status(500).send('Error searching tasks');
     }
 });
-
-
 // Route to handle search by car number and restrict to company-specific tasks
 app.get('/tasks/client/search', async (req, res) => {
     try {
@@ -712,8 +703,7 @@ app.get('/get-data', async (req, res) => {
       console.error('Error fetching tasks:', error);
       res.status(500).json({ message: 'Error fetching tasks' });
     }
-  });
-
+});
 
 function isAgentLogin(req, res) {
     const { username, password } = req.body;
@@ -726,7 +716,6 @@ function isAgentLogin(req, res) {
     }
     return false;
 }
-
 // Routes
 app.get('/agent-login', (req, res) => {
     res.render('agentlogin');
@@ -905,65 +894,65 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
 // });
 
 // finance page
-// app.get("/finance", async(req,res)=>{
-//     try {
-//         const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
-//         // const completedCount = await Task.countDocuments({ state: 'Completed' });
-//         // const pendingCount = await Task.countDocuments({ state: 'Pending' });
-//         res.render('finance', { tasks});
-//     } catch (error) {
-//         console.error('Error fetching tasks:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// })
+app.get("/finance", async(req,res)=>{
+    try {
+        const tasks = await Task.find().populate('company').sort({ createdAt: -1 });;
+        res.render('finance', { tasks});
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})
+app.get("/financeEdit/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id; // Extract task ID from the URL
+        const task = await Task.findById(taskId); 
+        if (!task) {
+            return res.status(404).send("Task not found."); 
+        }
 
+        res.render("financeEdit", { task });
+    } catch (err) {
+        console.error("Error fetching task:", err.message);
+        res.status(500).send("Error fetching task."); 
+    }
+});
 
+app.post("/financeEdit/:id", async (req, res) => {
+    const { id } = req.params;
+    const { cost, sale } = req.body;
 
-// app.post('/finance/:id/save', async (req, res) => {
-//     const { id } = req.params; // Use URL parameter `id` directly
-//     const task_id = id; // This will be the same as the parameter
+    try {
+        const sanitizedCost = Object.fromEntries(
+            Object.entries(cost).map(([key, value]) => [
+                key,
+                {
+                    value: parseFloat(value.value) || 0,
+                    party: ["seller", "buyer", "both"].includes(value.party) ? value.party : null,
+                },
+            ])
+        );
+        const sanitizedSale = Object.fromEntries(
+            Object.entries(sale).map(([key, value]) => [
+                key,
+                { value: parseFloat(value.value) || 0 },
+            ])
+        );
 
-//     try {
-//         // Find the task by ID
-//         const task = await Task.findById(task_id);
-        
-//         if (!task) {
-//             return res.status(404).send('Task not found');
-//         }
+        const task = await Task.findById(id);
+        if (!task) {
+            return res.status(404).send("Task not found.");
+        }
 
-//         // Iterate over each cost field and update seller and buyer values
-//         Object.keys(req.body).forEach(field => {
-//             if (field.endsWith('_seller_value') || field.endsWith('_buyer_value')) {
-//                 const fieldName = field.split('_')[0]; // Extract the cost field name (e.g., DRC)
-//                 const type = field.includes('seller') ? 'seller' : 'buyer';
-                
-//                 // Update the seller or buyer value
-//                 const fieldValue = req.body[field] === 'on' || req.body[field] === '1'; // Check if it's checked or 'on'
-//                 if (task.cost[fieldName]) {
-//                     task.cost[fieldName][type] = fieldValue;
-//                 }
-//             } else if (field.endsWith('_value')) {
-//                 const fieldName = field.split('_')[0]; // Extract the cost field name (e.g., DRC)
-//                 const value = req.body[field];
-                
-//                 // Update the cost value
-//                 if (task.cost[fieldName]) {
-//                     task.cost[fieldName].value = value;
-//                 }
-//             }
-//         });
-
-//         // Save the task
-//         await task.save();
-//         res.redirect('/finance');
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send('Error saving task');
-//     }
-// });
-
-
-
+        task.cost = sanitizedCost;
+        task.sale = sanitizedSale;
+        await task.save();
+        res.redirect("/finance");
+    } catch (err) {
+        console.error("Error updating cost or sale:", err.message);
+        res.status(500).send("Error updating cost or sale. Please ensure all fields are valid.");
+    }
+});
 app.use((req, res, next) => {
     res.status(404).render('404');
 });
