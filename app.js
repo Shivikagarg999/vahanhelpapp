@@ -117,10 +117,10 @@ app.get('/tasks/search', async (req, res) => {
 
         // Count documents for task states
         const completedCount = await Task.countDocuments({ state: 'Completed' });
-        // const pendingCount = await Task.countDocuments({ state: 'Pending' });
+        const pendingCount = await Task.countDocuments({ state: 'Pending' });
 
         // Render the view with tasks and counts
-        res.render('employee', { tasks, completedCount, });
+        res.render('employee', { tasks, completedCount, pendingCount});
     } catch (err) {
         console.error("Error fetching tasks:", err);
         res.status(500).send("Error fetching tasks.");
