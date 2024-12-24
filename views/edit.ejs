@@ -467,12 +467,6 @@
           
             <div class="form-group">
                 <label for="sellerPhoto">Upload Seller Photo:</label>
-                <div>
-                    Previously Uploaded: 
-                    <span>
-                        <%= task.sellerPhoto ? task.sellerPhoto.split('/').pop() : "No file uploaded" %>
-                    </span>
-                </div>
                 <input type="file" id="sellerPhoto" name="sellerPhoto" accept="image/*" class="form-control">
             </div>
              
@@ -489,8 +483,7 @@
             <div class="form-group">
                 <label for="buyerDocs">Upload Buyer Documents:</label>
                 <input type="file" id="buyerDocs" name="buyerDocs" accept=".pdf,.doc,.docx,.txt, .jpeg" multiple>
-            </div>
-        
+            </div> 
             <div class="form-group">
                 <label for="carVideo">Upload Car Video:</label>
                 <input type="file" id="carVideo" name="carVideo" accept="video/*">
@@ -520,5 +513,25 @@
             <button type="submit">Update Task</button>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+    
+            fileInputs.forEach(input => {
+                input.addEventListener('change', (event) => {
+                    const files = event.target.files;
+                    for (let i = 0; i < files.length; i++) {
+                        if (files[i].size > 20 * 1024 * 1024) { 
+                            alert(`The file "${files[i].name}" exceeds the 20 MB limit. Please upload a smaller file.`);
+                            event.target.value = ''; 
+                            break;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    
 </body>
 </html>

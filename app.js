@@ -894,15 +894,17 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
 // });
 
 // finance page
-app.get("/finance", async(req,res)=>{
+app.get("/finance", async (req, res) => {
     try {
-        const tasks = await Task.find().populate('company').sort({ createdAt: -1 });;
-        res.render('finance', { tasks});
+        const tasks = await Task.find({ name: "TRANSFER COMPLETED" })
+            .populate('company')
+            .sort({ createdAt: -1 });
+        res.render('finance', { tasks });
     } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).send('Internal Server Error');
     }
-})
+});
 app.get("/financeEdit/:id", async (req, res) => {
     try {
         const taskId = req.params.id; // Extract task ID from the URL

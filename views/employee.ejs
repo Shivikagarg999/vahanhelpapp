@@ -316,7 +316,7 @@
 
     .completed-cases .completed,
     .completed-cases .pending {
-        width: 100%; /* Full width on smaller screens */
+        width: 100%;
     }
 }
 
@@ -324,11 +324,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #fff; /* Black background */
+            background-color: #fff; 
             color: #0056b3;
             padding: 5px 20px;
-            height: 70px; /* Consistent height for the navbar */
-            width: 100%; /* Full width */
+            height: 70px; 
+            width: 100%;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
@@ -365,14 +365,12 @@
             background-color: #D9534F;
         }
 
-        /* Toggle button */
         .navbar .toggle-btn {
             display: none;
             font-size: 24px;
             cursor: pointer;
         }
 
-        /* Responsive styles */
         @media (max-width: 768px) {
             .navbar .nav-links {
                 display: none;
@@ -395,11 +393,11 @@
                 display: block;
             }
         }
- .navbar .brand img.logo {
-    height: 60px;  /* Adjust this based on your logo's size */
-    width: auto;   /* Maintain the aspect ratio */
-    margin-left: 10px;  /* Optional, if you need some space from the left edge */
- }
+            .navbar .brand img.logo {
+                height: 60px; 
+                width: auto;   
+                margin-left: 10px;  
+        }
 
     </style>
 </head>
@@ -437,8 +435,6 @@
         <h1>Employee Login - Vahan Help</h1>
         <h1>All Tasks</h1>
  
-        
-        
         <div class="search-bar">
             <form action="/tasks/search" method="GET" class="search-form">
                 <input type="text" name="carNum" placeholder="Search by Car Number" required>
