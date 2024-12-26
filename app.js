@@ -598,14 +598,12 @@ app.post("/tasks/delete/:id", async (req, res) => {
         return res.status(500).render("error", { message: "Error deleting task." });
     }
 });
-
 app.post("/admin/tasks/delete/:id", isAdminLoggedIn, async (req, res) => {
     const taskId = req.params.id;
 
     try {
         // Delete the task by its ID
         await Task.findByIdAndDelete(taskId);
-
         await Company.updateMany({}, { $pull: { tasks: taskId } });
 
         // Redirect admin to the task listing page after successful deletion
@@ -738,7 +736,6 @@ function isAgentLogin(req, res) {
 app.get('/agent-login', (req, res) => {
     res.render('agentlogin');
 });
-
 app.post('/agent-login', async (req, res) => {
     if (await isAgentLogin(req, res)) {
         try {
@@ -763,41 +760,6 @@ app.post('/search-car', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Error searching tasks');
-    }
-});
-
-app.post('/sync-tasks', async (req, res) => {
-    try {
-        // Fetch tasks from MongoDB
-        const tasks = await Task.find({}); // Modify this query as needed
-
-        // Prepare the data to send to Google Apps Script
-        const taskData = {
-            tasks: tasks.map(task => ({
-                name: task.name,
-                clientName: task.clientName,
-                carNum: task.carNum,
-                sellerName: task.sellerName,
-                buyerName: task.buyerName,
-                sellerAlignedDate: task.sellerAlignedDate,
-                buyerAlignedDate: task.buyerAlignedDate,
-                NOCissuedDate: task.NOCissuedDate,
-                transferDate: task.transferDate,
-                HandoverDate_RC: task.HandoverDate_RC
-            }))
-        };
-
-        // Google Apps Script URL (replace with your actual URL)
-        const googleScriptUrl = 'https://script.google.com/macros/s/your_script_url/exec'; // Replace with the actual script URL
-
-        // Send the data to Google Apps Script
-        const response = await axios.post(googleScriptUrl, taskData);
-
-        // Send success response back
-        res.status(200).send('Tasks synced to Google Sheets successfully!');
-    } catch (error) {
-        console.error('Error syncing tasks:', error);
-        res.status(500).send('Error syncing tasks');
     }
 });
 
@@ -864,9 +826,7 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
                             status_NOC: row.status_NOC,
                             deliverdate: row.deliverdate,
                             courierdate: row.courier
-                        });
-                        
-                        
+                        });                  
                     })
                     .on('end', resolve)
                     .on('error', (err) => {
@@ -901,21 +861,13 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
         res.status(500).send("Error importing tasks.");
     }
 });
-
-// app.get('/api/hpa', (req, res) => {
-//     const apiUrl = 'https://script.google.com/macros/s/AKfycbzvY3plk7PPa7INhmxeHhVYRV7Py-XaB26Xf2RGkwH7iiVbRW50b-4ZjX39yKO8cohH/exec';
-    
-//     fetch(apiUrl)
-//         .then(response => response.json())
-//         .then(data => res.json(data)) // Sends the data back to the frontend
-//         .catch(error => res.status(500).send("Error fetching data"));
-// });
 // finance page
 app.get("/finance", async (req, res) => {
     try {
         const tasks = await Task.find({ name: "TRANSFER COMPLETED" })
             .populate('company')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean(); 
         res.render('finance', { tasks });
     } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -925,11 +877,10 @@ app.get("/finance", async (req, res) => {
 app.get("/financeEdit/:id", async (req, res) => {
     try {
         const taskId = req.params.id; // Extract task ID from the URL
-        const task = await Task.findById(taskId); 
+        const task = await Task.findById(taskId).lean(); 
         if (!task) {
             return res.status(404).send("Task not found."); 
         }
-
         res.render("financeEdit", { task });
     } catch (err) {
         console.error("Error fetching task:", err.message);
@@ -971,23 +922,19 @@ app.post("/financeEdit/:id", async (req, res) => {
         res.status(500).send("Error updating cost or sale. Please ensure all fields are valid.");
     }
 });
-// app.post('/updateBillStatus/:taskId', (req, res) => {
-//     const taskId = req.params.taskId;
-//     const { isBillgenerated } = req.body;
 
-//     // If isBillgenerated is undefined (None option), treat it as null or remove the field
-//     const updateData = isBillgenerated === undefined ? { $unset: { isBillgenerated: 1 } } : { isBillgenerated };
+app.post('/update-bill-status/:id', async (req, res) => {
+    const { id } = req.params;
+    const { billGenerated } = req.body;
 
-//     Task.findByIdAndUpdate(taskId, updateData, { new: true })
-//         .then(updatedTask => {
-//             res.json({ success: true, task: updatedTask });
-//         })
-//         .catch(error => {
-//             console.error(error);
-//             res.status(500).json({ success: false, message: 'Failed to update bill status' });
-//         });
-// });
-
+    try {
+        // Update the task in the database
+        await Task.findByIdAndUpdate(id, { billGenerated });
+        res.status(200).send({ success: true });
+    } catch (error) {
+        res.status(500).send({ error: 'Failed to update bill status' });
+    }
+});
 app.use((req, res, next) => {
     res.status(404).render('404');
 });

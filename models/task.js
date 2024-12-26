@@ -53,45 +53,18 @@ const taskSchema = mongoose.Schema({
     status_NOC: String,
     deliverdate: Date,
     courier: Date,   
-    billGenerated: Boolean,
-    cost: {
-        type: Object,
-        default: () => ({
-            DRC: { value: 0, party: null },
-            EURO_MODIFY: { value: 0, party: null },
-            HPT: { value: 0, party: null },
-            NOC: { value: 0, party: null },
-            NOC_REGD: { value: 0, party: null },
-            TO: { value: 0, party: null },
-            LOCAL_TRF: { value: 0, party: null },
-            HPA: { value: 0, party: null },
-            RC_PARTICULAR: { value: 0, party: null }
-        }),
-        validate: {
-            validator: function (v) {
-                return Object.values(v).every(
-                    field =>
-                        typeof field.value === 'number' &&
-                        (field.party === null || ['seller', 'buyer', 'both'].includes(field.party))
-                );
-            },
-            message: props => `Invalid cost field values! Party must be "seller", "buyer", or null.`
-        }
+    billGenerated: {
+        type: Boolean,
+        default: false
     },
-    sale:{ 
+    cost: {
+        type: Object,        
+        default: {}
+    },
+    sale: {
         type: Object,
-        default: () => ({
-            DRC: { value: 0},
-            EURO_MODIFY: { value: 0},
-            HPT: { value: 0},                                   
-            NOC: { value: 0},
-            NOC_REGD: { value: 0},
-            TO: { value: 0},
-            LOCAL_TRF: { value: 0},
-            HPA: { value: 0},
-            RC_PARTICULAR: { value: 0}
-        })
-    }
+        default: {}
+    },  
 });
 
 module.exports = mongoose.model('task', taskSchema);

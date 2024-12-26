@@ -65,12 +65,17 @@
         }
 
         a {
-            color: #3498db;
+            background-color: #333;
+            color: white;
+            font-weight: bold;
+            border-radius: 12px;
+            padding: 8px 10px;
+            font-size: large;
             text-decoration: none;
         }
 
         a:hover {
-            text-decoration: underline;
+            text-decoration: none;
         }
         .search-bar {
         display: flex;
@@ -117,17 +122,36 @@
         color: #aaa;
         font-style: italic;
     }
+    .edit-status-btn{
+        background-color: #333;
+        color: white;
+        padding: 3px 6px;
+        margin: 5px;
+    }
     .bill-dropdown {
     padding: 5px 10px;
     border-radius: 4px;
     border: 1px solid #ccc;
     background-color: #fff;
 }
-
+.bg{
+    color: #333;
+}
+#bgf{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
 .bill-dropdown:focus {
     border-color: #2196F3;
 }
-
+.bgg{
+    color: green;
+}
+.brr{
+    color: red;
+}
     </style>
 </head>
 <body>      
@@ -208,24 +232,24 @@
                     <td>Cost</td>
                     <td>
                         <table>
-                            <% if (task.cost) { %>
-                                <% Object.keys(task.cost).forEach(field => { %>
+                            <% if (task.cost && Object.keys(task.cost).length > 0) { %>
+                                <% Object.entries(task.cost).forEach(([key, value]) => { %>
                                     <tr>
-                                        <td><%= field %></td>
+                                        <td><%= key %></td>
                                         <td>
-                                            <span class="editable" data-field="cost_<%= field %>" data-id="<%= task._id %>">
-                                                <%= task.cost[field]?.value || 0 %>
+                                            <span class="editable" data-field="cost_<%= key %>" data-id="<%= task._id %>">
+                                                <%= value?.value || 0 %>
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="editable" data-field="cost_<%= field %>_party" data-id="<%= task._id %>">
-                                                <%= task.cost[field]?.party || "Not specified" %>
+                                            <span class="editable" data-field="cost_<%= key %>_party" data-id="<%= task._id %>">
+                                                <%= value?.party || "Not specified" %>
                                             </span>
                                         </td>
                                     </tr>
                                 <% }) %>
                             <% } else { %>
-                                <p>No cost data available</p>
+                                <tr><td colspan="3">No cost data available</td></tr>
                             <% } %>
                         </table>
                     </td>
@@ -234,19 +258,19 @@
                     <td>Sale</td>
                     <td>
                         <table>
-                            <% if (task.cost) { %>
-                                <% Object.keys(task.cost).forEach(field => { %>
+                            <% if (task.sale && Object.keys(task.sale).length > 0) { %>
+                                <% Object.entries(task.sale).forEach(([key, value]) => { %>
                                     <tr>
-                                        <td><%= field %></td>
+                                        <td><%= key %></td>
                                         <td>
-                                            <span class="editable" data-field="cost_<%= field %>" data-id="<%= task._id %>">
-                                                <%= task.sale[field]?.value || 0 %>
+                                            <span class="editable" data-field="sale_<%= key %>" data-id="<%= task._id %>">
+                                                <%= value?.value || 0 %>
                                             </span>
                                         </td>
                                     </tr>
                                 <% }) %>
                             <% } else { %>
-                                <p>No cost data available</p>
+                                <tr><td colspan="2">No sale data available</td></tr>
                             <% } %>
                         </table>
                     </td>
@@ -296,48 +320,63 @@
                         </span>
                     </td>
                 </tr>
-                <tr>
+              
+                <tr class="bg">
                     <td>Bill Generated</td>
                     <td>
                         <span data-field="billGenerated" data-id="<%= task._id %>">
-                            <%= task.billGenerated %>
+                            <% if (task.billGenerated) { %>
+                                <span class="bgg" id="status-text-<%= task._id %>">Generated</span>
+                            <% } else { %>
+                                <span class="brr" id="status-text-<%= task._id %>">Not Generated</span>
+                            <% } %>
                         </span>
+                        <button class="edit-status-btn" data-id="<%= task._id %>">
+                            Change
+                        </button>
                     </td>
                 </tr>
                 
-                <tr>
+                <tr class="bg">
                     <td>Actions</td>
                     <td>
                         <a href="/financeEdit/<%= task._id %>" class="edit-button">Assign Cost</a>
                     </td>
-                </tr>                
+                </tr>       
             <% }) %> 
-        </tbody>
+        </tbody> 
     </table>
-    <!-- <script>
-        document.querySelectorAll('.bill-dropdown').forEach(dropdown => {
-    dropdown.addEventListener('change', function() {
-        const taskId = this.getAttribute('data-id');
-        const isBillGenerated = this.value === 'true' ? true : (this.value === 'false' ? false : undefined);
-
-        fetch(`/updateBillStatus/${taskId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ isBillgenerated: isBillGenerated }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Bill status updated');
-            } else {
-                console.log('Failed to update bill status');
+    <script>
+        document.querySelectorAll('.edit-status-btn').forEach(button => {
+    button.addEventListener('click', async (event) => {
+        const taskId = event.target.getAttribute('data-id');
+        const statusText = document.querySelector(`#status-text-${taskId}`);
+        
+        // Determine the new status
+        const newStatus = statusText.textContent === "Generated" ? false : true;
+        
+        // Update the UI
+        statusText.textContent = newStatus ? "Generated" : "Not Generated";
+        
+        // Update the backend via API (Example: Fetch API)
+        try {
+            const response = await fetch(`/update-bill-status/${taskId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ billGenerated: newStatus }),
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to update status');
             }
-        })
-        .catch(error => console.error('Error:', error));
+        } catch (error) {
+            alert('Error updating status: ' + error.message);
+            // Revert UI change on failure
+            statusText.textContent = !newStatus ? "Generated" : "Not Generated";
+        }
     });
 });
-    </script> -->
+
+    </script>
 </body>
 </html>
