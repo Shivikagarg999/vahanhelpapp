@@ -53,6 +53,7 @@ const taskSchema = mongoose.Schema({
     status_NOC: String,
     deliverdate: Date,
     courier: Date,   
+    billGenerated: Boolean,
     cost: {
         type: Object,
         default: () => ({
@@ -64,8 +65,7 @@ const taskSchema = mongoose.Schema({
             TO: { value: 0, party: null },
             LOCAL_TRF: { value: 0, party: null },
             HPA: { value: 0, party: null },
-            RC_PARTICULAR: { value: 0, party: null },
-            ADDITIONAL_WORK: { value: 0, party: null }
+            RC_PARTICULAR: { value: 0, party: null }
         }),
         validate: {
             validator: function (v) {
@@ -89,10 +89,25 @@ const taskSchema = mongoose.Schema({
             TO: { value: 0},
             LOCAL_TRF: { value: 0},
             HPA: { value: 0},
-            RC_PARTICULAR: { value: 0},
-            ADDITIONAL_WORK: { value: 0}
+            RC_PARTICULAR: { value: 0}
         })
     }
 });
 
 module.exports = mongoose.model('task', taskSchema);
+
+//notes
+// const AdditionalWork= ["aw1", "aw2", "aw3"];
+
+//cost1={
+//    seller:"John",
+//    buyer: "Pear",
+//    [AdditionalWork]: {value:0, party:null}
+// }
+// 
+// 
+// const applyDiscount= true;
+// const total= {
+//    amount: 1000,
+//    ...(applyDiscount $$ {discount:'10%'})
+// }

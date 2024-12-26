@@ -126,6 +126,24 @@ app.get('/tasks/search', async (req, res) => {
         res.status(500).send("Error fetching tasks.");
     }
 });
+app.get('/fsearch', async (req, res) => {
+    const { carNum } = req.query;
+
+    try {
+        let tasks = []; // Default: no tasks found
+
+        if (carNum) {
+            // Find tasks matching the car number (partial or full, case-insensitive)
+            tasks = await Task.find({ carNum: new RegExp(carNum, 'i') });
+        }
+
+        // Render the view with tasks and counts
+        res.render('finance', { tasks});
+    } catch (err) {
+        console.error("Error fetching tasks:", err);
+        res.status(500).send("Error fetching tasks.");
+    }
+});
 app.get("/assign/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id;
 
@@ -194,7 +212,7 @@ app.get('/tasks/view/:id', async (req, res) => {
         console.error('Error fetching task:', err.message);
         res.status(500).send("Error fetching task.");
     }
-});
+}); 
 app.get("/logout", (req, res) => {
     res.clearCookie('token');
     res.clearCookie('employee_token')
@@ -892,7 +910,6 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
 //         .then(data => res.json(data)) // Sends the data back to the frontend
 //         .catch(error => res.status(500).send("Error fetching data"));
 // });
-
 // finance page
 app.get("/finance", async (req, res) => {
     try {
@@ -919,7 +936,6 @@ app.get("/financeEdit/:id", async (req, res) => {
         res.status(500).send("Error fetching task."); 
     }
 });
-
 app.post("/financeEdit/:id", async (req, res) => {
     const { id } = req.params;
     const { cost, sale } = req.body;
@@ -955,6 +971,23 @@ app.post("/financeEdit/:id", async (req, res) => {
         res.status(500).send("Error updating cost or sale. Please ensure all fields are valid.");
     }
 });
+// app.post('/updateBillStatus/:taskId', (req, res) => {
+//     const taskId = req.params.taskId;
+//     const { isBillgenerated } = req.body;
+
+//     // If isBillgenerated is undefined (None option), treat it as null or remove the field
+//     const updateData = isBillgenerated === undefined ? { $unset: { isBillgenerated: 1 } } : { isBillgenerated };
+
+//     Task.findByIdAndUpdate(taskId, updateData, { new: true })
+//         .then(updatedTask => {
+//             res.json({ success: true, task: updatedTask });
+//         })
+//         .catch(error => {
+//             console.error(error);
+//             res.status(500).json({ success: false, message: 'Failed to update bill status' });
+//         });
+// });
+
 app.use((req, res, next) => {
     res.status(404).render('404');
 });

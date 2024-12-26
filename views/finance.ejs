@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance - VAHAN HELP</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -71,10 +72,81 @@
         a:hover {
             text-decoration: underline;
         }
+        .search-bar {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    .search-form {
+        display: flex;
+        align-items: center;
+        border: 2px solid #333;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .search-input {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        outline: none;
+        width: 250px;
+    }
+
+    .search-button {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-button i {
+        margin-right: 8px;
+    }
+
+    .search-button:hover {
+        background-color: #141313;
+    }
+
+    .search-input::placeholder {
+        color: #aaa;
+        font-style: italic;
+    }
+    .bill-dropdown {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.bill-dropdown:focus {
+    border-color: #2196F3;
+}
+
     </style>
 </head>
 <body>      
     <h1>Finance</h1>
+    <div class="search-bar">
+        <form action="/fsearch" method="GET" class="search-form">
+            <input 
+                type="text" 
+                name="carNum" 
+                placeholder="Search by Car Number" 
+                required 
+                class="search-input"
+            >
+            <button type="submit" class="search-button">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
+    </div>
+    
     <table>
         <thead>
             <tr>
@@ -225,13 +297,47 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>Bill Generated</td>
+                    <td>
+                        <span data-field="billGenerated" data-id="<%= task._id %>">
+                            <%= task.billGenerated %>
+                        </span>
+                    </td>
+                </tr>
+                
+                <tr>
                     <td>Actions</td>
                     <td>
                         <a href="/financeEdit/<%= task._id %>" class="edit-button">Assign Cost</a>
                     </td>
                 </tr>                
-            <% }) %>
+            <% }) %> 
         </tbody>
     </table>
+    <!-- <script>
+        document.querySelectorAll('.bill-dropdown').forEach(dropdown => {
+    dropdown.addEventListener('change', function() {
+        const taskId = this.getAttribute('data-id');
+        const isBillGenerated = this.value === 'true' ? true : (this.value === 'false' ? false : undefined);
+
+        fetch(`/updateBillStatus/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ isBillgenerated: isBillGenerated }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Bill status updated');
+            } else {
+                console.log('Failed to update bill status');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+    </script> -->
 </body>
 </html>

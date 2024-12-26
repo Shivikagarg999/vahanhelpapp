@@ -536,6 +536,7 @@
                 <option value="RJ45_JAIPUR NORTH">RJ45_JAIPUR NORTH</option>
                 <option value="MP09_INDORE">MP09_INDORE</option>
                 <option value="MP04_BHOPAL">MP04_BHOPAL</option>
+                <option value="KA-13 HASAN">KA-13 HASAN</option>
                 <option value="RJ19_JODHPUR">RJ19_JODHPUR</option>
                 <option value="UK04 - NANITAL">UK04 - NANITAL</option>
                 <option value="UK06 - UDHAM SINGH NAGAR">UK06 - UDHAM SINGH NAGAR</option>
@@ -696,6 +697,7 @@
 <option value="HP12_NALAGARH">HP12_NALAGARH</option>
 <option value="KL74_KATTAKKADA">KL74_KATTAKKADA</option>
 <option value="KL68_DEVIKULAM">KL68_DEVIKULAM</option>
+<option value="KA-13 HASAN">KA-13 HASAN</option>
 <option value="TN01_CHENNAI CENTRAL">TN01_CHENNAI CENTRAL</option>
 <option value="TN41_POLACHI">TN41_POLACHI</option>
 <option value="TN19_KANCHEEPURAM">TN19_KANCHEEPURAM</option>
@@ -1001,7 +1003,7 @@
             const files = event.target.files;
             for (let i = 0; i < files.length; i++) {
                 if (files[i].size > 20 * 1024 * 1024) { 
-                    alert(`The file "${files[i].name}" exceeds the 20 MB limit. Please upload a smaller file.`);
+                    alert(`The file "${files[i].name}" exceeds the 20 MB limit.😒 Please upload a smaller file.`);
                     event.target.value = ''; 
                     break;
                 }
