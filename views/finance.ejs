@@ -77,81 +77,125 @@
         a:hover {
             text-decoration: none;
         }
+
         .search-bar {
-        display: flex;
-        justify-content: center;
-        margin: 20px 0;
-    }
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    .search-form {
-        display: flex;
-        align-items: center;
-        border: 2px solid #333;
-        border-radius: 5px;
-        overflow: hidden;
-    }
+        .search-form {
+            display: flex;
+            align-items: center;
+            border: 2px solid #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
 
-    .search-input {
-        padding: 10px;
-        font-size: 16px;
-        border: none;
-        outline: none;
-        width: 250px;
-    }
+        .search-input {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            min-width: 200px;
+            flex: 1;
+        }
 
-    .search-button {
-        background-color: #333;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        cursor: pointer;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-    }
+        .search-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-    .search-button i {
-        margin-right: 8px;
-    }
+        .search-button i {
+            margin-right: 8px;
+        }
 
-    .search-button:hover {
-        background-color: #141313;
-    }
+        .search-button:hover {
+            background-color: #141313;
+        }
 
-    .search-input::placeholder {
-        color: #aaa;
-        font-style: italic;
-    }
-    .edit-status-btn{
-        background-color: #333;
-        color: white;
-        padding: 3px 6px;
-        margin: 5px;
-    }
-    .bill-dropdown {
-    padding: 5px 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-}
-.bg{
-    color: #333;
-}
-#bgf{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-.bill-dropdown:focus {
-    border-color: #2196F3;
-}
-.bgg{
-    color: green;
-}
-.brr{
-    color: red;
-}
+        .search-input::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .edit-status-btn {
+            background-color: #333;
+            color: white;
+            padding: 3px 6px;
+            margin: 5px;
+        }
+
+        .bill-dropdown {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+
+        .bg {
+            color: #333;
+        }
+
+        #bgf {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .bill-dropdown:focus {
+            border-color: #2196F3;
+        }
+
+        .bgg {
+            color: green;
+        }
+
+        .brr {
+            color: red;
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            table {
+                width: 90%;
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 6px;
+            }
+
+            .search-input, .search-button {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>      

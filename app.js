@@ -29,8 +29,6 @@ const upload = multer({ dest: 'uploads/' });
 app.get("/", (req, res) => {
     res.render("home");console.log('Server running on port 3000');
 });
-
-
 app.post("/login", async (req, res) => {
     const { company, password } = req.body;
     try {
@@ -45,7 +43,6 @@ app.post("/login", async (req, res) => {
         res.status(500).render("login", { error: "Error logging in." });
     }
 });                                             
-
 app.get("/tasks", async (req, res) => {
     const { clientName } = req.query; 
     const companyId = req.cookies.token;
@@ -73,7 +70,6 @@ app.get("/tasks", async (req, res) => {
 app.get("/login", (req, res) => {
     res.render("login");
 });
-
 app.post("/registerar", async (req, res) => {
     const { company, password } = req.body;
     try {
@@ -98,12 +94,10 @@ app.post("/registerar", async (req, res) => {
     }
 
 });
-
 app.get("/tasks/create", isEMPLoggedIn, async (req, res) => {
     const companies = await Company.find({}, 'companyName'); 
     res.render("create_task" , { companies });
 });
-
 app.get('/tasks/search', async (req, res) => {
     const { carNum } = req.query;
 
@@ -146,14 +140,11 @@ app.get('/fsearch', async (req, res) => {
 });
 app.get("/assign/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id;
-
     try {
         const task = await Task.findById(taskId);
-
         if (!task) {
             return res.status(404).render("error", { message: "Task not found" });
         }
-
         res.render("admin-edit", { task });
     } catch (err) {
         console.error("Error fetching task:", err);
@@ -195,18 +186,15 @@ app.post("/assign/tasks/edit/:id", async (req, res) => {
 app.get('/tasks/view/:id', async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
-
     if (!companyId) {
         return res.redirect("/login");
     }
-
     try {
         const task = await Task.findOne({ _id: taskId, company: companyId });
 
         if (!task) {
             return res.status(404).send("Task not found.");
         }
-
         res.render('viewTask', { task });
     } catch (err) {
         console.error('Error fetching task:', err.message);
@@ -378,7 +366,6 @@ app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
         res.status(500).send('An error occurred while downloading the tasks.');
     }
 });
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadDir = path.join(__dirname, 'uploads'); // Temporarily store locally
@@ -395,7 +382,6 @@ const uploadStorage = multer({ storage });
 app.get('/upload', (req, res)=>{
     res.render('upload')
 })
-   
 app.post('/upload', upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
     { name: 'buyerPhoto', maxCount: 1 },
@@ -407,7 +393,6 @@ app.post('/upload', upload.fields([
     { name: 'nocReceipt', maxCount: 1 },
     { name: 'transferReceipt', maxCount: 1 }
 ]), async (req, res) => {
-    // Destructure all fields at the start, including clientName
     const { 
         name, description, clientName, carNum, caseType, hptName, 
         sellerAlignedDate, buyerAlignedDate, NOCissuedDate, 
@@ -440,6 +425,7 @@ app.post('/upload', upload.fields([
             }
         }
 
+        // Assign the other form fields
         Object.assign(taskData, { 
             name, description, clientName, carNum, caseType, hptName, 
             sellerAlignedDate, buyerAlignedDate, NOCissuedDate, 
@@ -450,6 +436,33 @@ app.post('/upload', upload.fields([
             status_NOC, deliverdate, courier, buyerppstatus, sellerppstatus, spoc
         });
 
+        // Define the dynamicFields array
+        const dynamicFields = [];
+
+        // Add dynamic fields based on caseType
+        if (caseType && caseType.trim()) {
+            dynamicFields.push(caseType.trim());
+        }
+
+        // Add dynamic fields based on AdditionalWork
+        if (AdditionalWork && AdditionalWork.trim()) {
+            dynamicFields.push(AdditionalWork.trim());
+        }
+
+        // Now add dynamic fields to both cost and sale
+        dynamicFields.forEach(field => {
+            if (!taskData.cost) taskData.cost = {};
+            if (!taskData.cost[field]) {
+                taskData.cost[field] = { value: 0, party: null };  // Default to null for 'party'
+            }
+
+            if (!taskData.sale) taskData.sale = {};
+            if (!taskData.sale[field]) {
+                taskData.sale[field] = { value: 0 };
+            }
+        });
+
+        // Create the new task and save it to the database
         const newTask = new Task(taskData);
         await newTask.save(); // Save the task to the database
 
@@ -462,7 +475,6 @@ app.post('/upload', upload.fields([
         res.status(500).json({ message: 'Task creation failed', error: error.message });
     }
 });
-
 app.get("/registerar", (req, res) => {
     res.render("register");
 });
@@ -707,7 +719,6 @@ app.get('/analytics', isEMPLoggedIn, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
 app.get('/get-data', async (req, res) => {
     try {
       // Fetch all tasks from the MongoDB database
@@ -720,7 +731,6 @@ app.get('/get-data', async (req, res) => {
       res.status(500).json({ message: 'Error fetching tasks' });
     }
 });
-
 function isAgentLogin(req, res) {
     const { username, password } = req.body;
 
@@ -748,7 +758,6 @@ app.post('/agent-login', async (req, res) => {
         res.status(401).send('Invalid credentials!');
     }
 });
-
 app.post('/search-car', async (req, res) => {
     const carNum = req.body.carNum;
     try {
@@ -762,7 +771,6 @@ app.post('/search-car', async (req, res) => {
         res.status(500).send('Error searching tasks');
     }
 });
-
 app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send("No file uploaded.");
@@ -922,7 +930,6 @@ app.post("/financeEdit/:id", async (req, res) => {
         res.status(500).send("Error updating cost or sale. Please ensure all fields are valid.");
     }
 });
-
 app.post('/update-bill-status/:id', async (req, res) => {
     const { id } = req.params;
     const { billGenerated } = req.body;
