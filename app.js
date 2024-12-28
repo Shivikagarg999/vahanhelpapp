@@ -725,7 +725,7 @@ app.post('/searchcn', async (req, res) => {
         const pendingCount = await Task.countDocuments({ state: 'Pending' });
  
         // Render the agent page with filtered tasks
-        res.render('employee',  { tasks: task ? [task] : [], completedCount, pendingCount });
+        res.render('employee',  { tasks: task ? [task] : [], completedCount, pendingCount});
     } catch (err) {
         console.error(err);
         res.status(500).send('Error searching tasks');
