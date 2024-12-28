@@ -101,7 +101,6 @@ app.get("/tasks/create", isEMPLoggedIn, async (req, res) => {
     const companies = await Company.find({}, 'companyName'); 
     res.render("create_task" , { companies });
 });
-
 app.get('/tasks/search', async (req, res) => {
     const { carNum } = req.query;
 
@@ -379,7 +378,7 @@ app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
 app.get('/finance-task-download', async (req, res) => {
     try {
         // Fetch all tasks from the database
-        const tasks = await Task.find();
+        const tasks = await Task.find({ name: 'TRANSFER COMPLETED' }).sort({ createdAt: -1 });
 
         // Prepare CSV header
         const csvHeader = [
@@ -391,36 +390,73 @@ app.get('/finance-task-download', async (req, res) => {
             'Buyer RTO',
             'Seller RTO',
             'Cost',
-            'Sale'
-        ].join(',') + '\n';  // Join with commas and add a newline at the end
+            'Sale',
+            'Seller side agent',
+            'Buyer side agent',
+            'Seller Side Total Cost',
+            'Buyer Side Total Cost',
+            'Total Cost',
+            'Total Sale',
+            'Total Difference',
+            'Bill Generated'
+        ].join(',') + '\n';
 
         // Process tasks into CSV format
         const records = tasks.map((task) => {
             const caseTypes = task.caseType ? task.caseType.split('+').map((type) => type.trim()) : [];
             const additionalWork = task.AdditionalWork ? task.AdditionalWork.split(',').map((work) => work.trim()) : [];
 
-            // Combine caseTypes and additionalWork for cost and sale keys
+            // Process cost and sale data
             const allKeys = [...caseTypes, ...additionalWork];
-            const costData = allKeys.map((key) => `${key}: ${task.cost[key] || 0}`).join('; ');
-            const saleData = allKeys.map((key) => `${key}: ${task.sale[key] || 0}`).join('; ');
+            
+            // Calculate the costs and sales
+            const costData = allKeys.map((key) => {
+                const costValue = task.cost[key];
+                return `${key}: ${costValue && costValue.value ? costValue.value : 0}`;
+            }).join('; ');
 
+            const saleData = allKeys.map((key) => {
+                const saleValue = task.sale[key];
+                return `${key}: ${saleValue && saleValue.value ? saleValue.value : 0}`;
+            }).join('; ');
+
+            // Calculate totals for costs and sales
+            const sellerTotalCost = Object.keys(task.cost || {}).reduce((total, field) => {
+                return task.cost[field]?.party === 'seller' ? total + (task.cost[field]?.value || 0) : total;
+            }, 0);
+
+            const buyerTotalCost = Object.keys(task.cost || {}).reduce((total, field) => {
+                return task.cost[field]?.party === 'buyer' ? total + (task.cost[field]?.value || 0) : total;
+            }, 0);
+
+            const totalCost = Object.keys(task.cost || {}).reduce((total, field) => total + (task.cost[field]?.value || 0), 0);
+            const totalSale = Object.keys(task.sale || {}).reduce((total, field) => total + (task.sale[field]?.value || 0), 0);
+            const totalDifference = totalSale - totalCost;
+
+            // Prepare row data for CSV
             return [
-                task.carNum || 'Not specified',
-                task.clientName || 'Not specified',
-                task.caseType || 'Not specified',
-                task.description || 'Not specified',
-                task.AdditionalWork || 'Not specified',
-                task.buyer_RTO_location || 'Not specified',
-                task.seller_RTO_location || 'Not specified',
+                task.carNum,
+                task.clientName,
+                task.caseType,
+                task.name,
+                task.AdditionalWork,
+                task.buyer_RTO_location,
+                task.seller_RTO_location,
                 costData,
-                saleData
-            ].join(','); // Join all values by comma
-        }).join('\n');  // Join all rows with a newline
+                saleData,
+                task.task1agentname,
+                task.task2agentname,
+                sellerTotalCost,
+                buyerTotalCost,
+                totalCost,
+                totalSale,
+                totalDifference,
+                task.billGenerated ? 'Generated' : 'Not Generated'
+            ].join(',');  
+        }).join('\n'); 
 
-        // Combine header and data
         const csvContent = csvHeader + records;
 
-        // Set headers and send the CSV file
         res.header('Content-Type', 'text/csv');
         res.header('Content-Disposition', 'attachment; filename="finance-data.csv"');
         res.send(csvContent);
@@ -429,7 +465,6 @@ app.get('/finance-task-download', async (req, res) => {
         res.status(500).send('Error generating CSV');
     }
 });
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadDir = path.join(__dirname, 'uploads'); // Temporarily store locally
@@ -686,14 +721,12 @@ app.post("/admin/tasks/delete/:id", isAdminLoggedIn, async (req, res) => {
         return res.status(500).render("error", { message: "Error deleting task." });
     }
 });
-
 app.get('/employee',isEMPLoggedIn, async (req, res) => {
     try {
         const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
         const completedCount = await Task.countDocuments({ state: 'Completed' });
-        const fileRet= await Task.countDocuments({ name: 'FILE RETURNED' })
         const pendingCount = await Task.countDocuments({ state: 'Pending' });
-        res.render('employee', { tasks, completedCount, pendingCount, fileRet }); // Pass tasks to the view
+        res.render('employee', { tasks, completedCount, pendingCount }); // Pass tasks to the view
     } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).send('Internal Server Error');
@@ -725,7 +758,7 @@ app.post('/searchcn', async (req, res) => {
         const pendingCount = await Task.countDocuments({ state: 'Pending' });
  
         // Render the agent page with filtered tasks
-        res.render('employee',  { tasks: task ? [task] : [], completedCount, pendingCount});
+        res.render('employee',  { tasks: task ? [task] : [], completedCount, pendingCount });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error searching tasks');

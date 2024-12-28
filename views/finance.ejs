@@ -249,7 +249,7 @@
                 <tr>
                     <td>Case Type</td>
                     <td>
-                        <span data-field="clientName" data-id="<%= task._id %>">
+                        <span data-field="caseType" data-id="<%= task._id %>">
                             <%= task.caseType %>
                         </span>
                     </td>
@@ -273,7 +273,7 @@
                 <tr>
                     <td>Buyer RTO</td>
                     <td>
-                        <span data-field="clientName" data-id="<%= task._id %>">
+                        <span data-field="buyer_RTO_location" data-id="<%= task._id %>">
                             <%= task.buyer_RTO_location %>
                         </span>
                     </td>
@@ -281,8 +281,24 @@
                 <tr>
                     <td>Seller RTO</td>
                     <td>
-                        <span data-field="clientName" data-id="<%= task._id %>">
+                        <span data-field="seller_RTO_location" data-id="<%= task._id %>">
                             <%= task.seller_RTO_location %>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Seller side agent</td>
+                    <td>
+                        <span data-field="task1agentname" data-id="<%= task._id %>">
+                            <%= task.task1agentname %>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Buyer side agent</td>
+                    <td>
+                        <span data-field="task2agentname" data-id="<%= task._id %>">
+                            <%= task.task2agentname %>
                         </span>
                     </td>
                 </tr>
