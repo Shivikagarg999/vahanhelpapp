@@ -15,7 +15,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* height: 100vh; */
             font-family: "Open Sans", sans-serif;
         }
         .container {
@@ -73,7 +72,10 @@
             color: white;
             text-decoration: none;
             font-weight: 400;
-            width: 500px;
+            width: 200px;
+            margin: 6px;
+            border: 1px solid transparent;
+            border-radius: 9px;
             padding: 9px;
         }
         .back-link:hover {
@@ -81,7 +83,6 @@
             background: #000;
             color: white;
         }
-
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
@@ -93,7 +94,7 @@
     <div class="container">    
         <a href="javascript:history.back()" class="back-link">Go Back</a>
 
-        <h1>Edit Task</h1>
+        <h1>Update case</h1>
         <form action="/tasks/edit/<%= task._id %>" method="post"  enctype="multipart/form-data">
             
             <div class="form-group">

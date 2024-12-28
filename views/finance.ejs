@@ -26,8 +26,8 @@
             border-collapse: collapse;
             background: #fff;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
+        } 
+                                
         th, td {
             border: 1px solid #ddd;
             padding: 10px;
@@ -72,7 +72,7 @@
             padding: 8px 10px;
             font-size: large;
             text-decoration: none;
-        }
+        }    
 
         a:hover {
             text-decoration: none;
@@ -138,7 +138,11 @@
             border: 1px solid #ccc;
             background-color: #fff;
         }
-
+        .btnn{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .bg {
             color: #333;
         }
@@ -214,7 +218,9 @@
             </button>
         </form>
     </div>
-    
+    <div class="btnn">
+    <a href="/finance-task-download">Download</a>
+    </div>
     <table>
         <thead>
             <tr>
@@ -237,6 +243,14 @@
                     <td>
                         <span data-field="clientName" data-id="<%= task._id %>">
                             <%= task.clientName %>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Case Type</td>
+                    <td>
+                        <span data-field="clientName" data-id="<%= task._id %>">
+                            <%= task.caseType %>
                         </span>
                     </td>
                 </tr>
@@ -392,7 +406,7 @@
     </table>
     <script>
         document.querySelectorAll('.edit-status-btn').forEach(button => {
-    button.addEventListener('click', async (event) => {
+        button.addEventListener('click', async (event) => {
         const taskId = event.target.getAttribute('data-id');
         const statusText = document.querySelector(`#status-text-${taskId}`);
         

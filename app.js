@@ -29,6 +29,7 @@ const upload = multer({ dest: 'uploads/' });
 app.get("/", (req, res) => {
     res.render("home");console.log('Server running on port 3000');
 });
+
 app.post("/login", async (req, res) => {
     const { company, password } = req.body;
     try {
@@ -43,6 +44,7 @@ app.post("/login", async (req, res) => {
         res.status(500).render("login", { error: "Error logging in." });
     }
 });                                             
+
 app.get("/tasks", async (req, res) => {
     const { clientName } = req.query; 
     const companyId = req.cookies.token;
@@ -94,10 +96,12 @@ app.post("/registerar", async (req, res) => {
     }
 
 });
+
 app.get("/tasks/create", isEMPLoggedIn, async (req, res) => {
     const companies = await Company.find({}, 'companyName'); 
     res.render("create_task" , { companies });
 });
+
 app.get('/tasks/search', async (req, res) => {
     const { carNum } = req.query;
 
@@ -140,11 +144,14 @@ app.get('/fsearch', async (req, res) => {
 });
 app.get("/assign/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id;
+
     try {
         const task = await Task.findById(taskId);
+
         if (!task) {
             return res.status(404).render("error", { message: "Task not found" });
         }
+
         res.render("admin-edit", { task });
     } catch (err) {
         console.error("Error fetching task:", err);
@@ -186,15 +193,18 @@ app.post("/assign/tasks/edit/:id", async (req, res) => {
 app.get('/tasks/view/:id', async (req, res) => {
     const taskId = req.params.id;
     const companyId = req.cookies.token;
+
     if (!companyId) {
         return res.redirect("/login");
     }
+
     try {
         const task = await Task.findOne({ _id: taskId, company: companyId });
 
         if (!task) {
             return res.status(404).send("Task not found.");
         }
+
         res.render('viewTask', { task });
     } catch (err) {
         console.error('Error fetching task:', err.message);
@@ -366,6 +376,60 @@ app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
         res.status(500).send('An error occurred while downloading the tasks.');
     }
 });
+app.get('/finance-task-download', async (req, res) => {
+    try {
+        // Fetch all tasks from the database
+        const tasks = await Task.find();
+
+        // Prepare CSV header
+        const csvHeader = [
+            'Car Number',
+            'Client Name',
+            'Case Type',
+            'Task Type',
+            'Additional Work',
+            'Buyer RTO',
+            'Seller RTO',
+            'Cost',
+            'Sale'
+        ].join(',') + '\n';  // Join with commas and add a newline at the end
+
+        // Process tasks into CSV format
+        const records = tasks.map((task) => {
+            const caseTypes = task.caseType ? task.caseType.split('+').map((type) => type.trim()) : [];
+            const additionalWork = task.AdditionalWork ? task.AdditionalWork.split(',').map((work) => work.trim()) : [];
+
+            // Combine caseTypes and additionalWork for cost and sale keys
+            const allKeys = [...caseTypes, ...additionalWork];
+            const costData = allKeys.map((key) => `${key}: ${task.cost[key] || 0}`).join('; ');
+            const saleData = allKeys.map((key) => `${key}: ${task.sale[key] || 0}`).join('; ');
+
+            return [
+                task.carNum || 'Not specified',
+                task.clientName || 'Not specified',
+                task.caseType || 'Not specified',
+                task.description || 'Not specified',
+                task.AdditionalWork || 'Not specified',
+                task.buyer_RTO_location || 'Not specified',
+                task.seller_RTO_location || 'Not specified',
+                costData,
+                saleData
+            ].join(','); // Join all values by comma
+        }).join('\n');  // Join all rows with a newline
+
+        // Combine header and data
+        const csvContent = csvHeader + records;
+
+        // Set headers and send the CSV file
+        res.header('Content-Type', 'text/csv');
+        res.header('Content-Disposition', 'attachment; filename="finance-data.csv"');
+        res.send(csvContent);
+    } catch (error) {
+        console.error('Error generating CSV:', error);
+        res.status(500).send('Error generating CSV');
+    }
+});
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadDir = path.join(__dirname, 'uploads'); // Temporarily store locally
@@ -375,12 +439,11 @@ const storage = multer.diskStorage({
         cb(null, file.originalname); // Keep the original filename
     }
 });
- 
 // app.use('/uploads', express.static('uploads'));
 const uploadStorage = multer({ storage });
 
 app.get('/upload', (req, res)=>{
-    res.render('upload')
+    res.render('upload') 
 })
 app.post('/upload', upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
@@ -436,29 +499,29 @@ app.post('/upload', upload.fields([
             status_NOC, deliverdate, courier, buyerppstatus, sellerppstatus, spoc
         });
 
-        // Define the dynamicFields array
-        const dynamicFields = [];
+        // Initialize cost and sale
+        taskData.cost = {};
+        taskData.sale = {};
 
-        // Add dynamic fields based on caseType
-        if (caseType && caseType.trim()) {
-            dynamicFields.push(caseType.trim());
-        }
+        // Function to process dynamic fields
+        const processDynamicFields = (fieldString) => {
+            return fieldString
+                .split('+') // Split by '+'
+                .map(field => field.trim()) // Trim whitespace
+                .filter(field => field); // Remove empty fields
+        };
 
-        // Add dynamic fields based on AdditionalWork
-        if (AdditionalWork && AdditionalWork.trim()) {
-            dynamicFields.push(AdditionalWork.trim());
-        }
+        // Process caseType and AdditionalWork
+        const caseTypeFields = caseType ? processDynamicFields(caseType) : [];
+        const additionalWorkFields = AdditionalWork ? processDynamicFields(AdditionalWork) : [];
 
-        // Now add dynamic fields to both cost and sale
-        dynamicFields.forEach(field => {
-            if (!taskData.cost) taskData.cost = {};
+        // Add dynamic fields to cost and sale
+        [...caseTypeFields, ...additionalWorkFields].forEach(field => {
             if (!taskData.cost[field]) {
-                taskData.cost[field] = { value: 0, party: null };  // Default to null for 'party'
+                taskData.cost[field] = { value: 0, party: 'Not specified' }; // Default values
             }
-
-            if (!taskData.sale) taskData.sale = {};
             if (!taskData.sale[field]) {
-                taskData.sale[field] = { value: 0 };
+                taskData.sale[field] = { value: 0 }; // Default value for sale
             }
         });
 
@@ -498,7 +561,6 @@ app.get("/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
         res.status(500).send("Error fetching task."); // Handle server error
     }
 });
-
 app.post("/tasks/edit/:id", upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
     { name: 'buyerPhoto', maxCount: 1 },
@@ -593,7 +655,6 @@ app.post("/tasks/edit/:id", upload.fields([
         res.status(500).send("Error updating task.");
     }
 });
-
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;
 
@@ -630,8 +691,9 @@ app.get('/employee',isEMPLoggedIn, async (req, res) => {
     try {
         const tasks = await Task.find().populate('company').sort({ createdAt: -1 });; // Fetch all tasks from the database
         const completedCount = await Task.countDocuments({ state: 'Completed' });
+        const fileRet= await Task.countDocuments({ name: 'FILE RETURNED' })
         const pendingCount = await Task.countDocuments({ state: 'Pending' });
-        res.render('employee', { tasks, completedCount, pendingCount }); // Pass tasks to the view
+        res.render('employee', { tasks, completedCount, pendingCount, fileRet }); // Pass tasks to the view
     } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).send('Internal Server Error');
@@ -719,6 +781,7 @@ app.get('/analytics', isEMPLoggedIn, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 app.get('/get-data', async (req, res) => {
     try {
       // Fetch all tasks from the MongoDB database
@@ -731,6 +794,7 @@ app.get('/get-data', async (req, res) => {
       res.status(500).json({ message: 'Error fetching tasks' });
     }
 });
+
 function isAgentLogin(req, res) {
     const { username, password } = req.body;
 
@@ -758,6 +822,7 @@ app.post('/agent-login', async (req, res) => {
         res.status(401).send('Invalid credentials!');
     }
 });
+
 app.post('/search-car', async (req, res) => {
     const carNum = req.body.carNum;
     try {
@@ -771,6 +836,7 @@ app.post('/search-car', async (req, res) => {
         res.status(500).send('Error searching tasks');
     }
 });
+
 app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send("No file uploaded.");

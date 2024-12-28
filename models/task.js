@@ -68,19 +68,3 @@ const taskSchema = mongoose.Schema({
 });
 
 module.exports = mongoose.model('task', taskSchema);
-
-//notes
-// const AdditionalWork= ["aw1", "aw2", "aw3"];
-
-//cost1={
-//    seller:"John",
-//    buyer: "Pear",
-//    [AdditionalWork]: {value:0, party:null}
-// }
-// 
-// 
-// const applyDiscount= true;
-// const total= {
-//    amount: 1000,
-//    ...(applyDiscount $$ {discount:'10%'})
-// }
