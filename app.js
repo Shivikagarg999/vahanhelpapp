@@ -10,7 +10,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const { Parser } = require('json2csv');
 const Admin = require('./models/admin');
-const uploadOnImageKit = require('./imagekit');
+const uploadOnImageKit = require('./imagekit')
 const task = require('./models/task');
 const axios = require('axios');
 
@@ -29,7 +29,6 @@ const upload = multer({ dest: 'uploads/' });
 app.get("/", (req, res) => {
     res.render("home");console.log('Server running on port 3000');
 });
-
 app.post("/login", async (req, res) => {
     const { company, password } = req.body;
     try {
@@ -44,7 +43,6 @@ app.post("/login", async (req, res) => {
         res.status(500).render("login", { error: "Error logging in." });
     }
 });                                             
-
 app.get("/tasks", async (req, res) => {
     const { clientName } = req.query; 
     const companyId = req.cookies.token;
@@ -72,6 +70,10 @@ app.get("/tasks", async (req, res) => {
 app.get("/login", (req, res) => {
     res.render("login");
 });
+
+app.get("/registerar", (req, res) => {
+    res.render("register");
+}); 
 app.post("/registerar", async (req, res) => {
     const { company, password } = req.body;
     try {
@@ -96,7 +98,6 @@ app.post("/registerar", async (req, res) => {
     }
 
 });
-
 app.get("/tasks/create", isEMPLoggedIn, async (req, res) => {
     const companies = await Company.find({}, 'companyName'); 
     res.render("create_task" , { companies });
@@ -478,7 +479,7 @@ const storage = multer.diskStorage({
 const uploadStorage = multer({ storage });
 
 app.get('/upload', (req, res)=>{
-    res.render('upload') 
+    res.render('upload')
 })
 app.post('/upload', upload.fields([
     { name: 'sellerPhoto', maxCount: 1 },
@@ -522,7 +523,9 @@ app.post('/upload', upload.fields([
                 taskData[key] = imageKitResponse.url; // Store the URL from ImageKit response
             }
         }
+        
 
+         
         // Assign the other form fields
         Object.assign(taskData, { 
             name, description, clientName, carNum, caseType, hptName, 
@@ -534,13 +537,12 @@ app.post('/upload', upload.fields([
             status_NOC, deliverdate, courier, buyerppstatus, sellerppstatus, spoc
         });
 
-        // Initialize cost and sale
         taskData.cost = {};
         taskData.sale = {};
 
         // Function to process dynamic fields
         const processDynamicFields = (fieldString) => {
-            return fieldString
+            return fieldString 
                 .split('+') // Split by '+'
                 .map(field => field.trim()) // Trim whitespace
                 .filter(field => field); // Remove empty fields
@@ -559,7 +561,7 @@ app.post('/upload', upload.fields([
                 taskData.sale[field] = { value: 0 }; // Default value for sale
             }
         });
-
+        
         // Create the new task and save it to the database
         const newTask = new Task(taskData);
         await newTask.save(); // Save the task to the database
@@ -572,9 +574,6 @@ app.post('/upload', upload.fields([
         console.error('Task creation failed:', error.message, error);
         res.status(500).json({ message: 'Task creation failed', error: error.message });
     }
-});
-app.get("/registerar", (req, res) => {
-    res.render("register");
 });
 app.get("/tasks/edit/:id", isEMPLoggedIn, async (req, res) => {
     const taskId = req.params.id; // Get the task ID from the URL parameters
@@ -764,7 +763,6 @@ app.post('/searchcn', async (req, res) => {
         res.status(500).send('Error searching tasks');
     }
 });
-// Route to handle search by car number and restrict to company-specific tasks
 app.get('/tasks/client/search', async (req, res) => {
     try {
         // Retrieve logged-in company's ID from cookies/session
@@ -814,7 +812,6 @@ app.get('/analytics', isEMPLoggedIn, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
 app.get('/get-data', async (req, res) => {
     try {
       // Fetch all tasks from the MongoDB database
@@ -827,7 +824,6 @@ app.get('/get-data', async (req, res) => {
       res.status(500).json({ message: 'Error fetching tasks' });
     }
 });
-
 function isAgentLogin(req, res) {
     const { username, password } = req.body;
 
@@ -855,7 +851,6 @@ app.post('/agent-login', async (req, res) => {
         res.status(401).send('Invalid credentials!');
     }
 });
-
 app.post('/search-car', async (req, res) => {
     const carNum = req.body.carNum;
     try {
@@ -869,7 +864,6 @@ app.post('/search-car', async (req, res) => {
         res.status(500).send('Error searching tasks');
     }
 });
-
 app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send("No file uploaded.");
@@ -971,10 +965,17 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
 // finance page
 app.get("/finance", async (req, res) => {
     try {
-        const tasks = await Task.find({ name: "TRANSFER COMPLETED" })
-            .populate('company')
-            .sort({ createdAt: -1 })
-            .lean(); 
+        // Fetch tasks that match either condition
+        const tasks = await Task.find({
+            $or: [
+                { name: "TRANSFER COMPLETED" },
+                { status_NOC: "NOC ISSUED" }
+            ]
+        })
+        .populate('company')
+        .sort({ createdAt: -1 })
+        .lean();
+
         res.render('finance', { tasks });
     } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -983,7 +984,7 @@ app.get("/finance", async (req, res) => {
 });
 app.get("/financeEdit/:id", async (req, res) => {
     try {
-        const taskId = req.params.id; // Extract task ID from the URL
+        const taskId = req.params.id;
         const task = await Task.findById(taskId).lean(); 
         if (!task) {
             return res.status(404).send("Task not found."); 
@@ -997,7 +998,6 @@ app.get("/financeEdit/:id", async (req, res) => {
 app.post("/financeEdit/:id", async (req, res) => {
     const { id } = req.params;
     const { cost, sale } = req.body;
-
     try {
         const sanitizedCost = Object.fromEntries(
             Object.entries(cost).map(([key, value]) => [
@@ -1040,10 +1040,66 @@ app.post('/update-bill-status/:id', async (req, res) => {
     } catch (error) {
         res.status(500).send({ error: 'Failed to update bill status' });
     }
+});       
+//dashboard page 
+app.get('/dashboard', async (req, res) => {
+    try {
+        const companies = await Company.find();
+
+        // Aggregate dashboard data
+        const dashboardData = await Promise.all(
+            companies.map(async (company) => {
+                const companyId = company._id;
+
+                // Aggregate metrics for the company
+                const metrics = await Task.aggregate([
+                    { $match: { company: companyId } }, // Match tasks for the current company
+                    {
+                        $group: {
+                            _id: null,
+                            totalTransferredAndNOCIssued: {
+                                $sum: {
+                                    $cond: [
+                                        { $or: [{ $eq: ["$name", "TRANSFER COMPLETED"] }, 
+                                        { $eq: ["$status_NOC", "NOC ISSUED"] }] },
+                                        1,
+                                        0,
+                                    ],
+                                },           
+                            },
+                            totalSaleAmount: { $sum: "$sale.amount" },
+                            totalBillsGenerated: {
+                                $sum: { $cond: [{ $eq: ["$billGenerated", true] }, 1, 0] },
+                            },
+                        },
+                    }, 
+                ]);
+                const {
+                    totalTransferredAndNOCIssued = 0,
+                    totalSaleAmount = 0,
+                    totalBillsGenerated = 0,
+                } = metrics[0] || {};
+
+                return {
+                    companyName: company.companyName,
+                    totalTransferredAndNOCIssued,
+                    totalSaleAmount,
+                    totalBillsGenerated,
+                };
+            }) 
+        );
+  
+        // Render the dashboard
+        res.render('dashboard', { dashboardData });
+    } catch (error) {
+        console.error("Error loading dashboard data:", error);
+        res.status(500).send('Error loading dashboard');
+    }
 });
+
 app.use((req, res, next) => {
     res.status(404).render('404');
 });
 app.listen(3000, () => {
     console.log('Server running on port 3000');
-}); 
+});

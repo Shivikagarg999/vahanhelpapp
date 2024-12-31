@@ -29,6 +29,7 @@
     "mongoose": "^8.8.4",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "pdf-compressor": "^1.0.5"
   }
 }
