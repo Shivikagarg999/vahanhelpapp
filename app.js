@@ -1002,15 +1002,39 @@ app.get("/finance", async (req, res) => {
             ]
         })
         .populate('company')
-        .sort({ createdAt: -1 })
-        .lean();
+        .sort({ createdAt: -1 });
 
-        res.render('finance', { tasks });
+        // Reset and update `cost` and `sale` for each task
+        const updatedTasks = await Promise.all(
+            tasks.map(async (task) => {
+                // Clear existing `cost` and `sale`
+                task.cost = {};
+                task.sale = {};
+
+                // Process `caseType` and `AdditionalWork`
+                const caseTypes = task.caseType ? task.caseType.split('+').map((type) => type.trim()) : [];
+                const additionalWork = task.AdditionalWork ? task.AdditionalWork.split(',').map((work) => work.trim()) : [];
+                const allKeys = [...caseTypes, ...additionalWork];
+
+                // Update `cost` and `sale` fields dynamically
+                allKeys.forEach((key) => {
+                    task.cost[key] = { value: 0, party: 'Not specified' };
+                    task.sale[key] = { value: 0 };
+                });
+
+                // Save the updated task back to the database
+                await task.save();
+                return task.toObject(); // Convert to plain object for rendering
+            })
+        );
+
+        res.render('finance', { tasks: updatedTasks });
     } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
 app.get("/financeEdit/:id", async (req, res) => {
     try {
         const taskId = req.params.id;
@@ -1026,10 +1050,12 @@ app.get("/financeEdit/:id", async (req, res) => {
 });
 app.post("/financeEdit/:id", async (req, res) => {
     const { id } = req.params;
-    const { cost, sale } = req.body;
+    const { cost, sale, receipt = [], newReceipt } = req.body;
+
     try {
+        // Sanitize and validate input
         const sanitizedCost = Object.fromEntries(
-            Object.entries(cost).map(([key, value]) => [
+            Object.entries(cost || {}).map(([key, value]) => [
                 key,
                 {
                     value: parseFloat(value.value) || 0,
@@ -1037,13 +1063,28 @@ app.post("/financeEdit/:id", async (req, res) => {
                 },
             ])
         );
+
         const sanitizedSale = Object.fromEntries(
-            Object.entries(sale).map(([key, value]) => [
+            Object.entries(sale || {}).map(([key, value]) => [
                 key,
                 { value: parseFloat(value.value) || 0 },
             ])
         );
 
+        const sanitizedReceipt = receipt.map(entry => ({
+            totalCost: parseFloat(entry.totalCost) || 0,
+            personName: entry.personName || '',
+        }));
+
+        // Add new receipt if provided
+        if (newReceipt && (newReceipt.totalCost || newReceipt.personName)) {
+            sanitizedReceipt.push({
+                totalCost: parseFloat(newReceipt.totalCost) || 0,
+                personName: newReceipt.personName || '',
+            });
+        }
+
+        // Fetch and update the task
         const task = await Task.findById(id);
         if (!task) {
             return res.status(404).send("Task not found.");
@@ -1051,11 +1092,20 @@ app.post("/financeEdit/:id", async (req, res) => {
 
         task.cost = sanitizedCost;
         task.sale = sanitizedSale;
+        task.receipt = sanitizedReceipt;
         await task.save();
+
+        // Redirect to finance page
         res.redirect("/finance");
     } catch (err) {
-        console.error("Error updating cost or sale:", err.message);
-        res.status(500).send("Error updating cost or sale. Please ensure all fields are valid.");
+        console.error("Error updating task:", {
+            error: err.message,
+            taskId: id,
+            cost,
+            sale,
+            receipt,
+        });
+        res.status(500).send("Error updating task. Please ensure all fields are valid.");
     }
 });
 app.post('/update-bill-status/:id', async (req, res) => {

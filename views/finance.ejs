@@ -442,6 +442,37 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Receipts</td>
+                        <td>
+                            <table>
+                                <% if (task.receipt && task.receipt.length > 0) { %>
+                                    <% task.receipt.forEach((entry, index) => { %>
+                                        <tr>
+                                            <td>Receipt <%= index + 1 %></td>
+                                            <td>
+                                                <strong>Total Cost:</strong> 
+                                                <span data-field="receipt_<%= index %>_totalCost" data-id="<%= task._id %>">
+                                                    <%= entry.totalCost || 'N/A' %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <strong>Person Name:</strong> 
+                                                <span data-field="receipt_<%= index %>_personName" data-id="<%= task._id %>">
+                                                    <%= entry.personName || 'N/A' %>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="3">No receipts available</td>
+                                    </tr>
+                                <% } %>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <tr>
                         <td>Total Cost</td>
                         <td>
                             <span class="total-cost" data-id="<%= task._id %>">

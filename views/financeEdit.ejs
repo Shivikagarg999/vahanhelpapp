@@ -145,7 +145,37 @@
                 >
             </div>
         <% }) %>
-         
+        <h2>Receipt Details</h2>
+        <% (task.receipt || []).forEach((entry, index) => { %>
+            <div class="form-row">
+                <label for="receipt_<%= index %>_totalCost">Receipt <%= index + 1 %> (Total Cost)</label>
+                <input 
+                    type="number" 
+                    id="receipt_<%= index %>_totalCost" 
+                    name="receipt[<%= index %>][totalCost]" 
+                    value="<%= entry.totalCost || 0 %>"
+                >
+        
+                <label for="receipt_<%= index %>_personName">Receipt <%= index + 1 %> (Person Name)</label>
+                <input 
+                    type="text" 
+                    id="receipt_<%= index %>_personName" 
+                    name="receipt[<%= index %>][personName]" 
+                    value="<%= entry.personName || '' %>"
+                >
+            </div>
+        <% }) %>
+        
+        <!-- Add new receipt -->
+        <div class="form-row">
+            <h3>Add New Receipt</h3>
+            <label for="new_receipt_totalCost">Total Cost</label>
+            <input type="number" id="new_receipt_totalCost" name="newReceipt[totalCost]" value="">
+        
+            <label for="new_receipt_personName">Person Name</label>
+            <input type="text" id="new_receipt_personName" name="newReceipt[personName]" value="">
+        </div>
+        
         <button type="submit">Save</button>
     </form>
 </body>

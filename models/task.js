@@ -65,6 +65,19 @@ const taskSchema = mongoose.Schema({
         type: Object,
         default: {}
     },  
+    receipt: [
+        {
+            totalCost: {
+                type: Number, // Optional field for total cost
+                required: false,
+            },
+            personName: {
+                type: String, 
+                required: false,
+            }
+        }
+    ],
+    
 });
 
 module.exports = mongoose.model('task', taskSchema);
