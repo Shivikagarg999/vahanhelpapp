@@ -377,8 +377,19 @@ app.get('/emp-task-download',isEMPLoggedIn, async (req, res) => {
 });
 app.get('/finance-task-download', async (req, res) => {
     try {
-        // Fetch all tasks from the database
-        const tasks = await Task.find({ name: 'TRANSFER COMPLETED' }).sort({ createdAt: -1 });
+        // Fetch tasks based on complex conditions
+        const tasks = await Task.find({
+            $or: [
+                { 
+                    name: "TRANSFER COMPLETED",
+                    transferDate: { $gt: new Date("2025-01-01T00:00:00Z") } 
+                },
+                { 
+                    status_NOC: "NOC ISSUED",
+                    NOCissuedDate: { $gt: new Date("2025-01-01T00:00:00Z") } 
+                }
+            ]
+        }).sort({ createdAt: -1 });
 
         // Prepare CSV header
         const csvHeader = [
@@ -401,26 +412,26 @@ app.get('/finance-task-download', async (req, res) => {
             'Bill Generated'
         ].join(',') + '\n';
 
-        // Process tasks into CSV format
+        // Prepare CSV rows
         const records = tasks.map((task) => {
-            const caseTypes = task.caseType ? task.caseType.split('+').map((type) => type.trim()) : [];
-            const additionalWork = task.AdditionalWork ? task.AdditionalWork.split(',').map((work) => work.trim()) : [];
+            const caseTypes = task.caseType ? task.caseType.split('+').map(type => type.trim()) : [];
+            const additionalWork = task.AdditionalWork ? task.AdditionalWork.split(',').map(work => work.trim()) : [];
+
+            // Combine all dynamic keys
+            const allKeys = [...caseTypes, ...additionalWork];
 
             // Process cost and sale data
-            const allKeys = [...caseTypes, ...additionalWork];
-            
-            // Calculate the costs and sales
             const costData = allKeys.map((key) => {
                 const costValue = task.cost[key];
-                return `${key}: ${costValue && costValue.value ? costValue.value : 0}`;
+                return `${key}: ${costValue?.value || 0}`;
             }).join('; ');
 
             const saleData = allKeys.map((key) => {
                 const saleValue = task.sale[key];
-                return `${key}: ${saleValue && saleValue.value ? saleValue.value : 0}`;
+                return `${key}: ${saleValue?.value || 0}`;
             }).join('; ');
 
-            // Calculate totals for costs and sales
+            // Calculate totals
             const sellerTotalCost = Object.keys(task.cost || {}).reduce((total, field) => {
                 return task.cost[field]?.party === 'seller' ? total + (task.cost[field]?.value || 0) : total;
             }, 0);
@@ -429,34 +440,36 @@ app.get('/finance-task-download', async (req, res) => {
                 return task.cost[field]?.party === 'buyer' ? total + (task.cost[field]?.value || 0) : total;
             }, 0);
 
-            const totalCost = Object.keys(task.cost || {}).reduce((total, field) => total + (task.cost[field]?.value || 0), 0);
-            const totalSale = Object.keys(task.sale || {}).reduce((total, field) => total + (task.sale[field]?.value || 0), 0);
+            const totalCost = Object.values(task.cost || {}).reduce((total, costItem) => total + (costItem?.value || 0), 0);
+            const totalSale = Object.values(task.sale || {}).reduce((total, saleItem) => total + (saleItem?.value || 0), 0);
             const totalDifference = totalSale - totalCost;
 
-            // Prepare row data for CSV
+            // Prepare a CSV row for the task
             return [
                 task.carNum,
                 task.clientName,
                 task.caseType,
                 task.name,
                 task.AdditionalWork,
-                task.buyer_RTO_location,
-                task.seller_RTO_location,
-                costData,
-                saleData,
-                task.task1agentname,
-                task.task2agentname,
+                task.buyer_RTO_location || '',
+                task.seller_RTO_location || '',
+                `"${costData}"`, // Wrapping in quotes to handle commas in cost data
+                `"${saleData}"`, // Wrapping in quotes to handle commas in sale data
+                task.task1agentname || '',
+                task.task2agentname || '',
                 sellerTotalCost,
                 buyerTotalCost,
                 totalCost,
                 totalSale,
                 totalDifference,
                 task.billGenerated ? 'Generated' : 'Not Generated'
-            ].join(',');  
-        }).join('\n'); 
+            ].join(',');
+        }).join('\n');
 
+        // Combine header and rows into a full CSV
         const csvContent = csvHeader + records;
 
+        // Set response headers and send the CSV content
         res.header('Content-Type', 'text/csv');
         res.header('Content-Disposition', 'attachment; filename="finance-data.csv"');
         res.send(csvContent);
@@ -609,85 +622,98 @@ app.post("/tasks/edit/:id", upload.fields([
 
     // Destructure all fields from req.body
     const { 
-        name, 
-        description, 
-        carNum, 
-        clientName, 
-        caseType, 
-        hptName, 
-        sellerAlignedDate, 
-        buyerAlignedDate, 
-        NOCissuedDate, 
-        NOCreceivedDate, 
-        fileReceivedDate, 
-        AdditionalWork, 
-        HPA, 
-        transferDate, 
-        HandoverDate_RC, 
-        HandoverDate_NOC, 
-        buyerName, 
-        buyerNum, 
-        sellerName, 
-        sellerNum, 
-        buyer_RTO_location, 
-        seller_RTO_location, 
-        chesisnum, engineNum, 
-        status_RC, status_NOC,
-        deliverdate, courier,
-        buyerppstatus,
-        sellerppstatus,
-        spoc, state
+        name, description, clientName, carNum, caseType, hptName, 
+        sellerAlignedDate, buyerAlignedDate, NOCissuedDate, 
+        NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, 
+        transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, 
+        buyerNum, sellerName, sellerNum, buyer_RTO_location, 
+        seller_RTO_location, state, chesisnum, engineNum, status_RC, 
+        status_NOC, deliverdate, courier, buyerppstatus, sellerppstatus, spoc
     } = req.body;
 
-    try {
-        const taskData = { 
-            name, 
-            description, 
-            carNum, 
-            clientName, 
-            caseType, 
-            hptName, 
-            sellerAlignedDate, 
-            buyerAlignedDate, 
-            NOCissuedDate, 
-            NOCreceivedDate, 
-            fileReceivedDate, 
-            AdditionalWork, 
-            HPA, 
-            transferDate, 
-            HandoverDate_RC, 
-            HandoverDate_NOC, 
-            buyerName, 
-            buyerNum, 
-            sellerName, 
-            sellerNum, 
-            buyer_RTO_location: Array.isArray(buyer_RTO_location) ? buyer_RTO_location.join(", ") : buyer_RTO_location, 
-            seller_RTO_location: Array.isArray(seller_RTO_location) ? seller_RTO_location.join(", ") : seller_RTO_location, 
-            state, 
-            chesisnum, engineNum, status_RC, status_NOC, deliverdate, courier,
-            buyerppstatus, sellerppstatus, spoc,
-        };
+    if (!clientName) {
+        return res.status(400).send("Client name is required.");
+    }
 
-        // Handle file uploads (if any)
-        if (req.files) {
-            for (let key in req.files) {
-                const file = req.files[key][0];
-                const imageKitResponse = await uploadOnImageKit(file.path); // Using ImageKit upload
-                if (imageKitResponse) {
-                    taskData[key] = imageKitResponse.url; // Get the URL from ImageKit response
-                }
+    try {
+        // Find the company based on the client name
+        const company = await Company.findOne({ companyName: clientName });
+        if (!company) {
+            return res.status(404).send("Company not found for the given client name.");
+        }
+
+        const companyId = company._id; // Get the company ID
+        const taskData = { company: companyId }; // Initialize task data with company ID
+
+        // Handle file uploads if any
+        for (let key in req.files) {
+            const file = req.files[key][0];
+            const imageKitResponse = await uploadOnImageKit(file.path); // Use your upload function
+            if (imageKitResponse) {
+                taskData[key] = imageKitResponse.url; // Store the URL from ImageKit response
             }
         }
 
-        // Update the task with new data
-        await Task.findByIdAndUpdate(taskId, taskData);
+        // Assign the other form fields
+        Object.assign(taskData, { 
+            name, description, clientName, carNum, caseType, hptName, 
+            sellerAlignedDate, buyerAlignedDate, NOCissuedDate, 
+            NOCreceivedDate, fileReceivedDate, AdditionalWork, HPA, 
+            transferDate, HandoverDate_RC, HandoverDate_NOC, buyerName, 
+            buyerNum, sellerName, sellerNum, buyer_RTO_location, 
+            seller_RTO_location, state, chesisnum, engineNum, status_RC, 
+            status_NOC, deliverdate, courier, buyerppstatus, sellerppstatus, spoc
+        });
 
-        res.redirect("/employee");
-    } catch (err) {
-        console.error('Error updating task:', err.message);
-        res.status(500).send("Error updating task.");
+        // Initialize cost and sale fields
+        taskData.cost = {};
+        taskData.sale = {};
+
+        // Function to process dynamic fields (split by '+')
+        const processDynamicFields = (fieldString) => {
+            return fieldString 
+                .split('+') // Split by '+'
+                .map(field => field.trim()) // Trim whitespace
+                .filter(field => field); // Remove empty fields
+        };
+
+        // Process caseType and AdditionalWork
+        const caseTypeFields = caseType ? processDynamicFields(caseType) : [];
+        const additionalWorkFields = AdditionalWork ? processDynamicFields(AdditionalWork) : [];
+
+        // Add dynamic fields to cost and sale
+        [...caseTypeFields, ...additionalWorkFields].forEach(field => {
+            if (!taskData.cost[field]) {
+                taskData.cost[field] = { value: 0, party: 'Not specified' }; // Default values
+            }
+            if (!taskData.sale[field]) {
+                taskData.sale[field] = { value: 0 }; // Default value for sale
+            }
+        });
+
+        // Find and update the task
+        const existingTask = await Task.findById(taskId);
+        if (!existingTask) {
+            return res.status(404).send("Task not found");
+        }
+
+        // Merge existing cost and sale values
+        taskData.cost = { ...existingTask.cost, ...taskData.cost };
+        taskData.sale = { ...existingTask.sale, ...taskData.sale };
+
+        // Update the task in the database
+        await Task.findByIdAndUpdate(taskId, taskData, { new: true });
+
+        // Update the company's task array if necessary
+        await Company.findByIdAndUpdate(companyId, { $push: { tasks: taskId } });
+
+        res.redirect("/employee"); // Redirect to the tasks page after successful update
+    } catch (error) {
+        console.error('Task update failed:', error.message, error);
+        res.status(500).json({ message: 'Task update failed', error: error.message });
     }
 });
+
 app.post("/tasks/delete/:id", async (req, res) => {
     const taskId = req.params.id;
 
@@ -961,7 +987,6 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
         res.status(500).send("Error importing tasks.");
     }
 });
-// finance page
 app.get("/finance", async (req, res) => {
     try {
         const tasks = await Task.find({
@@ -986,8 +1011,6 @@ app.get("/finance", async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
 app.get("/financeEdit/:id", async (req, res) => {
     try {
         const taskId = req.params.id;
