@@ -70,7 +70,6 @@ app.get("/tasks", async (req, res) => {
 app.get("/login", (req, res) => {
     res.render("login");
 });
-
 app.get("/registerar", (req, res) => {
     res.render("register");
 }); 
@@ -217,7 +216,7 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
 });
 function isLoggedIn(req, res, next) {
-    const token = req.cookies.token;
+    const token = req.cookies.token;     
     if (!token) {
         return res.send("You must be logged in");
     }
@@ -965,11 +964,16 @@ app.post('/tasks/import', upload.single('csvFile'), async (req, res) => {
 // finance page
 app.get("/finance", async (req, res) => {
     try {
-        // Fetch tasks that match either condition
         const tasks = await Task.find({
             $or: [
-                { name: "TRANSFER COMPLETED" },
-                { status_NOC: "NOC ISSUED" }
+                { 
+                    name: "TRANSFER COMPLETED",
+                    transferDate: { $gt: new Date("2025-01-01T00:00:00Z") } 
+                },
+                { 
+                    status_NOC: "NOC ISSUED",
+                    NOCissuedDate: { $gt: new Date("2025-01-01T00:00:00Z") } 
+                }
             ]
         })
         .populate('company')
@@ -982,6 +986,8 @@ app.get("/finance", async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+
 app.get("/financeEdit/:id", async (req, res) => {
     try {
         const taskId = req.params.id;
@@ -1072,7 +1078,7 @@ app.get('/dashboard', async (req, res) => {
                                 $sum: { $cond: [{ $eq: ["$billGenerated", true] }, 1, 0] },
                             },
                         },
-                    }, 
+                    },
                 ]);
                 const {
                     totalTransferredAndNOCIssued = 0,
@@ -1096,7 +1102,6 @@ app.get('/dashboard', async (req, res) => {
         res.status(500).send('Error loading dashboard');
     }
 });
-
 app.use((req, res, next) => {
     res.status(404).render('404');
 });
